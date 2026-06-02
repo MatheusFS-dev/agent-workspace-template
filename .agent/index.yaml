@@ -1,0 +1,108 @@
+version: 2
+
+startup:
+  always_read:
+    - AGENTS.md
+  preferred_router:
+    command: python .agent/scripts/route_context.py "<user request>"
+    fallback: read this file and apply the same routing manually
+
+routing:
+  coding:
+    trigger_keywords:
+      - implement
+      - code
+      - refactor
+      - script
+      - test
+      - debug
+      - environment
+      - pipeline
+      - repository
+    read:
+      - .agent/modes/coding.md
+
+  paper_writing:
+    trigger_keywords:
+      - manuscript
+      - paper
+      - reviewer
+      - rebuttal
+      - abstract
+      - introduction
+      - related work
+      - conclusion
+      - latex
+    read:
+      - .agent/modes/paper-writing.md
+      - .agent/skills/scribe/SKILL.md
+
+  plotting:
+    trigger_keywords:
+      - plot
+      - figure
+      - visualization
+      - matplotlib
+      - chart
+      - graph
+      - histogram
+      - scatter
+      - boxplot
+      - error bar
+    read:
+      - .agent/rules/plotting-style.md
+      - .agent/skills/scientific-plot-maker/SKILL.md
+
+  troubleshooting:
+    trigger_keywords:
+      - driver
+      - cuda
+      - tensorflow
+      - pytorch
+      - package conflict
+      - dependency error
+      - linux
+      - windows
+    read:
+      - .agent/workflows/debugging.md
+
+  long_task_state:
+    trigger_keywords:
+      - session state
+      - task state
+      - resume state
+      - long task state
+    explicit_user_request_required: true
+    read:
+      - .agent/workflows/long-task-state.md
+
+commands:
+  project_architecture_refresh:
+    command: python .agent/scripts/update_project_map.py
+    purpose: scan the repository root and refresh .agent/context/project-map.md
+    run_when: the user asks to populate, refresh, repair, regenerate, or audit project architecture context
+    after_run_read:
+      - .agent/context/project-map.md
+
+conditional_context:
+  project_map:
+    file: .agent/context/project-map.md
+    read_when: repository structure, module ownership, architecture, or file placement matters
+
+  memories:
+    file: .agent/context/memories.md
+    read_when: durable prior context may affect the task, the user asks to remember or forget something, or durable context must be updated
+    after_update_check: python .agent/scripts/memory_lint.py
+
+reference_access:
+  preferred_method: python .agent/scripts/search_reference.py <file> <keywords...>
+  rule: search references before reading entire reference files
+
+never_startup_read:
+  - .agent/context/memories.md
+  - .agent/skills/**/references/**
+  - .agent/skills/**/assets/**
+  - .agent/skills/**/scripts/**
+  - .agent/scripts/**
+  - .agent/prompts/**
+  - "*.pdf"
