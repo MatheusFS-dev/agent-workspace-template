@@ -1,0 +1,49 @@
+# Python caches and compiled files
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment directories
+.Python
+.venv/
+
+# Agent stuff
+.agent/state/*
+!.agent/state/CURRENT_TASK.md
+*.local.md
+
+# Environment variable files
+.env
+.env.*
+!.env.example
+
+# IDE directories
+.vscode/
+
+# Logging and runtime directories and files
+logs/
+runs/
+temp/
+temp_*
+
+# Model files and directories
+*.h5
+*.keras
+automodel/
+models/
+
+# Sensitive files
+credentials.json
+recipients.json
+docs/\[DELETE].md
+
+# Additional directories
+standalone/
+
+# Additional files
+.codex
+
+
+
