@@ -1,1 +1,1 @@
-Read AGENTS.md.
+Read and follow AGENTS.md. It is the canonical repository instruction file. Do not duplicate repository rules here.
