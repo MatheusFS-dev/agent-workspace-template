@@ -463,9 +463,13 @@ def route_files(request: str) -> list[str]:
                 files.extend(route_files_to_add)
 
     project_map_needed = PROJECT_MAP_PATTERN.search(request) is not None
+    project_map_command_needed = PROJECT_MAP_COMMAND_PATTERN.search(request) is not None
     memory_needed = MEMORY_PATTERN.search(request) is not None
 
-    if project_map_needed or repository_analysis_needed:
+    # Refresh-style project-map requests must read the regenerated file after
+    # emitting the update command; otherwise the agent would refresh context
+    # without loading the updated architecture information.
+    if project_map_needed or repository_analysis_needed or project_map_command_needed:
         files.append(".agent/context/project-map.md")
 
     if memory_needed:
@@ -474,7 +478,13 @@ def route_files(request: str) -> list[str]:
     for full_example_file in matching_full_example_files(request):
         files.append(full_example_file)
 
-    if not matched_route and not project_map_needed and not memory_needed and not repository_analysis_needed:
+    if (
+        not matched_route
+        and not project_map_needed
+        and not project_map_command_needed
+        and not memory_needed
+        and not repository_analysis_needed
+    ):
         files.append(".agent/index.yaml")
 
     return unique_preserve_order(files)

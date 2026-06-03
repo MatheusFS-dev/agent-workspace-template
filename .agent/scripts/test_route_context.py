@@ -107,6 +107,24 @@ class RouteContextRegressionTests(unittest.TestCase):
         self.assertIn("READ .agent/context/project-map.md", output)
         self.assertNotIn(".agent/modes/coding.md", output)
 
+    def test_project_map_refresh_reads_regenerated_map(self) -> None:
+        """Verify refresh requests read the regenerated project map.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+
+        Raises:
+            AssertionError: If the refresh command is emitted without reading
+                the updated project map afterward.
+        """
+        output = run_route_context("Update the project map.")
+        self.assertIn("RUN python3 .agent/scripts/update_project_map.py", output)
+        self.assertIn("READ .agent/context/project-map.md", output)
+        self.assertNotIn("READ .agent/index.yaml", output)
+
     def test_plot_script_uses_coding_and_plotting(self) -> None:
         """Verify mixed plotting implementation requests load both contexts.
 

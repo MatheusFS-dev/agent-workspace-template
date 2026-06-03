@@ -4,6 +4,7 @@ from pathlib import Path
 import re
 import sys
 
+# If you want, change 1200 characters to 600 or 800. This directly reduces worst-case coding-task overhead from about 3160 search-output tokens to roughly 1660 to 2160 tokens.
 DEFAULT_CONTEXT_CHARS = 1200
 MAX_RESULTS = 5
 
