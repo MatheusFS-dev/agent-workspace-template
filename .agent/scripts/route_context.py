@@ -31,7 +31,19 @@ TROUBLESHOOTING_PATTERN = re.compile(
     re.IGNORECASE,
 )
 CODE_EDIT_PATTERN = re.compile(
-    r"\b(implement|edit|patch|modify|change|refactor|write code|add code|fix code|update file|create script|add test|unit test)\b",
+    r"\b("
+    r"implement|edit|patch|modify|change|refactor|"
+    r"write code|add code|fix code|update file|create script|"
+    r"add test|unit test|write a script|make a script|"
+    r"create file|update script|modify code"
+    r")\b",
+    re.IGNORECASE,
+)
+CODING_TOPIC_PATTERN = re.compile(
+    r"\b("
+    r"code|function|class|module|script|test|bug|fix|"
+    r"repository|pipeline|experiment|dataset|training|inference"
+    r")\b",
     re.IGNORECASE,
 )
 ROUTES = [
@@ -53,10 +65,7 @@ ROUTES = [
     ),
     (
         "coding",
-        re.compile(
-            r"\b(implement|code|refactor|script|test|debug|function|class|module|repository|pipeline|experiment|dataset|training|inference|fix|bug)\b",
-            re.IGNORECASE,
-        ),
+        CODING_TOPIC_PATTERN,
         [".agent/modes/coding.md"],
     ),
     (
@@ -115,9 +124,43 @@ FULL_EXAMPLE_PATTERN = re.compile(
     r"\b(full example|full examples|show examples|detailed example|example code|wrong and right)\b",
     re.IGNORECASE,
 )
+REPOSITORY_ANALYSIS_PATTERN = re.compile(
+    r"\b("
+    r"analy[sz]e this repo|analy[sz]e this repository|"
+    r"audit this repo|audit this repository|"
+    r"repo overview|repository overview|"
+    r"understand this repo|understand this repository|"
+    r"context usage|token usage|context cost|token cost"
+    r")\b",
+    re.IGNORECASE,
+)
 DEFAULT_FILES = ["AGENTS.md"]
 EASY_TASK_FILES = ["AGENTS.md", ".agent/modes/easy-task.md"]
 CONTEXT_TOKEN_DIVISOR = 4
+MAX_CODING_EXAMPLE_SEARCHES = 2
+CODING_EXAMPLE_PRIORITY = [
+    "vague vs verifiable",
+    "hidden assumptions",
+    "test first verification",
+    "drive by refactoring",
+    "multiple interpretations",
+    "multi step verification",
+    "style drift",
+    "over abstraction",
+]
+SEARCH_REFERENCE_MAX_RESULTS = 5
+SEARCH_REFERENCE_CONTEXT_CHARS = 1200
+SEARCH_REFERENCE_OVERHEAD_TOKENS = 80
+CODING_FULL_EXAMPLE_FILES = {
+    "hidden assumptions": ".agent/modes/examples/hidden-assumptions.md",
+    "multiple interpretations": ".agent/modes/examples/multiple-interpretations.md",
+    "over abstraction": ".agent/modes/examples/over-abstraction.md",
+    "drive by refactoring": ".agent/modes/examples/drive-by-refactoring.md",
+    "style drift": ".agent/modes/examples/style-drift.md",
+    "vague vs verifiable": ".agent/modes/examples/vague-vs-verifiable.md",
+    "multi step verification": ".agent/modes/examples/multi-step-verification.md",
+    "test first verification": ".agent/modes/examples/test-first-verification.md",
+}
 
 
 def read_request(arguments: list[str]) -> tuple[str, bool]:
@@ -287,6 +330,50 @@ def wants_code_edit(request: str) -> bool:
     return CODE_EDIT_PATTERN.search(request) is not None
 
 
+def is_coding_request(request: str) -> bool:
+    """Return whether coding context should be considered for the request.
+
+    Args:
+        request: User task text.
+
+    Returns:
+        True when the request contains editing intent or strong coding terms.
+        When `True`, coding mode may still be suppressed by higher-priority
+        routing such as troubleshooting or paper-writing exclusivity. When
+        `False`, broad nouns like `repository` or `training` alone do not load
+        coding mode.
+
+    Raises:
+        None.
+    """
+    if wants_code_edit(request):
+        return True
+
+    strong_coding_terms = re.compile(
+        r"\b(code|function|class|script|test|bug|fix)\b",
+        re.IGNORECASE,
+    )
+    return strong_coding_terms.search(request) is not None
+
+
+def is_paper_writing_request(request: str) -> bool:
+    """Return whether the request is primarily about academic writing.
+
+    Args:
+        request: User task text.
+
+    Returns:
+        True when paper-writing keywords are present. This is used to keep
+        writing requests from pulling coding mode unless editing intent is
+        explicit.
+
+    Raises:
+        None.
+    """
+    paper_pattern = next(pattern for name, pattern, _files in ROUTES if name == "paper_writing")
+    return paper_pattern.search(request) is not None
+
+
 def matching_route_names(request: str) -> list[str]:
     """Return names of normal routes that match the request.
 
@@ -305,6 +392,8 @@ def matching_route_names(request: str) -> list[str]:
         names.append("troubleshooting")
 
     for name, pattern, _files in ROUTES:
+        if name == "coding" and not is_coding_request(request):
+            continue
         if pattern.search(request):
             names.append(name)
 
@@ -324,6 +413,9 @@ def is_coding_route_active(request: str) -> bool:
         None.
     """
     if is_troubleshooting_request(request) and not wants_code_edit(request):
+        return False
+
+    if is_paper_writing_request(request) and not wants_code_edit(request):
         return False
 
     return any(name == "coding" for name in matching_route_names(request))
@@ -352,6 +444,7 @@ def route_files(request: str) -> list[str]:
 
     troubleshooting_active = is_troubleshooting_request(request)
     troubleshooting_exclusive = troubleshooting_active and not wants_code_edit(request)
+    repository_analysis_needed = REPOSITORY_ANALYSIS_PATTERN.search(request) is not None
 
     if troubleshooting_active:
         matched_route = True
@@ -361,6 +454,10 @@ def route_files(request: str) -> list[str]:
         for name, pattern, route_files_to_add in ROUTES:
             if name == "long_task_state" and not pattern.search(request):
                 continue
+            if name == "coding" and not is_coding_request(request):
+                continue
+            if name == "coding" and is_paper_writing_request(request) and not wants_code_edit(request):
+                continue
             if pattern.search(request):
                 matched_route = True
                 files.extend(route_files_to_add)
@@ -368,16 +465,16 @@ def route_files(request: str) -> list[str]:
     project_map_needed = PROJECT_MAP_PATTERN.search(request) is not None
     memory_needed = MEMORY_PATTERN.search(request) is not None
 
-    if project_map_needed:
+    if project_map_needed or repository_analysis_needed:
         files.append(".agent/context/project-map.md")
 
     if memory_needed:
         files.append(".agent/context/memories.md")
 
-    if FULL_EXAMPLE_PATTERN.search(request) and is_coding_route_active(request):
-        files.append(".agent/modes/coding-full-examples.md")
+    for full_example_file in matching_full_example_files(request):
+        files.append(full_example_file)
 
-    if not matched_route and not project_map_needed and not memory_needed:
+    if not matched_route and not project_map_needed and not memory_needed and not repository_analysis_needed:
         files.append(".agent/index.yaml")
 
     return unique_preserve_order(files)
@@ -403,7 +500,50 @@ def matching_coding_example_keywords(request: str) -> list[str]:
         if pattern.search(request):
             keywords.append(keyword)
 
-    return unique_preserve_order(keywords)
+    return prioritize_coding_example_keywords(unique_preserve_order(keywords))
+
+
+def prioritize_coding_example_keywords(keywords: list[str]) -> list[str]:
+    """Prioritize and cap matched coding example keywords.
+
+    Args:
+        keywords: Matched risk keywords in discovery order.
+
+    Returns:
+        Ordered keywords capped to the configured search budget. Higher-priority
+        risks are emitted first so routed search output stays bounded. Lower-
+        priority unmatched values are preserved afterward until the cap is hit.
+
+    Raises:
+        None.
+    """
+    keyword_set = set(keywords)
+    prioritized = [keyword for keyword in CODING_EXAMPLE_PRIORITY if keyword in keyword_set]
+    remaining = [keyword for keyword in keywords if keyword not in CODING_EXAMPLE_PRIORITY]
+    return unique_preserve_order(prioritized + remaining)[:MAX_CODING_EXAMPLE_SEARCHES]
+
+
+def matching_full_example_files(request: str) -> list[str]:
+    """Select full example files for a coding request.
+
+    Args:
+        request: User task text.
+
+    Returns:
+        Ordered full-example file paths for matched coding risks. Returns an
+        empty list when the request does not explicitly ask for a full example.
+
+    Raises:
+        None.
+    """
+    if not FULL_EXAMPLE_PATTERN.search(request):
+        return []
+
+    return [
+        CODING_FULL_EXAMPLE_FILES[keyword]
+        for keyword in matching_coding_example_keywords(request)
+        if keyword in CODING_FULL_EXAMPLE_FILES
+    ]
 
 
 def route_commands(request: str) -> list[str]:
@@ -433,6 +573,34 @@ def route_commands(request: str) -> list[str]:
         )
 
     return unique_preserve_order(commands)
+
+
+def approximate_tokens_for_command(command: str) -> int | None:
+    """Estimate token output cost for a routed command.
+
+    Args:
+        command: Routed shell command.
+
+    Returns:
+        An approximate output token count when the command is well understood.
+        Returns `None` for unknown commands so stats output can mark the value as
+        unknown instead of inventing a misleading estimate.
+
+    Raises:
+        None.
+    """
+    if "search_reference.py" in command:
+        excerpt_tokens = (
+            SEARCH_REFERENCE_MAX_RESULTS
+            * SEARCH_REFERENCE_CONTEXT_CHARS
+            // CONTEXT_TOKEN_DIVISOR
+        )
+        return excerpt_tokens + SEARCH_REFERENCE_OVERHEAD_TOKENS
+
+    if "update_project_map.py" in command:
+        return 20
+
+    return None
 
 
 def route_questions(request: str) -> list[str]:
@@ -497,11 +665,21 @@ def print_route_output(request: str, show_stats: bool) -> None:
     for question in questions:
         print(f"ASK {question}")
 
-    for command in commands:
-        print(f"RUN {command}")
-
     total_tokens = 0
+    command_total_tokens = 0
     has_unknown = False
+
+    for command in commands:
+        if show_stats:
+            token_count = approximate_tokens_for_command(command)
+            if token_count is None:
+                print(f"RUN {command} approx_output_tokens=unknown")
+                has_unknown = True
+            else:
+                print(f"RUN {command} approx_output_tokens<={token_count}")
+                command_total_tokens += token_count
+        else:
+            print(f"RUN {command}")
 
     for file_path in files:
         print(format_file_line(file_path, show_stats))
@@ -513,9 +691,13 @@ def print_route_output(request: str, show_stats: bool) -> None:
 
     if show_stats:
         if has_unknown:
-            print(f"TOTAL approx_tokens>={total_tokens}")
+            print(f"TOTAL_FILE approx_tokens>={total_tokens}")
+            print(f"TOTAL_COMMAND_OUTPUT approx_tokens>={command_total_tokens}")
+            print(f"TOTAL_CONTEXT_RISK approx_tokens>={total_tokens + command_total_tokens}")
         else:
-            print(f"TOTAL approx_tokens={total_tokens}")
+            print(f"TOTAL_FILE approx_tokens={total_tokens}")
+            print(f"TOTAL_COMMAND_OUTPUT approx_tokens<={command_total_tokens}")
+            print(f"TOTAL_CONTEXT_RISK approx_tokens<={total_tokens + command_total_tokens}")
 
 
 def main() -> int:
@@ -535,4 +717,5 @@ def main() -> int:
     return 0
 
 
-raise SystemExit(main())
+if __name__ == "__main__":
+    raise SystemExit(main())

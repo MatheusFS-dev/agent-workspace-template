@@ -14,16 +14,22 @@ python .agent/scripts/update_project_map.py
 
 ## Scanned root
 
-- `agent-workspace-template-updated`
+- `agent-workspace-template`
 
 ## Top-level layout
 
 - `.agent`
+- `.github`
+- `scripts`
+- `tests`
 
 Top-level files:
 
+- `.gitignore`
 - `AGENTS.md`
+- `CITATION.cff`
 - `CLAUDE.md`
+- `CODE_OF_CONDUCT.md`
 - `GEMINI.md`
 - `LICENSE`
 - `README.md`
@@ -34,7 +40,7 @@ None detected.
 
 ## Test roots
 
-None detected.
+- `tests`
 
 ## Documentation roots
 
@@ -54,7 +60,7 @@ None detected.
 
 ## Notable files by directory
 
-- `./`: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `LICENSE`, `README.md`
+- `./`: `.gitignore`, `AGENTS.md`, `CITATION.cff`, `CLAUDE.md`, `CODE_OF_CONDUCT.md`, `GEMINI.md`, `LICENSE`, `README.md`
 - `.agent/`: `index.yaml`
 - `.agent/context/`: `memories.md`, `project-map.md`
 - `.agent/hooks/`: `claude-code-hooks.example.json`, `README.md`
@@ -63,19 +69,25 @@ None detected.
 - `.agent/skills/scientific-plot-maker/`: `SKILL.md`
 - `.agent/skills/scribe/`: `SKILL.md`
 - `.agent/workflows/`: `debugging.md`, `long-task-state.md`
+- `.github/`: `FUNDING.yml`
+- `.github/ISSUE_TEMPLATE/`: `bug_report.md`, `feature_request.md`
+- `scripts/`: `install_template.py`
 
 ## File-type signal
 
-- `.md`: 17
-- `[no extension]`: 1
+- `.md`: 20
+- `[no extension]`: 2
+- `.cff`: 1
 - `.yaml`: 1
 - `.json`: 1
+- `.yml`: 1
+- `.py`: 1
 
 ## Excluded low-signal paths
 
-- Ignored directories: 0
+- Ignored directories: 4
 - Ignored files: 0
-- Hidden agent internals: 4
+- Hidden agent internals: 5
 
 ## Maintenance rule
 

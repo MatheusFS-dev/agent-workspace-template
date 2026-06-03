@@ -42,9 +42,10 @@ If an easy task becomes non-trivial during execution, stop and ask before escala
 - Easy tasks use `.agent/modes/easy-task.md`.
 - Coding tasks use `.agent/modes/coding.md`.
 - Coding examples are retrieval-gated. Search `.agent/modes/coding-example-cards.md` when the router emits a search command or when a coding task matches a known risk.
-- Full coding examples live in `.agent/modes/coding-full-examples.md`. Read them only when the compact card is insufficient, when the user requests examples, or when the same failure mode remains ambiguous.
+- Full coding examples live in `.agent/modes/examples/` by risk category. Read only the exact risk file when the compact card is insufficient, when the user requests a full example, or when the same failure mode remains ambiguous.
 - Paper-writing tasks use `.agent/modes/paper-writing.md` and `.agent/skills/scribe/SKILL.md`.
 - Plotting tasks use `.agent/rules/plotting-style.md` and `.agent/skills/scientific-plot-maker/SKILL.md`.
+- Repository-analysis tasks use `.agent/context/project-map.md` unless the user explicitly asks for implementation or code editing.
 - Troubleshooting tasks use `.agent/workflows/debugging.md` before proposing fixes. Do not load coding mode for troubleshooting unless code editing is explicitly requested.
 - Long-task state uses `.agent/workflows/long-task-state.md` only when the user explicitly asks for task-local state.
 

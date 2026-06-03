@@ -42,6 +42,7 @@ AGENT_INTERNAL_PARTS = {
     "references",
     "assets",
     "prompts",
+    "examples",
 }
 IGNORE_FILE_SUFFIXES = {
     ".pyc",
@@ -67,6 +68,18 @@ IGNORE_FILE_SUFFIXES = {
     ".db",
     ".sqlite",
     ".sqlite3",
+    ".pdf",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".webp",
+    ".svg",
+    ".csv",
+    ".jsonl",
+    ".log",
+    ".xlsx",
+    ".docx",
+    ".pptx",
 }
 CONFIG_FILES = {
     "pyproject.toml",

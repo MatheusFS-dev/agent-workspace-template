@@ -85,7 +85,32 @@ routing:
     example_card_search:
       file: .agent/modes/coding-example-cards.md
       rule: search compact cards by risk before reading full examples
-      full_examples_file: .agent/modes/coding-full-examples.md
+      full_examples:
+        hidden assumptions: .agent/modes/examples/hidden-assumptions.md
+        multiple interpretations: .agent/modes/examples/multiple-interpretations.md
+        over abstraction: .agent/modes/examples/over-abstraction.md
+        drive by refactoring: .agent/modes/examples/drive-by-refactoring.md
+        style drift: .agent/modes/examples/style-drift.md
+        vague vs verifiable: .agent/modes/examples/vague-vs-verifiable.md
+        multi step verification: .agent/modes/examples/multi-step-verification.md
+        test first verification: .agent/modes/examples/test-first-verification.md
+
+  repository_analysis:
+    trigger_keywords:
+      - analyze this repo
+      - analyze this repository
+      - audit this repo
+      - audit this repository
+      - repo overview
+      - repository overview
+      - understand this repo
+      - understand this repository
+      - context usage
+      - token usage
+      - context cost
+      - token cost
+    read:
+      - .agent/context/project-map.md
 
   paper_writing:
     trigger_keywords:

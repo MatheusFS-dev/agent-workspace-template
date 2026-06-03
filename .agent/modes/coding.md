@@ -2,7 +2,7 @@
 
 Use this mode for implementation, debugging, refactoring, scripts, tests, data processing, ML pipelines, and repository maintenance.
 
-This file is the compact always-loaded coding contract. Detailed examples are retrieval-gated to reduce repeated context cost while preserving behavior-shaping guidance.
+This file is the compact always-loaded coding contract. Detailed examples are retrieval-gated by risk category to reduce repeated context cost while preserving behavior-shaping guidance.
 
 ## Before editing
 
@@ -77,7 +77,7 @@ python .agent/scripts/search_reference.py .agent/modes/coding-example-cards.md d
 python .agent/scripts/search_reference.py .agent/modes/coding-example-cards.md test-first verification
 ```
 
-Use `.agent/modes/coding-full-examples.md` only when:
+Use the matching `.agent/modes/examples/<risk>.md` file only when:
 
 - the compact card is insufficient,
 - the user asks for examples,
