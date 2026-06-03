@@ -109,7 +109,12 @@ CODING_EXAMPLE_ROUTES = [
     ),
 ]
 PROJECT_MAP_PATTERN = re.compile(
-    r"\b(architecture|file placement|where should|module ownership|repository structure|package layout|folder structure)\b",
+    r"\b("
+    r"repository architecture|project architecture|code architecture|"
+    r"software architecture|file placement|module ownership|"
+    r"repository structure|package layout|folder structure|"
+    r"where should this file go"
+    r")\b",
     re.IGNORECASE,
 )
 PROJECT_MAP_COMMAND_PATTERN = re.compile(

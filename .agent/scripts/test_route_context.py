@@ -107,6 +107,56 @@ class RouteContextRegressionTests(unittest.TestCase):
         self.assertIn("READ .agent/context/project-map.md", output)
         self.assertNotIn(".agent/modes/coding.md", output)
 
+    def test_generic_architecture_terms_do_not_load_project_map(self) -> None:
+        """Verify non-repository architecture wording avoids project-map context.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+
+        Raises:
+            AssertionError: If generic architecture language still triggers
+                repository-structure routing.
+        """
+        prompts = [
+            "Rewrite this paragraph about the neural network architecture.",
+            "Explain the model architecture in the paper.",
+            "Improve this system architecture description.",
+            "Compare PointNet++ and DGCNN architectures.",
+        ]
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                output = run_route_context(prompt)
+                self.assertNotIn(".agent/context/project-map.md", output)
+
+    def test_repository_architecture_phrases_load_project_map(self) -> None:
+        """Verify repository-architecture wording still loads the project map.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+
+        Raises:
+            AssertionError: If repository-organization prompts stop reading
+                the project-map context.
+        """
+        prompts = [
+            "Explain the project architecture.",
+            "Review the repository architecture for this repo.",
+            "Where should this file go?",
+            "Decide the package layout for this module.",
+        ]
+
+        for prompt in prompts:
+            with self.subTest(prompt=prompt):
+                output = run_route_context(prompt)
+                self.assertIn("READ .agent/context/project-map.md", output)
+
     def test_project_map_refresh_reads_regenerated_map(self) -> None:
         """Verify refresh requests read the regenerated project map.
 
