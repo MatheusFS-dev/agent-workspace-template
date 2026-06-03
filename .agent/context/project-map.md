@@ -2,6 +2,7 @@
 
 This file is a compact architecture index generated from the repository tree.
 It is designed for routing and file-placement decisions, not full documentation.
+Agent internals such as scripts, references, assets, and prompt folders are intentionally hidden from normal architecture context.
 
 ## Refresh command
 
@@ -13,7 +14,7 @@ python .agent/scripts/update_project_map.py
 
 ## Scanned root
 
-- `project-template`
+- `agent-workspace-template-updated`
 
 ## Top-level layout
 
@@ -24,6 +25,8 @@ Top-level files:
 - `AGENTS.md`
 - `CLAUDE.md`
 - `GEMINI.md`
+- `LICENSE`
+- `README.md`
 
 ## Source roots
 
@@ -51,24 +54,20 @@ None detected.
 
 ## Notable files by directory
 
-- `./`: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`
+- `./`: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `LICENSE`, `README.md`
 - `.agent/`: `index.yaml`
 - `.agent/context/`: `memories.md`, `project-map.md`
 - `.agent/hooks/`: `claude-code-hooks.example.json`, `README.md`
-- `.agent/modes/`: `coding.md`, `paper-writing.md`
+- `.agent/modes/`: `coding-example-cards.md`, `coding-full-examples.md`, `coding.md`, `easy-task.md`, `paper-writing.md`
 - `.agent/rules/`: `plotting-style.md`
-- `.agent/scripts/`: `agent_check.py`, `memory_lint.py`, `route_context.py`, `search_reference.py`, `update_project_map.py`
 - `.agent/skills/scientific-plot-maker/`: `SKILL.md`
-- `.agent/skills/scientific-plot-maker/references/`: `plot_examples.py`, `publication_plot_style.py`
-- `.agent/skills/scientific-plot-maker/scripts/`: `install_plot_style.py`, `preview_plot_style.py`
 - `.agent/skills/scribe/`: `SKILL.md`
-- `.agent/skills/scribe/references/`: `scribe-style-guide.md`, `writing-guide-pages-27-52.md`
 - `.agent/workflows/`: `debugging.md`, `long-task-state.md`
 
 ## File-type signal
 
-- `.md`: 15
-- `.py`: 9
+- `.md`: 17
+- `[no extension]`: 1
 - `.yaml`: 1
 - `.json`: 1
 
@@ -76,6 +75,7 @@ None detected.
 
 - Ignored directories: 0
 - Ignored files: 0
+- Hidden agent internals: 4
 
 ## Maintenance rule
 

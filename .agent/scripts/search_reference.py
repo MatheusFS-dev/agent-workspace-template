@@ -4,10 +4,8 @@ from pathlib import Path
 import re
 import sys
 
-
 DEFAULT_CONTEXT_CHARS = 1200
 MAX_RESULTS = 5
-HEADING_PATTERN = re.compile(r"^(#{1,6}\s+.+|[-=]{3,}\s*)$")
 
 
 def normalize(text: str) -> str:
@@ -22,7 +20,8 @@ def normalize(text: str) -> str:
     Raises:
         None.
     """
-    return re.sub(r"\s+", " ", text.lower()).strip()
+    normalized = re.sub(r"[^a-z0-9]+", " ", text.lower())
+    return re.sub(r"\s+", " ", normalized).strip()
 
 
 def split_sections(text: str) -> list[tuple[str, str]]:

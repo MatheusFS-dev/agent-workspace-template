@@ -5,13 +5,13 @@ from pathlib import Path
 import re
 import sys
 
-
 DEFAULT_ROOTS = [Path("src"), Path("tests")]
 DEFAULT_SELF_CHECK_FILES = [
     Path(".agent/scripts/agent_check.py"),
     Path(".agent/scripts/route_context.py"),
     Path(".agent/scripts/search_reference.py"),
     Path(".agent/scripts/memory_lint.py"),
+    Path(".agent/scripts/update_project_map.py"),
 ]
 FORBIDDEN_PATTERNS = {
     "argparse import": re.compile(r"^\s*(import argparse|from argparse import)"),

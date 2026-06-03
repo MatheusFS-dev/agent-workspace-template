@@ -4,7 +4,6 @@ from pathlib import Path
 import shutil
 import sys
 
-
 SOURCE_PATH = Path(__file__).resolve().parents[1] / "references" / "publication_plot_style.py"
 DEFAULT_DESTINATION = Path("publication_plot_style.py")
 

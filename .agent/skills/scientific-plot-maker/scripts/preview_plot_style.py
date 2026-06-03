@@ -5,7 +5,6 @@ from importlib.util import spec_from_file_location
 from pathlib import Path
 import sys
 
-
 HELPER_PATH = Path(__file__).resolve().parents[1] / "references" / "publication_plot_style.py"
 DEFAULT_OUTPUT_PATH = Path("plot-style-preview.png")
 
@@ -59,10 +58,7 @@ def create_preview(output_path: Path) -> Path:
     x_values = [0, 1, 2, 3, 4]
     y_values = [0.0, 0.7, 1.1, 1.0, 1.4]
     axis.plot(x_values, y_values, marker="o", linewidth=1.4, markersize=4.0)
-    axis.set_xlabel("Sample index")
-    axis.set_ylabel("Normalized value")
-    axis.set_title("Publication style preview")
-    helper.style_axes(axis)
+    helper.style_axes(axis, "Sample index", "Normalized value", title="Publication style preview")
     output_path.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(output_path, bbox_inches="tight", dpi=300)
     plt.close(figure)

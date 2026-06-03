@@ -1,6 +1,5 @@
 ![header](https://capsule-render.vercel.app/api?height=190&type=blur&color=4ea7f7&section=header&text=Agent%20Workspace%20Template&fontColor=f8f8f2&fontSize=40)
 
-
 <p align="center">
 <a href="https://github.com/DenverCoder1/readme-typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Time+New+Roman&color=%234ea7f7&size=25&center=true&vCenter=true&width=600&height=30&lines=👋+Welcome!"></a>
 </p>
@@ -12,22 +11,14 @@
   <a href="https://visitor-badge.laobi.icu/badge?page_id=MatheusFS-dev/agent-workspace-template"><img src="https://visitor-badge.laobi.icu/badge?page_id=MatheusFS-dev/agent-workspace-template" alt="Visitors"/></a>
 </p>
 
-
 This template adds a reusable `.agent` workspace to your project.
 
 It helps an AI coding agent understand how to work in your project without loading too much unnecessary context.
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
 - [📦 What to Copy Into Your Project](#what-to-copy-into-your-project)
-  - [Copy List](#copy-list)
-  - [Example Final Structure](#example-final-structure)
 - [🧭 What Each File Does](#what-each-file-does)
-  - [AGENTS.md](#agentsmd)
-  - [.agent/](#agent)
-  - [CLAUDE.md](#claudemd)
-  - [GEMINI.md](#geminimd)
 - [🚀 First Use in a Project](#first-use-in-a-project)
 - [🔄 Updating the Project Map Later](#updating-the-project-map-later)
 - [💬 Using the Agent Day to Day](#using-the-agent-day-to-day)
@@ -37,7 +28,6 @@ It helps an AI coding agent understand how to work in your project without loadi
 - [🚫 What Not to Copy](#what-not-to-copy)
 - [🤝 Contributing](#contributing)
 - [📜 License](#license)
-- [🤝 Collaborators](#collaborators)
 
 ## 📦 What to Copy Into Your Project
 
@@ -83,6 +73,7 @@ It contains:
 
 - routing rules,
 - compact task instructions,
+- risk-specific coding example cards,
 - project memory,
 - paper-writing support,
 - plotting support,
@@ -230,12 +221,13 @@ Avoid folders like:
 ```
 
 Keeping unused files inside `.agent` can make agents read too much context.
+
 Save it outside `.agent`.
 
 ## 🤝 Contributing
 
 > [!IMPORTANT]
-> First read the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+> First read the `CONTRIBUTING.md` file if your project provides one.
 
 Contributions are what make the open-source community amazing. To contribute:
 
@@ -248,39 +240,3 @@ Contributions are what make the open-source community amazing. To contribute:
 ## 📜 License
 
 This project is licensed under the **[Apache License 2.0](LICENSE)**.
-
-## 🤝 Collaborators
-
-> [!IMPORTANT]
-> Use https://api.github.com/users/your_github_user_name to get your GitHub user information.
-
-We thank the following people who contributed to this project:
-
-<table>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/MatheusFS-dev" title="Matheus Ferreira">
-        <img src="https://avatars.githubusercontent.com/u/99222557" width="100px;" alt="Foto do Matheus Ferreira no GitHub"/><br>
-        <sub>
-          <b>Matheus Ferreira</b>
-        </sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/MatheusFS-dev" title="Matheus Ferreira">
-        <img src="https://avatars.githubusercontent.com/u/99222557" width="100px;" alt="Foto do Matheus Ferreira no GitHub"/><br>
-        <sub>
-          <b>Matheus Ferreira</b>
-        </sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/MatheusFS-dev" title="Matheus Ferreira">
-        <img src="https://avatars.githubusercontent.com/u/99222557" width="100px;" alt="Foto do Matheus Ferreira no GitHub"/><br>
-        <sub>
-          <b>Matheus Ferreira</b>
-        </sub>
-      </a>
-    </td>
-  </tr>
-</table>

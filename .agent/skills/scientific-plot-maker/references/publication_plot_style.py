@@ -11,7 +11,6 @@ from matplotlib.patches import Patch
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 PALETTE = {
     "background": "#ffffff",
     "grid": "#d7dbe2",

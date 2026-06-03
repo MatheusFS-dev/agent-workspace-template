@@ -4,7 +4,6 @@ from collections import Counter, defaultdict
 from pathlib import Path
 import os
 
-
 OUTPUT_PATH = Path(".agent/context/project-map.md")
 MAX_LIST_ITEMS = 40
 MAX_DEPTH = 4
@@ -37,6 +36,12 @@ IGNORE_DIRECTORIES = {
     "datasets",
     "data",
     "logs",
+}
+AGENT_INTERNAL_PARTS = {
+    "scripts",
+    "references",
+    "assets",
+    "prompts",
 }
 IGNORE_FILE_SUFFIXES = {
     ".pyc",
@@ -139,6 +144,7 @@ class ProjectSummary:
         self.extension_counts: Counter[str] = Counter()
         self.ignored_directory_count = 0
         self.ignored_file_count = 0
+        self.agent_internal_count = 0
 
 
 def find_repository_root(start: Path) -> Path:
@@ -179,6 +185,26 @@ def should_ignore_directory(path: Path) -> bool:
         None.
     """
     return path.name in IGNORE_DIRECTORIES
+
+
+def is_agent_internal_path(path: Path) -> bool:
+    """Return whether a path is internal agent implementation detail.
+
+    Args:
+        path: Repository-relative path.
+
+    Returns:
+        True when the path points to `.agent` internals that should not appear
+        as normal project architecture context.
+
+    Raises:
+        None.
+    """
+    parts = path.parts
+    if not parts or parts[0] != ".agent":
+        return False
+
+    return any(part in AGENT_INTERNAL_PARTS for part in parts[1:])
 
 
 def should_ignore_file(path: Path) -> bool:
@@ -265,8 +291,12 @@ def collect_project_summary(root: Path) -> ProjectSummary:
         kept_directories = []
         for directory_name in sorted(directories):
             directory_path = current_path / directory_name
+            relative_directory = relative_to_root(directory_path, root)
             if should_ignore_directory(directory_path):
                 summary.ignored_directory_count += 1
+                continue
+            if is_agent_internal_path(relative_directory):
+                summary.agent_internal_count += 1
                 continue
             kept_directories.append(directory_name)
         directories[:] = kept_directories
@@ -280,11 +310,14 @@ def collect_project_summary(root: Path) -> ProjectSummary:
 
         for file_name in sorted_files:
             file_path = current_path / file_name
+            relative_file = relative_to_root(file_path, root)
             if should_ignore_file(file_path):
                 summary.ignored_file_count += 1
                 continue
+            if is_agent_internal_path(relative_file):
+                summary.agent_internal_count += 1
+                continue
 
-            relative_file = relative_to_root(file_path, root)
             visible_files.append(relative_file)
             suffix = file_path.suffix.lower() or "[no extension]"
             summary.extension_counts[suffix] += 1
@@ -432,6 +465,7 @@ def render_project_map(root: Path, summary: ProjectSummary) -> str:
         "",
         "This file is a compact architecture index generated from the repository tree.",
         "It is designed for routing and file-placement decisions, not full documentation.",
+        "Agent internals such as scripts, references, assets, and prompt folders are intentionally hidden from normal architecture context.",
         "",
         "## Refresh command",
         "",
@@ -471,6 +505,7 @@ def render_project_map(root: Path, summary: ProjectSummary) -> str:
             "",
             f"- Ignored directories: {summary.ignored_directory_count}",
             f"- Ignored files: {summary.ignored_file_count}",
+            f"- Hidden agent internals: {summary.agent_internal_count}",
             "",
             "## Maintenance rule",
             "",

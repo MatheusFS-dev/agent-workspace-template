@@ -35,6 +35,14 @@ Use this skill for plots, figures, charts, graphs, histograms, scatter plots, bo
 - Keep plotting functions small and explicit.
 - Preserve existing plot semantics when refactoring.
 
+## Reference decision table
+
+- Need to create plot code: use this `SKILL.md` only.
+- Need the style helper in a project: run `python .agent/skills/scientific-plot-maker/scripts/install_plot_style.py`.
+- Need to preview the visual result: run `python .agent/skills/scientific-plot-maker/scripts/preview_plot_style.py`.
+- Need example syntax: search `.agent/skills/scientific-plot-maker/references/plot_examples.py` with `search_reference.py`.
+- Need to modify the style implementation: read `.agent/skills/scientific-plot-maker/references/publication_plot_style.py`.
+
 ## Helper usage
 
 Do not read `references/publication_plot_style.py` unless editing the style itself.

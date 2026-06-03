@@ -15,6 +15,7 @@ Use this mode only for clearly trivial tasks.
 ## Hard limits
 
 Do not use this mode when the task involves:
+
 - debugging,
 - tests,
 - refactoring,

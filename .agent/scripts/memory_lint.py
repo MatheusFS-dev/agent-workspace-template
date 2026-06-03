@@ -4,7 +4,6 @@ from pathlib import Path
 import re
 import sys
 
-
 DEFAULT_MEMORY_PATH = Path(".agent/context/memories.md")
 TARGET_TOKEN_LIMIT = 1200
 WARNING_TOKEN_LIMIT = 1500

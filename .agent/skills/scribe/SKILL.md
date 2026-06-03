@@ -33,9 +33,9 @@ For LaTeX output, return separate fenced blocks for main `.tex` content, `.bib` 
 
 Use `\cite{...}` only. Remove artifacts such as `:contentReference[oaicite:0]{index=0}`.
 
-Use non-breaking spaces before attached citations and cross-references: `word~\cite{Key}`, `Fig.~ef{fig:name}`, `Table~ef{tab:name}`, `Section~ef{sec:name}`, and `Eq.~\eqref{eq:name}`.
+Use non-breaking spaces before attached citations and cross-references: `word~\cite{Key}`, `Fig.~\ref{fig:name}`, `Table~\ref{tab:name}`, `Section~\ref{sec:name}`, and `Eq.~\eqref{eq:name}`.
 
-For LaTeX acronym use, define each acronym with `\DeclareAcronym{...}` and reference it with `c{...}`.
+For LaTeX acronym use, define each acronym with `\DeclareAcronym{...}` and reference it with `\ac{...}`.
 
 ## Reference access
 
@@ -57,6 +57,6 @@ Do not load the full writing guide for small sentence-level edits unless search 
 - Claims are supported or explicitly framed as limitations.
 - Citations and BibTeX entries are not fabricated.
 - LaTeX citations and cross-references use non-breaking spaces.
-- Acronyms use `c{...}` and `\DeclareAcronym` when LaTeX is requested.
+- Acronyms use `\ac{...}` and `\DeclareAcronym` when LaTeX is requested.
 - Tone is formal, concise, and non-defensive.
 - The final text contains no hidden tool artifacts or placeholder citation markers.

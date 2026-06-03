@@ -1,4 +1,4 @@
-version: 2
+version: 3
 
 startup:
   always_read:
@@ -10,7 +10,13 @@ startup:
     ask_when_uncertain: true
   preferred_router:
     command: python .agent/scripts/route_context.py "<user request>"
+    stats_command: python .agent/scripts/route_context.py --stats "<user request>"
     fallback: read this file and apply the same routing manually
+  forbidden_broad_reads:
+    - tree .agent
+    - find .agent
+    - grep -R .agent
+    - cat .agent/**
 
 routing:
   easy_task:
@@ -32,6 +38,29 @@ routing:
     read:
       - .agent/modes/easy-task.md
 
+  troubleshooting:
+    priority: before_coding
+    exclusive_unless_code_edit_requested: true
+    trigger_keywords:
+      - driver
+      - cuda
+      - tensorflow
+      - pytorch
+      - torch
+      - package conflict
+      - dependency error
+      - linux
+      - windows
+      - kernel
+      - nvidia
+      - gpu
+      - venv
+      - pip
+      - conda
+      - import error
+    read:
+      - .agent/workflows/debugging.md
+
   coding:
     trigger_keywords:
       - implement
@@ -40,11 +69,23 @@ routing:
       - script
       - test
       - debug
-      - environment
-      - pipeline
+      - function
+      - class
+      - module
       - repository
+      - pipeline
+      - experiment
+      - dataset
+      - training
+      - inference
+      - fix
+      - bug
     read:
       - .agent/modes/coding.md
+    example_card_search:
+      file: .agent/modes/coding-example-cards.md
+      rule: search compact cards by risk before reading full examples
+      full_examples_file: .agent/modes/coding-full-examples.md
 
   paper_writing:
     trigger_keywords:
@@ -77,19 +118,6 @@ routing:
       - .agent/rules/plotting-style.md
       - .agent/skills/scientific-plot-maker/SKILL.md
 
-  troubleshooting:
-    trigger_keywords:
-      - driver
-      - cuda
-      - tensorflow
-      - pytorch
-      - package conflict
-      - dependency error
-      - linux
-      - windows
-    read:
-      - .agent/workflows/debugging.md
-
   long_task_state:
     trigger_keywords:
       - session state
@@ -119,8 +147,12 @@ conditional_context:
     after_update_check: python .agent/scripts/memory_lint.py
 
 reference_access:
-  preferred_method: python .agent/scripts/search_reference.py <file> <keywords...>
+  mandatory_method: python .agent/scripts/search_reference.py <file> <keywords...>
   rule: search references before reading entire reference files
+  full_read_allowed_when:
+    - search output is insufficient
+    - the reference itself is being edited
+    - the user explicitly requests full-reference analysis
 
 never_startup_read:
   - .agent/context/memories.md
