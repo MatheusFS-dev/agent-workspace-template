@@ -3,11 +3,35 @@ version: 2
 startup:
   always_read:
     - AGENTS.md
+  easy_task_gate:
+    rule: apply before normal routing
+    read_when_applies:
+      - .agent/modes/easy-task.md
+    ask_when_uncertain: true
   preferred_router:
     command: python .agent/scripts/route_context.py "<user request>"
     fallback: read this file and apply the same routing manually
 
 routing:
+  easy_task:
+    priority: before_normal_routes
+    conservative: true
+    ask_before_escalating: true
+    trigger_keywords:
+      - easy
+      - easy mode
+      - trivial
+      - simple edit
+      - one-line
+      - one line
+      - typo
+      - markdown equation
+      - render equation
+      - replace phrase
+      - change this line
+    read:
+      - .agent/modes/easy-task.md
+
   coding:
     trigger_keywords:
       - implement

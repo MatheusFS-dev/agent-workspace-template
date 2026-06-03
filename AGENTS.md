@@ -5,13 +5,37 @@ Repository contract for AI agents. Read this file before planning, editing, or w
 ## Startup
 
 1. Read this file.
-2. Prefer running `python .agent/scripts/route_context.py "<user request>"` and read only the returned files.
-3. If script execution is unavailable, read `.agent/index.yaml` and manually apply the same routing.
-4. Do not recursively inspect `.agent/`.
-5. Do not read prompt libraries, optional skills, references, assets, scripts, PDFs, or `.agent/context/memories.md` during startup.
+2. Before normal routing, apply the Easy Task Gate.
+3. If Easy Task Mode does not apply, prefer running `python .agent/scripts/route_context.py "<user request>"` and read only the returned files.
+4. If script execution is unavailable, read `.agent/index.yaml` and manually apply the same routing.
+5. Do not recursively inspect `.agent/`.
+6. Do not read prompt libraries, optional skills, references, assets, scripts, PDFs, or `.agent/context/memories.md` during startup.
+
+## Easy Task Gate
+
+Use Easy Task Mode only when the request is explicitly small or unambiguously small.
+
+Good easy-task examples:
+- answer a simple question,
+- change one literal line,
+- fix a typo,
+- fix Markdown equation rendering,
+- replace a short phrase,
+- edit only provided text.
+
+When Easy Task Mode applies, read only:
+- `AGENTS.md`,
+- `.agent/modes/easy-task.md`.
+
+Do not load coding, troubleshooting, paper-writing, plotting, project map, memories, skills, references, or long-task state.
+
+If it is not certain that the task is easy, ask the user before loading more context.
+
+If an easy task becomes non-trivial during execution, stop and ask before escalating.
 
 ## Modes and skills
 
+- Easy tasks use `.agent/modes/easy-task.md`.
 - Coding tasks use `.agent/modes/coding.md`.
 - Paper-writing tasks use `.agent/modes/paper-writing.md` and `.agent/skills/scribe/SKILL.md`.
 - Plotting tasks use `.agent/rules/plotting-style.md` and `.agent/skills/scientific-plot-maker/SKILL.md`.

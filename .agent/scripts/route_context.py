@@ -4,7 +4,28 @@ from pathlib import Path
 import re
 import sys
 
-
+EASY_TASK_PATTERN = re.compile(
+    r"\b("
+    r"easy mode|trivial|simple edit|simple question|"
+    r"one[- ]line|one line|change one line|change this line|"
+    r"typo|fix typo|markdown equation|render equation|"
+    r"replace phrase|replace this phrase"
+    r")\b",
+    re.IGNORECASE,
+)
+NON_EASY_PATTERN = re.compile(
+    r"\b("
+    r"debug|debugging|refactor|architecture|file placement|module ownership|"
+    r"pipeline|experiment|dataset|training|inference|performance|"
+    r"cuda|tensorflow|pytorch|torch|driver|dependency|package conflict|"
+    r"environment|venv|pip|conda|test suite|multi[- ]file|repository-wide|"
+    r"reviewer|rebuttal|plot|figure|visuali[sz]ation"
+    r")\b",
+    re.IGNORECASE,
+)
+EASY_ESCALATION_QUESTION = (
+    "This may require normal routing. Should I continue in easy mode, " "or load the normal context?"
+)
 ROUTES = [
     (
         "troubleshooting",
@@ -57,6 +78,7 @@ MEMORY_PATTERN = re.compile(
     re.IGNORECASE,
 )
 DEFAULT_FILES = ["AGENTS.md"]
+EASY_TASK_FILES = ["AGENTS.md", ".agent/modes/easy-task.md"]
 
 
 def read_request(arguments: list[str]) -> str:
@@ -104,6 +126,66 @@ def unique_preserve_order(items: list[str]) -> list[str]:
     return result
 
 
+def wants_easy_task_mode(request: str) -> bool:
+    """Check whether the request asks for or clearly matches Easy Task Mode.
+
+    Args:
+        request: User task text.
+
+    Returns:
+        True when the request contains a conservative easy-task signal.
+
+    Raises:
+        None.
+    """
+    return EASY_TASK_PATTERN.search(request) is not None
+
+
+def has_non_easy_signal(request: str) -> bool:
+    """Check whether the request contains a signal that forbids Easy Task Mode.
+
+    Args:
+        request: User task text.
+
+    Returns:
+        True when the request likely needs normal routing or extra context.
+
+    Raises:
+        None.
+    """
+    return NON_EASY_PATTERN.search(request) is not None
+
+
+def should_use_easy_task_mode(request: str) -> bool:
+    """Decide whether Easy Task Mode is safe for the request.
+
+    Args:
+        request: User task text.
+
+    Returns:
+        True only when an easy-task signal exists and no non-easy signal exists.
+
+    Raises:
+        None.
+    """
+    return wants_easy_task_mode(request) and not has_non_easy_signal(request)
+
+
+def should_ask_before_escalating(request: str) -> bool:
+    """Decide whether the router should ask before loading normal context.
+
+    Args:
+        request: User task text.
+
+    Returns:
+        True when the user requested easy handling but the request is not certainly easy.
+
+    Raises:
+        None.
+    """
+    return wants_easy_task_mode(request) and has_non_easy_signal(request)
+
+
 def route_files(request: str) -> list[str]:
     """Select context files for a request.
 
@@ -116,6 +198,12 @@ def route_files(request: str) -> list[str]:
     Raises:
         None.
     """
+    if should_use_easy_task_mode(request):
+        return list(EASY_TASK_FILES)
+
+    if should_ask_before_escalating(request):
+        return list(DEFAULT_FILES)
+
     files = list(DEFAULT_FILES)
     matched_route = False
 
@@ -153,10 +241,31 @@ def route_commands(request: str) -> list[str]:
     """
     commands = []
 
+    if should_ask_before_escalating(request):
+        return commands
+
     if PROJECT_MAP_COMMAND_PATTERN.search(request):
         commands.append("python .agent/scripts/update_project_map.py")
 
     return unique_preserve_order(commands)
+
+
+def route_questions(request: str) -> list[str]:
+    """Select questions to ask before reading more context.
+
+    Args:
+        request: User task text.
+
+    Returns:
+        Ordered questions the agent should ask before escalating context.
+
+    Raises:
+        None.
+    """
+    if should_ask_before_escalating(request):
+        return [EASY_ESCALATION_QUESTION]
+
+    return []
 
 
 def main() -> int:
@@ -174,6 +283,10 @@ def main() -> int:
     request = read_request(sys.argv[1:])
     files = route_files(request)
     commands = route_commands(request)
+    questions = route_questions(request)
+
+    for question in questions:
+        print(f"ASK {question}")
 
     for command in commands:
         print(f"RUN {command}")
