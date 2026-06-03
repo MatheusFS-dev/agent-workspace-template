@@ -35,7 +35,11 @@ Use this mode for implementation, debugging, refactoring, scripts, tests, data p
     Would a senior engineer consider this overcomplicated?
     If yes, rewrite it more simply.
 
+## Testing the implementation
 
+- Unless user explicitly requests otherwise, follow this rule:
+    - After implementation, add targeted tests to verify the change inside project tests/ folder. 
+    - After verification passed, delete these tests. They should be used only for you to verify your change.
 
 ## Verification
 
