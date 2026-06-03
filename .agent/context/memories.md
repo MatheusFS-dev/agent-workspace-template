@@ -11,7 +11,7 @@ Compact durable project context that should survive across agent sessions.
 - Target 500 to 1,200 tokens.
 - Remove stale, duplicated, superseded, or low-value entries before adding new context.
 - Trust repository files over memories when they disagree.
-- After editing, run `python .agent/scripts/memory_lint.py` when available.
+- After editing, run `python3 .agent/scripts/memory_lint.py` when available.
 
 ## Format
 

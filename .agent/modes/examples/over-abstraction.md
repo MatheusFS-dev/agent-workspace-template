@@ -6,7 +6,7 @@ User request: "Add a function to calculate discount."
 
 Wrong pattern:
 
-```python
+```python3
 class DiscountStrategy:
     def calculate(self, amount):
         raise NotImplementedError
@@ -21,7 +21,7 @@ class PercentageDiscount(DiscountStrategy):
 
 Better pattern:
 
-```python
+```python3
 def calculate_discount(amount: float, percent: float) -> float:
     """Calculate a percentage discount amount."""
     return amount * (percent / 100)

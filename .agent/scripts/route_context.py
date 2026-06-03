@@ -564,11 +564,11 @@ def route_commands(request: str) -> list[str]:
         return commands
 
     if PROJECT_MAP_COMMAND_PATTERN.search(request):
-        commands.append("python .agent/scripts/update_project_map.py")
+        commands.append("python3 .agent/scripts/update_project_map.py")
 
     for keyword in matching_coding_example_keywords(request):
         commands.append(
-            "python .agent/scripts/search_reference.py .agent/modes/coding-example-cards.md "
+            "python3 .agent/scripts/search_reference.py .agent/modes/coding-example-cards.md "
             f"{keyword}"
         )
 

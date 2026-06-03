@@ -38,8 +38,8 @@ Use this skill for plots, figures, charts, graphs, histograms, scatter plots, bo
 ## Reference decision table
 
 - Need to create plot code: use this `SKILL.md` only.
-- Need the style helper in a project: run `python .agent/skills/scientific-plot-maker/scripts/install_plot_style.py`.
-- Need to preview the visual result: run `python .agent/skills/scientific-plot-maker/scripts/preview_plot_style.py`.
+- Need the style helper in a project: run `python3 .agent/skills/scientific-plot-maker/scripts/install_plot_style.py`.
+- Need to preview the visual result: run `python3 .agent/skills/scientific-plot-maker/scripts/preview_plot_style.py`.
 - Need example syntax: search `.agent/skills/scientific-plot-maker/references/plot_examples.py` with `search_reference.py`.
 - Need to modify the style implementation: read `.agent/skills/scientific-plot-maker/references/publication_plot_style.py`.
 
@@ -50,19 +50,19 @@ Do not read `references/publication_plot_style.py` unless editing the style itse
 When adding plot code, prefer copying the helper into the project:
 
 ```bash
-python .agent/skills/scientific-plot-maker/scripts/install_plot_style.py
+python3 .agent/skills/scientific-plot-maker/scripts/install_plot_style.py
 ```
 
 When uncertain about the visual result, generate a local preview:
 
 ```bash
-python .agent/skills/scientific-plot-maker/scripts/preview_plot_style.py
+python3 .agent/skills/scientific-plot-maker/scripts/preview_plot_style.py
 ```
 
 Search examples before reading the whole examples file:
 
 ```bash
-python .agent/scripts/search_reference.py .agent/skills/scientific-plot-maker/references/plot_examples.py histogram scatter errorbar
+python3 .agent/scripts/search_reference.py .agent/skills/scientific-plot-maker/references/plot_examples.py histogram scatter errorbar
 ```
 
 ## Completion checklist
@@ -72,4 +72,4 @@ python .agent/scripts/search_reference.py .agent/skills/scientific-plot-maker/re
 - Labels, units, legends, and titles are technically correct.
 - Grid and spines are restrained.
 - Output is deterministic when file output is requested.
-- Verification includes `python .agent/scripts/agent_check.py` after Python code edits.
+- Verification includes `python3 .agent/scripts/agent_check.py` after Python code edits.

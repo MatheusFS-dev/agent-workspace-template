@@ -158,7 +158,7 @@ def main() -> int:
         None.
     """
     if len(sys.argv) < 3:
-        print("Usage: python .agent/scripts/search_reference.py <file> <keywords...>")
+        print("Usage: python3 .agent/scripts/search_reference.py <file> <keywords...>")
         return 2
 
     path = Path(sys.argv[1])

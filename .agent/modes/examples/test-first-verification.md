@@ -6,14 +6,14 @@ User request: "Sorting breaks when there are duplicate scores."
 
 Wrong pattern:
 
-```python
+```python3
 def sort_scores(scores):
     return sorted(scores, key=lambda item: -item['score'])
 ```
 
 Better pattern:
 
-```python
+```python3
 def test_sort_with_duplicate_scores():
     """Verify deterministic ordering for duplicate scores."""
     scores = [

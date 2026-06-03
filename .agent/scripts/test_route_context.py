@@ -155,7 +155,7 @@ class RouteContextRegressionTests(unittest.TestCase):
         output = run_route_context("add feature, make it faster, robust, fix duplicate failure")
         search_lines = [
             line for line in output.splitlines()
-            if "RUN python .agent/scripts/search_reference.py" in line
+            if "RUN python3 .agent/scripts/search_reference.py" in line
         ]
         self.assertLessEqual(len(search_lines), 2)
 

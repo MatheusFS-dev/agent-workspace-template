@@ -47,7 +47,7 @@ Unless the user explicitly requests otherwise, follow this rule:
 After Python code edits, run:
 
 ```bash
-python .agent/scripts/agent_check.py
+python3 .agent/scripts/agent_check.py
 ```
 
 Use the narrowest reliable project check after the agent check, such as syntax/import check, targeted unit test, smoke test, integration test, or full suite.
@@ -72,9 +72,9 @@ For drivers, CUDA, package conflicts, Python environments, OS issues, dependency
 Do not load all examples by default. Use targeted search first:
 
 ```bash
-python .agent/scripts/search_reference.py .agent/modes/coding-example-cards.md hidden assumptions
-python .agent/scripts/search_reference.py .agent/modes/coding-example-cards.md drive-by refactoring
-python .agent/scripts/search_reference.py .agent/modes/coding-example-cards.md test-first verification
+python3 .agent/scripts/search_reference.py .agent/modes/coding-example-cards.md hidden assumptions
+python3 .agent/scripts/search_reference.py .agent/modes/coding-example-cards.md drive-by refactoring
+python3 .agent/scripts/search_reference.py .agent/modes/coding-example-cards.md test-first verification
 ```
 
 Use the matching `.agent/modes/examples/<risk>.md` file only when:

@@ -42,8 +42,8 @@ For LaTeX acronym use, define each acronym with `\DeclareAcronym{...}` and refer
 Search references before reading them fully:
 
 ```bash
-python .agent/scripts/search_reference.py .agent/skills/scribe/references/scribe-style-guide.md citation acronym latex
-python .agent/scripts/search_reference.py .agent/skills/scribe/references/writing-guide-pages-27-52.md abstract introduction discussion
+python3 .agent/scripts/search_reference.py .agent/skills/scribe/references/scribe-style-guide.md citation acronym latex
+python3 .agent/scripts/search_reference.py .agent/skills/scribe/references/writing-guide-pages-27-52.md abstract introduction discussion
 ```
 
 Use `scribe-style-guide.md` for examples of output format, citation style, acronym handling, or legacy scribe behavior.

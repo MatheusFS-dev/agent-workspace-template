@@ -9,8 +9,8 @@ startup:
       - .agent/modes/easy-task.md
     ask_when_uncertain: true
   preferred_router:
-    command: python .agent/scripts/route_context.py "<user request>"
-    stats_command: python .agent/scripts/route_context.py --stats "<user request>"
+    command: python3 .agent/scripts/route_context.py "<user request>"
+    stats_command: python3 .agent/scripts/route_context.py --stats "<user request>"
     fallback: read this file and apply the same routing manually
   forbidden_broad_reads:
     - tree .agent
@@ -155,7 +155,7 @@ routing:
 
 commands:
   project_architecture_refresh:
-    command: python .agent/scripts/update_project_map.py
+    command: python3 .agent/scripts/update_project_map.py
     purpose: scan the repository root and refresh .agent/context/project-map.md
     run_when: the user asks to populate, refresh, repair, regenerate, or audit project architecture context
     after_run_read:
@@ -169,10 +169,10 @@ conditional_context:
   memories:
     file: .agent/context/memories.md
     read_when: durable prior context may affect the task, the user asks to remember or forget something, or durable context must be updated
-    after_update_check: python .agent/scripts/memory_lint.py
+    after_update_check: python3 .agent/scripts/memory_lint.py
 
 reference_access:
-  mandatory_method: python .agent/scripts/search_reference.py <file> <keywords...>
+  mandatory_method: python3 .agent/scripts/search_reference.py <file> <keywords...>
   rule: search references before reading entire reference files
   full_read_allowed_when:
     - search output is insufficient

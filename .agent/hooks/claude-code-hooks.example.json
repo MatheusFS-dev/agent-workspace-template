@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python .agent/scripts/agent_check.py"
+            "command": "python3 .agent/scripts/agent_check.py"
           }
         ]
       }

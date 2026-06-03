@@ -9,7 +9,7 @@ Agent internals such as scripts, references, assets, and prompt folders are inte
 Run from the repository root:
 
 ```bash
-python .agent/scripts/update_project_map.py
+python3 .agent/scripts/update_project_map.py
 ```
 
 ## Scanned root
@@ -91,5 +91,5 @@ None detected.
 
 ## Maintenance rule
 
-Update this file with `python .agent/scripts/update_project_map.py` after significant directory, package, or entrypoint changes.
+Update this file with `python3 .agent/scripts/update_project_map.py` after significant directory, package, or entrypoint changes.
 If this file conflicts with actual source files, trust the source files.

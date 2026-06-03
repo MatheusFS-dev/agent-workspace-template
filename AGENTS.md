@@ -6,8 +6,8 @@ Repository contract for AI agents. Read this file before planning, editing, or w
 
 1. Read this file.
 2. Before normal routing, apply the Easy Task Gate.
-3. If Easy Task Mode does not apply, prefer running `python .agent/scripts/route_context.py "<user request>"` and read only the returned files.
-4. For route cost visibility, run `python .agent/scripts/route_context.py --stats "<user request>"`.
+3. If Easy Task Mode does not apply, prefer running `python3 .agent/scripts/route_context.py "<user request>"` and read only the returned files.
+4. For route cost visibility, run `python3 .agent/scripts/route_context.py --stats "<user request>"`.
 5. If script execution is unavailable, read `.agent/index.yaml` and manually apply the same routing.
 6. Do not recursively inspect `.agent/`.
 7. Do not read prompt libraries, optional skills, references, assets, scripts, PDFs, or `.agent/context/memories.md` during startup.
@@ -62,13 +62,13 @@ If an easy task becomes non-trivial during execution, stop and ask before escala
 
 ## Project architecture refresh
 
-When the user asks to populate, refresh, or repair the project architecture context, run `python .agent/scripts/update_project_map.py` from the repository root. Then read `.agent/context/project-map.md` for architecture and file-placement decisions. Do not manually traverse broad repository trees unless the generated map is insufficient.
+When the user asks to populate, refresh, or repair the project architecture context, run `python3 .agent/scripts/update_project_map.py` from the repository root. Then read `.agent/context/project-map.md` for architecture and file-placement decisions. Do not manually traverse broad repository trees unless the generated map is insufficient.
 
 ## Deterministic checks
 
-After Python code edits, run `python .agent/scripts/agent_check.py` when the environment supports it. This script enforces hard coding constraints such as forbidden imports, future annotations, aligned assignments, and missing docstrings.
+After Python code edits, run `python3 .agent/scripts/agent_check.py` when the environment supports it. This script enforces hard coding constraints such as forbidden imports, future annotations, aligned assignments, and missing docstrings.
 
-After editing `.agent/context/memories.md`, run `python .agent/scripts/memory_lint.py` when the environment supports it.
+After editing `.agent/context/memories.md`, run `python3 .agent/scripts/memory_lint.py` when the environment supports it.
 
 ## Context discipline
 
@@ -76,7 +76,7 @@ Read `.agent/context/project-map.md` only when repository structure or file plac
 
 Read `.agent/context/memories.md` only when durable prior context may affect the task, when the user asks to remember or forget something, or when updating durable project context. Keep it compact by pruning stale, duplicated, superseded, or low-value entries.
 
-Reference files must be searched with `python .agent/scripts/search_reference.py <file> <keywords...>` before any full read. A full reference read requires a reason: search output was insufficient, the reference itself is being edited, or the user explicitly requested full-reference analysis.
+Reference files must be searched with `python3 .agent/scripts/search_reference.py <file> <keywords...>` before any full read. A full reference read requires a reason: search output was insufficient, the reference itself is being edited, or the user explicitly requested full-reference analysis.
 
 Session state is not a default route. Use `.agent/workflows/long-task-state.md` only on explicit user request, then create the state file at the narrowest relevant task location.
 

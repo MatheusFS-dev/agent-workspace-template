@@ -6,7 +6,7 @@ User request: "Add a feature to export user data."
 
 Wrong pattern:
 
-```python
+```python3
 def export_users(format='json'):
     """Export all users to a file."""
     users = User.query.all()

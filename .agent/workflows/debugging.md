@@ -28,10 +28,10 @@ Use only the commands that match the problem.
 ```bash
 uname -a
 lsb_release -a
-python --version
-python -c "import sys; print(sys.executable); print(sys.path)"
-python -m pip --version
-python -m pip list
+python3 --version
+python3 -c "import sys; print(sys.executable); print(sys.path)"
+python3 -m pip --version
+python3 -m pip list
 nvidia-smi
 nvcc --version
 ldconfig -p | grep cuda || true

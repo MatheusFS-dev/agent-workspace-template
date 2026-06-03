@@ -6,7 +6,7 @@ User request: "Make the search faster."
 
 Wrong pattern:
 
-```python
+```python3
 # Adds caching, async execution, and indexes without knowing whether latency,
 # throughput, or perceived UI speed is the actual problem.
 ```
