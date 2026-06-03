@@ -17,6 +17,8 @@ It helps an AI coding agent understand how to work in your project without loadi
 
 ## Table of Contents
 
+- [⚠️ Installer Warning](#️-installer-warning)
+- [🛠️ Install with the Script](#️-install-with-the-script)
 - [📦 What to Copy Into Your Project](#what-to-copy-into-your-project)
 - [🧭 What Each File Does](#what-each-file-does)
 - [🚀 First Use in a Project](#first-use-in-a-project)
@@ -28,6 +30,49 @@ It helps an AI coding agent understand how to work in your project without loadi
 - [🚫 What Not to Copy](#what-not-to-copy)
 - [🤝 Contributing](#contributing)
 - [📜 License](#license)
+
+## ⚠️ Installer Warning
+
+The installer script overwrites any existing copies of these paths in the target
+project root without asking for confirmation:
+
+```text
+.agent/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+```
+
+Use it only when replacing those files is acceptable.
+
+## 🛠️ Install with the Script
+
+Run the installer from this template repository:
+
+```bash
+python3 scripts/install_template.py
+```
+
+The script will:
+
+1. Prompt for the target project root directory.
+2. Copy `.agent`, `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md` into that
+   directory.
+3. Overwrite any existing copies of those paths.
+4. Ask whether to add those paths to the target project's `.gitignore` so the
+   configuration stays local.
+
+The `.gitignore` prompt defaults to `no`. If you answer `yes`, the installer
+creates `.gitignore` when it does not exist and appends only the missing
+template entries:
+
+```text
+# Agent stuff
+.agent/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+```
 
 ## 📦 What to Copy Into Your Project
 
