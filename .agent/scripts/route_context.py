@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Route an agent task to the smallest required context files."""
 
 from pathlib import Path

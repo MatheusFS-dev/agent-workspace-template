@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Extract relevant sections from reference files without loading them fully."""
 
 from pathlib import Path

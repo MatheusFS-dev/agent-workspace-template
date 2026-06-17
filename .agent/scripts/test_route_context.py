@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Regression tests for route context selection."""
 
 from pathlib import Path

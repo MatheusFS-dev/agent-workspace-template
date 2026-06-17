@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Install the local agent template into another project root."""
 
 from pathlib import Path

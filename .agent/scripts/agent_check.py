@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Deterministic checks for agent-generated Python changes."""
 
 import ast

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Generate a compact project architecture context file from the repository tree."""
 
 from collections import Counter, defaultdict

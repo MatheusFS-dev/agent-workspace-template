@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Lint the compact durable agent memory file."""
 
 from pathlib import Path
