@@ -2,6 +2,8 @@
 
 Use this mode for implementation, debugging, refactoring, scripts, tests, data processing, ML pipelines, and repository maintenance.
 
+If superpowers skills are available, use them. If they are not, ignore.
+
 This file is the compact always-loaded coding contract. Detailed examples are retrieval-gated by risk category to reduce repeated context cost while preserving behavior-shaping guidance.
 
 ## Before editing
