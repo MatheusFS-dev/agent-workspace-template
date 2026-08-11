@@ -13,6 +13,12 @@ Repository contract for AI agents. Read this file before planning, editing, or w
 7. Do not read prompt libraries, optional skills, references, assets, scripts, PDFs, or `.agent/context/memories.md` during startup.
 8. Never run broad startup commands such as `tree .agent`, `find .agent`, `grep -R .agent`, `cat .agent/**`, or equivalent broad reads. Use the router first.
 
+## Plugins and external tools
+
+DO NOT USE plugins unless the user explicitly requests it.
+For example, do not use Superpowers automatically, even if the plugin/skill asks to be activated automatically.
+If the user calls it or as for use, then you are allowed to use it, but you must still follow the Easy Task Gate and routing rules above.
+
 ## Easy Task Gate
 
 Use Easy Task Mode only when the request is explicitly small or unambiguously small.
