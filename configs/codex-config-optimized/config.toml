@@ -1,3 +1,6 @@
+# Full filesystem and network access for local command execution.
+sandbox_mode = "danger-full-access"
+
 # Model configuration
 model = "gpt-5.6-sol"
 model_reasoning_effort = "medium"
@@ -12,7 +15,7 @@ model_reasoning_summary = "none"
 model_verbosity = "low"
 
 # Ask before commands that need permission outside the active sandbox policy.
-approval_policy = "on-request"
+approval_policy = "never"
 approvals_reviewer = "user"
 
 # Permit writes inside the workspace while keeping broader filesystem access
@@ -62,10 +65,16 @@ Python rules: do not use argparse unless explicitly requested. Do not use
 from __future__ import annotations. Do not align assignments with extra spaces.
 Add complete Google-style docstrings to new public functions and methods.
 
-After code edits, run the narrowest reliable verification available, such as syntax check, import check, targeted test, smoke test, or relevant unit test. 
+After code edits, run the narrowest reliable verification available, such as syntax check, 
+import check, targeted test, smoke test, or relevant unit test. 
+
+Never commit code, push code, or create branches and tags unless the user explicitly requests it.
 """
 
 [features]
+# Hard-disable the Guardian automatic approval-review subsystem.
+guardian_approval = false
+
 # Disable the Fast-tier TUI control in the base profile. The dedicated speed
 # profile re-enables it and selects service_tier = "fast".
 fast_mode = false
