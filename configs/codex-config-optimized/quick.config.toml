@@ -1,0 +1,32 @@
+# Quick and economical profile
+# Usage:
+#   codex --profile quick
+#
+# Appropriate for isolated fixes, configuration edits, formatting, routine
+# tests, documentation changes, and already-understood implementation work.
+
+model = "gpt-5.6-terra"
+model_reasoning_effort = "low"
+plan_mode_reasoning_effort = "low"
+model_reasoning_summary = "none"
+model_verbosity = "low"
+
+# Avoid search calls and imported search context for local mechanical tasks.
+web_search = "disabled"
+service_tier = "default"
+
+# Smaller retained outputs are sufficient for narrow tasks.
+tool_output_token_limit = 4000
+
+[features]
+fast_mode = false
+multi_agent = false
+memories = false
+
+[agents]
+enabled = false
+
+# Explicitly keep Superpowers disabled. It is unnecessary for small tasks and
+# can add mandatory skill-loading and orchestration work.
+[plugins."superpowers@openai-curated"]
+enabled = false

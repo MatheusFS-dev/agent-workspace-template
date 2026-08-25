@@ -1,0 +1,145 @@
+# Model configuration
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
+plan_mode_reasoning_effort = "medium"
+
+# Do not emit a separate reasoning summary. This does not disable reasoning,
+# but it avoids extra visible summary output.
+model_reasoning_summary = "none"
+
+# Keep final reports concise. This reduces generated output and the amount of
+# assistant text retained in later turns.
+model_verbosity = "low"
+
+# Ask before commands that need permission outside the active sandbox policy.
+approval_policy = "on-request"
+approvals_reviewer = "user"
+
+# Permit writes inside the workspace while keeping broader filesystem access
+# sandboxed.
+sandbox_mode = "workspace-write"
+
+# Cached search is available for documentation and background lookups without
+# making every default session a live-research session.
+web_search = "cached"
+
+# Standard service tier. Fast mode is intentionally reserved for speed.config.toml
+# because it prioritizes latency rather than quota efficiency.
+service_tier = "default"
+
+personality = "pragmatic"
+
+# File storage is retained because the existing account-switching workflow uses
+# ~/.codex/auth.json.
+cli_auth_credentials_store = "file"
+
+# Bound each stored tool result. This does not stop a command from running.
+# It limits how much of its result remains in model history. 6000 is large
+# enough for useful compiler and test diagnostics without retaining huge logs.
+tool_output_token_limit = 6000
+
+developer_instructions = """
+Follow applicable project instructions, including AGENTS.md.
+
+Be precise, technical, concise, and assumption-aware. Separate confirmed facts,
+assumptions, and uncertainty. Do not invent project details, results, metrics,
+datasets, citations, or experiments.
+
+Before editing, identify the requested behavior and the smallest relevant file
+set. Inspect only target files and directly related dependencies. If the request
+is materially ambiguous, ask targeted questions instead of guessing.
+
+Make surgical changes only. Do not refactor unrelated code. Do not add
+speculative features, broad configurability, hidden fallback behavior, or silent
+recovery. Match the repository style. Comment intent, assumptions, rationale,
+and edge cases rather than obvious mechanics.
+
+For debugging or environment failures, diagnose before editing. Start with safe,
+read-only diagnostics. Analyze evidence, root cause, alternatives, and
+uncertainty before proposing destructive or risky actions.
+
+Python rules: do not use argparse unless explicitly requested. Do not use
+from __future__ import annotations. Do not align assignments with extra spaces.
+Add complete Google-style docstrings to new public functions and methods.
+
+After code edits, run the narrowest reliable verification available, such as syntax check, import check, targeted test, smoke test, or relevant unit test. 
+"""
+
+[features]
+# Disable the Fast-tier TUI control in the base profile. The dedicated speed
+# profile re-enables it and selects service_tier = "fast".
+fast_mode = false
+
+# Reuse the shell environment snapshot instead of rediscovering it repeatedly.
+shell_snapshot = true
+
+# Keep the current unified PTY-backed execution path.
+unified_exec = true
+
+# Keep subagents available for genuinely independent work. Their cost is bounded
+# in [agents] below.
+multi_agent = true
+
+# Keep durable cross-session context, but constrain background generation in
+# [memories] below.
+memories = true
+
+[agents]
+enabled = true
+
+# This count excludes the primary agent. Two workers provide useful parallelism
+# without allowing large agent fan-out.
+max_concurrent_threads_per_session = 2
+
+# Supporting tasks usually do not require a second Sol instance.
+default_subagent_model = "gpt-5.6-terra"
+default_subagent_reasoning_effort = "medium"
+
+[memories]
+generate_memories = true
+use_memories = true
+
+# Research sessions using web search, MCP, or tool search should not be converted
+# automatically into durable personal memory.
+disable_on_external_context = true
+
+# Memory generation starts only while at least 70% remains in the applicable
+# rate-limit windows. The Codex default is substantially less conservative.
+min_rate_limit_remaining_percent = 70
+
+# Process at most two eligible prior threads per startup pass.
+max_rollouts_per_startup = 2
+
+# Do not process sessions that have been active within the last 12 hours.
+min_rollout_idle_hours = 12
+
+# Extraction is repetitive summarization, so Luna is sufficient. Terra performs
+# the more important cross-thread consolidation step.
+extract_model = "gpt-5.6-luna"
+consolidation_model = "gpt-5.6-terra"
+
+# Plugins
+# Superpowers is disabled in the base layer because its mandatory
+# skill routing and parallel-agent workflow overlap with agent-workspace-template.
+# The parallel profile enables it explicitly.
+[plugins."superpowers@openai-curated"]
+enabled = false
+
+[plugins."github@openai-curated"]
+enabled = true
+
+[tui]
+pet = "codex"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+
+[notice]
+# Keep rate-limit model suggestions visible while diagnosing high usage.
+hide_rate_limit_model_nudge = false
+
+# Trusted projects
+[projects."/"]
+trust_level = "trusted"
+
+

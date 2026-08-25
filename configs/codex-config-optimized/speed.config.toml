@@ -1,0 +1,29 @@
+# Low-latency profile
+# Usage:
+#   codex --profile speed
+#
+# This profile optimizes response time, not quota usage. Fast service can consume
+# allowance more aggressively. Use it only when latency matters.
+
+model = "gpt-5.6-terra"
+model_reasoning_effort = "medium"
+plan_mode_reasoning_effort = "medium"
+model_reasoning_summary = "none"
+model_verbosity = "low"
+
+web_search = "disabled"
+
+# Select the Fast service tier.
+service_tier = "fast"
+tool_output_token_limit = 4000
+
+[features]
+fast_mode = true
+multi_agent = false
+memories = false
+
+[agents]
+enabled = false
+
+[plugins."superpowers@openai-curated"]
+enabled = false
