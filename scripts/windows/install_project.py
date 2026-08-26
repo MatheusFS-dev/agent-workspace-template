@@ -279,38 +279,43 @@ def install_items(
     return True
 
 
-def prompt_gitignore_update(
+def prompt_gitignore_updates(
     instruction_names: list[str],
     input_function: InputFunction,
-) -> bool:
-    """Prompt whether project instructions and Superpowers outputs are ignored.
+) -> tuple[bool, bool]:
+    """Prompt separately for project-instruction and Superpowers ignore rules.
 
     Args:
         instruction_names: Installed project instruction filenames included in
-            the prompt alongside the fixed Superpowers output directories.
-        input_function: Prompt callable for the yes/no decision.
+            the first prompt.
+        input_function: Prompt callable for both yes/no decisions.
 
     Returns:
-        bool: True when the caller should update `.gitignore` idempotently.
+        tuple[bool, bool]: Whether to ignore the installed instruction files,
+            followed by whether to ignore the Superpowers output directories.
 
     Raises:
-        ValueError: If the yes/no response is invalid.
+        ValueError: If either yes/no response is invalid.
     """
-    names = ", ".join(instruction_names)
-    return prompt_yes_no(
-        f"Add {names} and Superpowers docs to .gitignore? [y/N]: ",
+    names = " and ".join(instruction_names)
+    ignore_instructions = prompt_yes_no(
+        f"Add {names} to .gitignore? [y/N]: ",
         input_function,
     )
+    ignore_superpowers = prompt_yes_no(
+        "Add Superpowers docs to .gitignore? [y/N]: ",
+        input_function,
+    )
+    return ignore_instructions, ignore_superpowers
 
 
-def update_gitignore(target_root: Path, instruction_names: list[str]) -> None:
-    """Idempotently append project instructions and Superpowers output paths.
+def update_gitignore(target_root: Path, ignored_paths: list[str]) -> None:
+    """Idempotently append selected project paths to `.gitignore`.
 
     Args:
         target_root: Existing project directory containing or receiving
             `.gitignore`.
-        instruction_names: Installed instruction filenames to ignore in
-            addition to the fixed Superpowers output directories.
+        ignored_paths: Project-relative file or directory paths to ignore.
 
     Returns:
         None: The `.gitignore` is created or updated only when needed.
@@ -330,8 +335,7 @@ def update_gitignore(target_root: Path, instruction_names: list[str]) -> None:
         existing_text = gitignore_path.read_text(encoding="utf-8")
         existing_lines = existing_text.splitlines()
 
-    managed_lines = [*instruction_names, *SUPERPOWERS_GITIGNORE_LINES]
-    missing_names = [name for name in managed_lines if name not in existing_lines]
+    missing_names = [name for name in ignored_paths if name not in existing_lines]
     needs_header = GITIGNORE_HEADER not in existing_lines
     if not missing_names and not needs_header:
         return
@@ -373,7 +377,7 @@ def install_project(
     Examples:
         Install Codex instructions into an explicitly selected project:
 
-        >>> answers = iter(["/tmp/project", "codex", "no"])
+        >>> answers = iter(["/tmp/project", "codex", "no", "no"])
         >>> install_project(  # doctest: +SKIP
         ...     Path("/template"), lambda _: next(answers)
         ... )
@@ -396,12 +400,20 @@ def install_project(
         instruction_names.append("CLAUDE.md")
         items.append((root / "project" / "CLAUDE.md", target_root / "CLAUDE.md"))
 
-    update_ignore = prompt_gitignore_update(instruction_names, input_function)
+    ignore_instructions, ignore_superpowers = prompt_gitignore_updates(
+        instruction_names,
+        input_function,
+    )
     installed = install_items(items, input_function, output_function)
     if not installed:
         return False
-    if update_ignore:
-        update_gitignore(target_root, instruction_names)
+    ignored_paths = []
+    if ignore_instructions:
+        ignored_paths.extend(instruction_names)
+    if ignore_superpowers:
+        ignored_paths.extend(SUPERPOWERS_GITIGNORE_LINES)
+    if ignored_paths:
+        update_gitignore(target_root, ignored_paths)
     output_function(f"Installed project instructions into {target_root}")
     return True
 

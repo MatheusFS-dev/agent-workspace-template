@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install Claude Code global assets on Linux from this portable template."""
+"""Install Antigravity CLI global assets on Linux from this portable template."""
 
 from datetime import datetime
 import json
@@ -21,12 +21,12 @@ def get_template_root() -> Path:
         None.
 
     Returns:
-        Path: Absolute repository root containing the Claude template sources.
+        Path: Absolute root containing the Antigravity template sources.
 
     Raises:
         None.
     """
-    return Path(__file__).resolve().parents[2]
+    return Path(__file__).resolve().parents[3]
 
 
 def validate_platform() -> None:
@@ -46,7 +46,7 @@ def validate_platform() -> None:
 
 
 def validate_sources(template_root: Path) -> list[Path]:
-    """Validate the sources required by the Claude workflow.
+    """Validate the sources required by the Antigravity workflow.
 
     Args:
         template_root: Absolute template repository root to validate.
@@ -56,18 +56,18 @@ def validate_sources(template_root: Path) -> list[Path]:
         `SKILL.md` files.
 
     Raises:
-        RuntimeError: If a required Claude source is missing, settings JSON is
+        RuntimeError: If an Antigravity source is missing, settings JSON is
             invalid, or a direct skill package lacks `SKILL.md`.
         OSError: If a source cannot be read or enumerated.
     """
     instructions_path = template_root / "instructions" / "global.md"
-    settings_path = template_root / "configs" / "claude" / "settings.json"
+    settings_path = template_root / "configs" / "antigravity" / "settings.json"
     skills_root = template_root / "skills"
     required_paths = (instructions_path, settings_path, skills_root)
     missing_paths = [path for path in required_paths if not path.exists()]
     if missing_paths:
         missing_text = ", ".join(str(path) for path in missing_paths)
-        raise RuntimeError(f"Claude template source is missing: {missing_text}")
+        raise RuntimeError(f"Antigravity template source is missing: {missing_text}")
 
     try:
         json.loads(settings_path.read_text(encoding="utf-8"))
@@ -218,7 +218,7 @@ def install_items(
         Install one source file into an empty destination:
 
         >>> install_items(  # doctest: +SKIP
-        ...     [(Path("/template/CLAUDE.md"), Path("/tmp/CLAUDE.md"))], input, print
+        ...     [(Path("/template/GEMINI.md"), Path("/tmp/GEMINI.md"))], input, print
         ... )
         True
     """
@@ -241,13 +241,13 @@ def install_items(
     return True
 
 
-def install_global_claude(
+def install_global_antigravity(
     template_root: Path | None = None,
     home_root: Path | None = None,
     input_function: InputFunction = input,
     output_function: OutputFunction = print,
 ) -> bool:
-    """Interactively install Claude global instructions, settings, and skills.
+    """Interactively install Antigravity global rules, settings, and skills.
 
     Args:
         template_root: Template root to use; None derives it from this script.
@@ -259,15 +259,15 @@ def install_global_claude(
         bool: True after installation, or false if replacement is declined.
 
     Raises:
-        RuntimeError: If the current platform is not Linux or required Claude
-            sources are missing or invalid.
+        RuntimeError: If the current platform is not Linux or required
+            Antigravity sources are missing or invalid.
         OSError: If files cannot be read, backed up, copied, or written.
         ValueError: If a confirmation is invalid.
 
     Examples:
         Install from an explicit template into an explicit home directory:
 
-        >>> install_global_claude(  # doctest: +SKIP
+        >>> install_global_antigravity(  # doctest: +SKIP
         ...     Path("/template"), Path("/tmp/home")
         ... )
         True
@@ -276,19 +276,24 @@ def install_global_claude(
     root = template_root or get_template_root()
     home = home_root or Path.home()
     skill_packages = validate_sources(root)
-    claude_root = home / ".claude"
+    gemini_root = home / ".gemini"
+    antigravity_root = gemini_root / "antigravity-cli"
     items = [
-        (root / "instructions" / "global.md", claude_root / "CLAUDE.md"),
-        (root / "configs" / "claude" / "settings.json", claude_root / "settings.json"),
+        (root / "instructions" / "global.md", gemini_root / "GEMINI.md"),
+        (
+            root / "configs" / "antigravity" / "settings.json",
+            antigravity_root / "settings.json",
+        ),
     ]
     items.extend(
-        (package, claude_root / "skills" / package.name) for package in skill_packages
+        (package, antigravity_root / "skills" / package.name)
+        for package in skill_packages
     )
     installed = install_items(items, input_function, output_function)
     if installed:
-        output_function(f"Installed Claude global template into {claude_root}")
+        output_function(f"Installed Antigravity CLI global template into {gemini_root}")
     return installed
 
 
 if __name__ == "__main__":
-    install_global_claude()
+    install_global_antigravity()

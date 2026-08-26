@@ -29,10 +29,10 @@ jobs:
       - name: Compile installer scripts
         run: >
           python -m py_compile
-          scripts/linux/install_codex.py
-          scripts/linux/install_claude.py
-          scripts/linux/install_antigravity.py
-          scripts/linux/install_project.py
+          scripts/linux/python3/install_codex.py
+          scripts/linux/python3/install_claude.py
+          scripts/linux/python3/install_antigravity.py
+          scripts/linux/python3/install_project.py
           scripts/windows/install_codex.py
           scripts/windows/install_claude.py
           scripts/windows/install_antigravity.py
@@ -40,11 +40,26 @@ jobs:
       - name: Run installer doctests
         run: >
           python -m doctest
-          scripts/linux/install_codex.py
-          scripts/linux/install_claude.py
-          scripts/linux/install_antigravity.py
-          scripts/linux/install_project.py
+          scripts/linux/python3/install_codex.py
+          scripts/linux/python3/install_claude.py
+          scripts/linux/python3/install_antigravity.py
+          scripts/linux/python3/install_project.py
           scripts/windows/install_codex.py
           scripts/windows/install_claude.py
           scripts/windows/install_antigravity.py
           scripts/windows/install_project.py
+
+  python2-syntax:
+    name: Linux Python 2.7 syntax
+    runs-on: ubuntu-latest
+    container: python:2.7.18-slim-buster
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Compile Python 2 installer scripts
+        run: >
+          python -m py_compile
+          scripts/linux/python2/install_codex.py
+          scripts/linux/python2/install_claude.py
+          scripts/linux/python2/install_antigravity.py
+          scripts/linux/python2/install_project.py

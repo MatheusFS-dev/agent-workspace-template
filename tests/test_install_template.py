@@ -17,22 +17,26 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 if sys.platform.startswith("linux"):
     PLATFORM_NAME = "linux"
     OTHER_PLATFORM_NAME = "windows"
+    PLATFORM_SCRIPT_ROOT = REPOSITORY_ROOT / "scripts" / "linux" / "python3"
+    OTHER_PLATFORM_SCRIPT_ROOT = REPOSITORY_ROOT / "scripts" / "windows"
     HOME_ENVIRONMENT_VARIABLE = "HOME"
     OTHER_PLATFORM_ERROR = "Windows installer requires Windows."
 elif sys.platform == "win32":
     PLATFORM_NAME = "windows"
     OTHER_PLATFORM_NAME = "linux"
+    PLATFORM_SCRIPT_ROOT = REPOSITORY_ROOT / "scripts" / "windows"
+    OTHER_PLATFORM_SCRIPT_ROOT = REPOSITORY_ROOT / "scripts" / "linux" / "python3"
     HOME_ENVIRONMENT_VARIABLE = "USERPROFILE"
     OTHER_PLATFORM_ERROR = "Linux installer requires Linux."
 else:
     raise RuntimeError("Installer tests require Linux or Windows.")
 
 INSTALLER_PATHS = {
-    name: REPOSITORY_ROOT / "scripts" / PLATFORM_NAME / f"install_{name}.py"
+    name: PLATFORM_SCRIPT_ROOT / f"install_{name}.py"
     for name in ("codex", "claude", "antigravity", "project")
 }
 OTHER_INSTALLER_PATHS = {
-    name: REPOSITORY_ROOT / "scripts" / OTHER_PLATFORM_NAME / f"install_{name}.py"
+    name: OTHER_PLATFORM_SCRIPT_ROOT / f"install_{name}.py"
     for name in ("codex", "claude", "antigravity", "project")
 }
 
@@ -316,7 +320,7 @@ class InstallTemplateTest(unittest.TestCase):
             target_root.mkdir()
             installed = PROJECT_INSTALLER.install_project(
                 self.template_root,
-                input_function=prompt_answers(str(target_root), selection, "yes"),
+                input_function=prompt_answers(str(target_root), selection, "yes", "yes"),
                 output_function=self.output.append,
             )
             self.assertTrue(installed)
@@ -327,12 +331,73 @@ class InstallTemplateTest(unittest.TestCase):
             instruction_names = ["AGENTS.md"] if expected_files[0] else []
             if expected_files[1]:
                 instruction_names.append("CLAUDE.md")
-            PROJECT_INSTALLER.update_gitignore(target_root, instruction_names)
+            PROJECT_INSTALLER.update_gitignore(
+                target_root,
+                [*instruction_names, *PROJECT_INSTALLER.SUPERPOWERS_GITIGNORE_LINES],
+            )
             gitignore_text = (target_root / ".gitignore").read_text(encoding="utf-8")
             for name in instruction_names:
                 self.assertEqual(gitignore_text.splitlines().count(name), 1)
             for path in ("docs/superpowers/specs/", "docs/superpowers/plans/"):
                 self.assertEqual(gitignore_text.splitlines().count(path), 1)
+
+    def test_project_gitignore_choices_are_independent(self) -> None:
+        """Apply instruction and Superpowers ignore choices independently.
+
+        Args:
+            None.
+
+        Returns:
+            None: Assertions verify every combination of the two decisions.
+
+        Raises:
+            None.
+        """
+        cases = {
+            ("yes", "no"): {"# Agent workspace template", "AGENTS.md", "CLAUDE.md"},
+            ("no", "yes"): {
+                "# Agent workspace template",
+                "docs/superpowers/specs/",
+                "docs/superpowers/plans/",
+            },
+            ("yes", "yes"): {
+                "# Agent workspace template",
+                "AGENTS.md",
+                "CLAUDE.md",
+                "docs/superpowers/specs/",
+                "docs/superpowers/plans/",
+            },
+            ("no", "no"): set(),
+        }
+        for index, ((instruction_answer, superpowers_answer), expected_lines) in enumerate(
+            cases.items()
+        ):
+            with self.subTest(
+                instructions=instruction_answer,
+                superpowers=superpowers_answer,
+            ):
+                target_root = self.root / f"project-ignore-{index}"
+                target_root.mkdir()
+
+                installed = PROJECT_INSTALLER.install_project(
+                    self.template_root,
+                    input_function=prompt_answers(
+                        str(target_root),
+                        "codex,claude",
+                        instruction_answer,
+                        superpowers_answer,
+                    ),
+                    output_function=self.output.append,
+                )
+
+                self.assertTrue(installed)
+                gitignore_path = target_root / ".gitignore"
+                actual_lines = (
+                    set(gitignore_path.read_text(encoding="utf-8").splitlines())
+                    if gitignore_path.exists()
+                    else set()
+                )
+                self.assertEqual(actual_lines, expected_lines)
 
     def test_conflict_cancellation_and_optional_backups(self) -> None:
         """Leave conflicts untouched on cancellation and back them up on consent.
@@ -439,7 +504,7 @@ class InstallTemplateTest(unittest.TestCase):
 
         installed = PROJECT_INSTALLER.install_project(
             project_template_root,
-            input_function=prompt_answers(str(target_root), "codex", "no"),
+            input_function=prompt_answers(str(target_root), "codex", "no", "no"),
             output_function=self.output.append,
         )
 
@@ -525,7 +590,7 @@ class InstallTemplateTest(unittest.TestCase):
         target_root.mkdir()
         project_result = subprocess.run(
             [sys.executable, str(INSTALLER_PATHS["project"])],
-            input=f"{target_root}\ncodex\nno\n",
+            input=f"{target_root}\ncodex\nno\nno\n",
             text=True,
             capture_output=True,
             env=environment,

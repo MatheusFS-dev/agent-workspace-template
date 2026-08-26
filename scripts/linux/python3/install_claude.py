@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
-"""Install the Codex global assets on Linux from this portable template."""
+"""Install Claude Code global assets on Linux from this portable template."""
 
 from datetime import datetime
+import json
 from pathlib import Path
 import shutil
 import sys
-import tomllib
 from typing import Callable
 
 
-GLOBAL_INSTRUCTIONS_PLACEHOLDER = "{{GLOBAL_INSTRUCTIONS}}"
 InputFunction = Callable[[str], str]
 OutputFunction = Callable[[str], None]
-InstallItem = tuple[Path | None, Path, str | None]
+InstallItem = tuple[Path, Path]
 
 
 def get_template_root() -> Path:
@@ -22,12 +21,12 @@ def get_template_root() -> Path:
         None.
 
     Returns:
-        Path: Absolute repository root containing the Codex template sources.
+        Path: Absolute repository root containing the Claude template sources.
 
     Raises:
         None.
     """
-    return Path(__file__).resolve().parents[2]
+    return Path(__file__).resolve().parents[3]
 
 
 def validate_platform() -> None:
@@ -46,58 +45,8 @@ def validate_platform() -> None:
         raise RuntimeError("Linux installer requires Linux.")
 
 
-def render_codex_config(template_root: Path) -> str:
-    """Render Codex configuration from the global instructions source.
-
-    Args:
-        template_root: Absolute template repository root containing the Codex
-            configuration template and global instructions file.
-
-    Returns:
-        str: Valid TOML configuration with global instructions embedded.
-
-    Raises:
-        RuntimeError: If the placeholder count is not one, the instructions
-            cannot fit a TOML multiline literal, or the result is invalid TOML.
-        OSError: If either source file cannot be read.
-
-    Examples:
-        Render a repository's Codex configuration before writing it:
-
-        >>> render_codex_config(Path("/path/to/template"))  # doctest: +SKIP
-    """
-    config_path = template_root / "configs" / "codex" / "config.toml.template"
-    instructions_path = template_root / "instructions" / "global.md"
-    config_text = config_path.read_text(encoding="utf-8")
-    instructions_text = instructions_path.read_text(encoding="utf-8")
-
-    placeholder_count = config_text.count(GLOBAL_INSTRUCTIONS_PLACEHOLDER)
-    if placeholder_count != 1:
-        raise RuntimeError(
-            "Codex configuration template must contain exactly one "
-            f"{GLOBAL_INSTRUCTIONS_PLACEHOLDER!r} placeholder; found "
-            f"{placeholder_count}."
-        )
-    if "'''" in instructions_text:
-        raise RuntimeError(
-            "Global instructions cannot contain three consecutive single quotes "
-            "because they are rendered into a TOML multiline literal."
-        )
-
-    # Render from the single canonical instructions source and reject any
-    # marker introduced by that source instead of shipping unresolved config.
-    rendered = config_text.replace(GLOBAL_INSTRUCTIONS_PLACEHOLDER, instructions_text)
-    if GLOBAL_INSTRUCTIONS_PLACEHOLDER in rendered:
-        raise RuntimeError("Rendered Codex configuration still contains a placeholder.")
-    try:
-        tomllib.loads(rendered)
-    except tomllib.TOMLDecodeError as error:
-        raise RuntimeError(f"Rendered Codex configuration is invalid TOML: {error}") from error
-    return rendered
-
-
 def validate_sources(template_root: Path) -> list[Path]:
-    """Validate the sources required by the Codex workflow.
+    """Validate the sources required by the Claude workflow.
 
     Args:
         template_root: Absolute template repository root to validate.
@@ -107,22 +56,24 @@ def validate_sources(template_root: Path) -> list[Path]:
         `SKILL.md` files.
 
     Raises:
-        RuntimeError: If a required Codex source is missing, rendered TOML is
+        RuntimeError: If a required Claude source is missing, settings JSON is
             invalid, or a direct skill package lacks `SKILL.md`.
         OSError: If a source cannot be read or enumerated.
     """
-    required_paths = (
-        template_root / "instructions" / "global.md",
-        template_root / "configs" / "codex" / "config.toml.template",
-        template_root / "skills",
-    )
+    instructions_path = template_root / "instructions" / "global.md"
+    settings_path = template_root / "configs" / "claude" / "settings.json"
+    skills_root = template_root / "skills"
+    required_paths = (instructions_path, settings_path, skills_root)
     missing_paths = [path for path in required_paths if not path.exists()]
     if missing_paths:
         missing_text = ", ".join(str(path) for path in missing_paths)
-        raise RuntimeError(f"Codex template source is missing: {missing_text}")
+        raise RuntimeError(f"Claude template source is missing: {missing_text}")
 
-    render_codex_config(template_root)
-    skills_root = template_root / "skills"
+    try:
+        json.loads(settings_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        raise RuntimeError(f"Invalid JSON source {settings_path}: {error}") from error
+
     skill_packages = sorted(path for path in skills_root.iterdir() if path.is_dir())
     invalid_packages = [
         package for package in skill_packages if not (package / "SKILL.md").is_file()
@@ -134,46 +85,6 @@ def validate_sources(template_root: Path) -> list[Path]:
             f"{invalid_text}"
         )
     return skill_packages
-
-
-def prompt_codex_profiles(template_root: Path, input_function: InputFunction) -> list[Path]:
-    """Prompt for optional Codex profiles to install with the base config.
-
-    Args:
-        template_root: Absolute template root containing Codex profile files.
-        input_function: Prompt callable that returns the user's response.
-
-    Returns:
-        list[Path]: Selected profile files, or an empty list for a blank answer.
-
-    Raises:
-        ValueError: If a profile name is unknown, empty, or repeated.
-        OSError: If the profile directory cannot be enumerated.
-    """
-    profiles = sorted((template_root / "configs" / "codex").glob("*.config.toml"))
-    if not profiles:
-        return []
-
-    profile_by_name = {
-        profile.name.removesuffix(".config.toml"): profile for profile in profiles
-    }
-    available_names = ", ".join(profile_by_name)
-    response = input_function(
-        f"Codex profiles to install ({available_names}; blank for none): "
-    ).strip()
-    if not response:
-        return []
-
-    selected_names = [name.strip() for name in response.split(",")]
-    if not all(selected_names):
-        raise ValueError("Codex profile selection cannot contain an empty name.")
-    if len(set(selected_names)) != len(selected_names):
-        raise ValueError("Codex profile selection cannot repeat a profile.")
-
-    unknown_names = [name for name in selected_names if name not in profile_by_name]
-    if unknown_names:
-        raise ValueError(f"Unknown Codex profile: {', '.join(unknown_names)}")
-    return [profile_by_name[name] for name in selected_names]
 
 
 def prompt_yes_no(prompt: str, input_function: InputFunction) -> bool:
@@ -255,39 +166,31 @@ def copy_backup(destination_path: Path) -> Path:
     return backup_destination
 
 
-def replace_path(source_path: Path | None, destination_path: Path, content: str | None) -> None:
-    """Replace a destination with either a source copy or rendered text.
+def replace_path(source_path: Path, destination_path: Path) -> None:
+    """Replace a destination with a complete source file or directory copy.
 
     Args:
-        source_path: Source file or directory when `content` is None.
-        destination_path: Target path to replace completely.
-        content: Rendered UTF-8 text when not None; this mode requires
-            `source_path` to be None.
+        source_path: Existing source file or directory to copy.
+        destination_path: Target file or directory to replace completely.
 
     Returns:
         None: The destination is replaced in place.
 
     Raises:
-        RuntimeError: If neither or both source forms are supplied.
-        FileNotFoundError: If a requested copy source does not exist.
-        OSError: If removal, copying, or writing fails.
+        FileNotFoundError: If the requested copy source does not exist.
+        OSError: If removal or copying fails.
     """
-    if (source_path is None) == (content is None):
-        raise RuntimeError("Installation item must provide exactly one source form.")
-    if source_path is not None and not path_exists(source_path):
+    if not path_exists(source_path):
         raise FileNotFoundError(f"Installation source does not exist: {source_path}")
-
     if destination_path.is_dir() and not destination_path.is_symlink():
         shutil.rmtree(destination_path)
     elif path_exists(destination_path):
         destination_path.unlink()
     destination_path.parent.mkdir(parents=True, exist_ok=True)
 
-    if content is not None:
-        destination_path.write_text(content, encoding="utf-8")
-    elif source_path is not None and source_path.is_dir():
+    if source_path.is_dir():
         shutil.copytree(source_path, destination_path, symlinks=True)
-    elif source_path is not None:
+    else:
         shutil.copy2(source_path, destination_path, follow_symlinks=False)
 
 
@@ -299,7 +202,7 @@ def install_items(
     """Confirm conflicts, optionally back them up, and install all items.
 
     Args:
-        items: Source, destination, and optional rendered-content tuples.
+        items: Source and destination pairs for complete path replacement.
         input_function: Prompt callable used only when conflicts exist.
         output_function: Reporting callable used for conflicts and backups.
 
@@ -308,20 +211,20 @@ def install_items(
         before any files are changed.
 
     Raises:
-        OSError: If a backup, removal, copy, or write fails.
+        OSError: If a backup, removal, or copy fails.
         ValueError: If an interactive confirmation is invalid.
 
     Examples:
-        Install one rendered configuration into an empty destination:
+        Install one source file into an empty destination:
 
         >>> install_items(  # doctest: +SKIP
-        ...     [(None, Path("/tmp/config.toml"), "model = 'test'\\n")], input, print
+        ...     [(Path("/template/CLAUDE.md"), Path("/tmp/CLAUDE.md"))], input, print
         ... )
         True
     """
     # Resolve every conflict before the first write so declining replacement
     # leaves the destination tree untouched.
-    conflicts = [destination for _, destination, _ in items if path_exists(destination)]
+    conflicts = [destination for _, destination in items if path_exists(destination)]
     if conflicts:
         output_function("Conflicting managed destinations:")
         for destination in conflicts:
@@ -333,39 +236,39 @@ def install_items(
             for destination in conflicts:
                 output_function(f"Backed up {destination} to {copy_backup(destination)}")
 
-    for source_path, destination_path, content in items:
-        replace_path(source_path, destination_path, content)
+    for source_path, destination_path in items:
+        replace_path(source_path, destination_path)
     return True
 
 
-def install_global_codex(
+def install_global_claude(
     template_root: Path | None = None,
     home_root: Path | None = None,
     input_function: InputFunction = input,
     output_function: OutputFunction = print,
 ) -> bool:
-    """Interactively install Codex global configuration, profiles, and skills.
+    """Interactively install Claude global instructions, settings, and skills.
 
     Args:
         template_root: Template root to use; None derives it from this script.
         home_root: User home directory to target; None uses `Path.home()`.
-        input_function: Prompt callable for profile and conflict decisions.
+        input_function: Prompt callable for conflict decisions.
         output_function: Reporting callable for conflicts, backups, and result.
 
     Returns:
         bool: True after installation, or false if replacement is declined.
 
     Raises:
-        RuntimeError: If the current platform is not Linux, required Codex
-            sources are missing, or rendered TOML is invalid.
+        RuntimeError: If the current platform is not Linux or required Claude
+            sources are missing or invalid.
         OSError: If files cannot be read, backed up, copied, or written.
-        ValueError: If a profile selection or confirmation is invalid.
+        ValueError: If a confirmation is invalid.
 
     Examples:
         Install from an explicit template into an explicit home directory:
 
-        >>> install_global_codex(  # doctest: +SKIP
-        ...     Path("/template"), Path("/tmp/home"), lambda _: ""
+        >>> install_global_claude(  # doctest: +SKIP
+        ...     Path("/template"), Path("/tmp/home")
         ... )
         True
     """
@@ -373,19 +276,19 @@ def install_global_codex(
     root = template_root or get_template_root()
     home = home_root or Path.home()
     skill_packages = validate_sources(root)
-    selected_profiles = prompt_codex_profiles(root, input_function)
-    codex_root = home / ".codex"
-    items = [(None, codex_root / "config.toml", render_codex_config(root))]
-    items.extend((profile, codex_root / profile.name, None) for profile in selected_profiles)
+    claude_root = home / ".claude"
+    items = [
+        (root / "instructions" / "global.md", claude_root / "CLAUDE.md"),
+        (root / "configs" / "claude" / "settings.json", claude_root / "settings.json"),
+    ]
     items.extend(
-        (package, codex_root / "skills" / package.name, None)
-        for package in skill_packages
+        (package, claude_root / "skills" / package.name) for package in skill_packages
     )
     installed = install_items(items, input_function, output_function)
     if installed:
-        output_function(f"Installed Codex global template into {codex_root}")
+        output_function(f"Installed Claude global template into {claude_root}")
     return installed
 
 
 if __name__ == "__main__":
-    install_global_codex()
+    install_global_claude()

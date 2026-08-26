@@ -40,10 +40,17 @@ skills/
   <skill-name>/SKILL.md
 scripts/
   linux/
-    install_antigravity.py
-    install_claude.py
-    install_codex.py
-    install_project.py
+    python2/
+      install_antigravity.py
+      install_claude.py
+      install_codex.py
+      install_project.py
+      requirements.txt
+    python3/
+      install_antigravity.py
+      install_claude.py
+      install_codex.py
+      install_project.py
   windows/
     install_antigravity.py
     install_claude.py
@@ -61,15 +68,29 @@ The bundled `scribe` package contains its own `scripts/search_reference.py`.
 
 ## Install
 
-Python 3.11 or newer is required. On Linux, run the installer for the workflow
-you need with `python3`:
+The primary installers require Python 3.11 or newer. On Linux, run the installer
+for the workflow you need with `python3`:
 
 ```bash
-python3 scripts/linux/install_codex.py
-python3 scripts/linux/install_claude.py
-python3 scripts/linux/install_antigravity.py
-python3 scripts/linux/install_project.py
+python3 scripts/linux/python3/install_codex.py
+python3 scripts/linux/python3/install_claude.py
+python3 scripts/linux/python3/install_antigravity.py
+python3 scripts/linux/python3/install_project.py
 ```
+
+Linux-only Python 2.7 variants are also available. Install the Codex variant's
+pinned TOML dependency, then run the required workflow with `python2.7`:
+
+```bash
+python2.7 -m pip install -r scripts/linux/python2/requirements.txt
+python2.7 scripts/linux/python2/install_codex.py
+python2.7 scripts/linux/python2/install_claude.py
+python2.7 scripts/linux/python2/install_antigravity.py
+python2.7 scripts/linux/python2/install_project.py
+```
+
+Only the Python 2.7 Codex installer requires the TOML dependency. The other
+Python 2.7 variants use only the standard library.
 
 On Windows, use the Python launcher from PowerShell or Command Prompt:
 
