@@ -296,6 +296,8 @@ class InstallTemplateTest(unittest.TestCase):
             gitignore_text = (target_root / ".gitignore").read_text(encoding="utf-8")
             for name in instruction_names:
                 self.assertEqual(gitignore_text.splitlines().count(name), 1)
+            for path in ("docs/superpowers/specs/", "docs/superpowers/plans/"):
+                self.assertEqual(gitignore_text.splitlines().count(path), 1)
 
     def test_conflict_cancellation_and_optional_backups(self) -> None:
         """Leave conflicts untouched on cancellation and back them up on consent.

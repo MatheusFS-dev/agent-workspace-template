@@ -1,4 +1,22 @@
-# Portable Agent Workspace Template
+```text
+    _    ____ _____ _   _ _____
+   / \  / ___| ____| \ | |_   _|
+  / _ \| |  _|  _| |  \| | | |
+ / ___ \ |_| | |___| |\  | | |
+/_/   \_\____|_____|_| \_| |_|
+
+__        _____  ____  _  ______ ____   _    ____ _____
+\ \      / / _ \|  _ \| |/ / ___|  _ \ / \  / ___| ____|
+ \ \ /\ / / | | | |_) | ' /\___ \| |_) / _ \| |   |  _|
+  \ V  V /| |_| |  _ <| . \ ___) |  __/ ___ \ |___| |___
+   \_/\_/  \___/|_| \_\_|\_\____/|_| /_/   \_\____|_____|
+
+ _____ _____ __  __ ____  _        _  _____ _____
+|_   _| ____|  \/  |  _ \| |      / \|_   _| ____|
+  | | |  _| | |\/| | |_) | |     / _ \ | | |  _|
+  | | | |___| |  | |  __/| |___ / ___ \| | | |___
+  |_| |_____|_|  |_|_|   |_____/_/   \_\_| |_____|
+```
 
 This repository provides user-scoped rules, tool settings, and reusable skill
 packages for Codex, Claude Code, and Antigravity CLI, plus minimal project
@@ -77,9 +95,9 @@ selection of `codex`, `antigravity`, and/or `claude`.
 Claude Code supports user-level `CLAUDE.md` and project `CLAUDE.md` imports; see
 its [memory documentation](https://code.claude.com/docs/en/memory).
 
-After selecting project files, the installer can add only those installed
-instruction filenames to the target `.gitignore`. The update is idempotent and
-defaults to no.
+After selecting project files, the installer can add the installed instruction
+filenames plus `docs/superpowers/specs/` and `docs/superpowers/plans/` to the
+target `.gitignore`. The update is idempotent and defaults to no.
 
 ## Conflict and backup behavior
 

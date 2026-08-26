@@ -14,6 +14,7 @@ Follow applicable project instructions and matching skills. Never modify skill f
 
 ## Coding gate
 
+- Use the Superpowers plugin and its applicable skills for coding tasks unless the user explicitly requests otherwise.
 - Inspect the target files and direct dependencies. Define expected behavior and a verification method before editing.
 - Make the smallest compatible change and preserve repository conventions.
 - Run the narrowest reliable checks after editing, such as syntax, import, targeted test, smoke test, lint, or type check.
@@ -21,6 +22,7 @@ Follow applicable project instructions and matching skills. Never modify skill f
 
 ## Debugging gate
 
+- Use the Superpowers plugin and its applicable skills for debugging tasks unless the user explicitly requests otherwise.
 - Reproduce the failure or collect evidence before changing code or configuration.
 - Identify the likely root cause and plausible alternatives. Do not patch symptoms without explaining the mechanism.
 - Start with read-only diagnostics for system or environment failures.
@@ -28,6 +30,7 @@ Follow applicable project instructions and matching skills. Never modify skill f
 
 ## Research gate
 
+- Do not use the Superpowers plugin or its skills for research unless the user explicitly requests it.
 - Search external sources when claims depend on current, specialized, or uncertain information. Use live retrieval when freshness matters.
 - Prefer primary sources. For papers, inspect the paper itself when available, not only search snippets or secondary summaries.
 - Verify publication and event dates, cite material claims, distinguish sourced facts from inference, and report unresolved disagreement.
@@ -35,6 +38,7 @@ Follow applicable project instructions and matching skills. Never modify skill f
 
 ## Writing gate
 
+- Do not use the Superpowers plugin or its skills for writing unless the user explicitly requests it.
 - Use the `scribe` skill for every writing task unless the user explicitly requests otherwise.
 - Preserve source facts, terminology, scope, audience, and requested genre.
 - Ground source-based writing in the supplied material. Do not silently fill gaps with general knowledge.
@@ -43,6 +47,7 @@ Follow applicable project instructions and matching skills. Never modify skill f
 
 ## Plotting gate
 
+- Use the Superpowers plugin and its applicable skills for plotting tasks unless the user explicitly requests otherwise.
 - Use the `scientific-plot-maker` skill whenever creating, modifying, styling, or reviewing any plot, graph, chart, or scientific figure, unless the user explicitly requests otherwise.
 - Apply this gate even when plotting is only one part of a coding, debugging, research, or writing task.
 - Preserve the data semantics, labels, units, uncertainty representation, and requested output format.

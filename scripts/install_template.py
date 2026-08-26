@@ -12,6 +12,10 @@ from typing import Callable
 
 GLOBAL_INSTRUCTIONS_PLACEHOLDER = "{{GLOBAL_INSTRUCTIONS}}"
 GITIGNORE_HEADER = "# Agent workspace template"
+SUPERPOWERS_GITIGNORE_LINES = (
+    "docs/superpowers/specs/",
+    "docs/superpowers/plans/",
+)
 InputFunction = Callable[[str], str]
 OutputFunction = Callable[[str], None]
 InstallItem = tuple[Path | None, Path, str | None]
@@ -551,11 +555,12 @@ def prompt_gitignore_update(
     instruction_names: list[str],
     input_function: InputFunction,
 ) -> bool:
-    """Prompt whether installed project instruction filenames enter `.gitignore`.
+    """Prompt whether project instructions and Superpowers outputs enter `.gitignore`.
 
     Args:
         instruction_names: Installed project instruction filenames, limited to
-            `AGENTS.md` and `CLAUDE.md` by the project installer.
+            `AGENTS.md` and `CLAUDE.md` by the project installer. The prompt
+            also covers the fixed Superpowers specification and plan paths.
         input_function: Prompt callable for the yes/no decision.
 
     Returns:
@@ -565,17 +570,21 @@ def prompt_gitignore_update(
         ValueError: If the yes/no response is invalid.
     """
     names = ", ".join(instruction_names)
-    return prompt_yes_no(f"Add {names} to .gitignore? [y/N]: ", input_function)
+    return prompt_yes_no(
+        f"Add {names} and Superpowers docs to .gitignore? [y/N]: ",
+        input_function,
+    )
 
 
 def update_gitignore(target_root: Path, instruction_names: list[str]) -> None:
-    """Idempotently append only installed project instruction filenames.
+    """Idempotently append project instructions and Superpowers output paths.
 
     Args:
         target_root: Existing project directory containing or receiving
             `.gitignore`.
-        instruction_names: Installed names to ignore. The function preserves
-            existing content and appends only names absent from existing lines.
+        instruction_names: Installed names to ignore. The function also adds
+            the fixed `docs/superpowers/specs/` and `docs/superpowers/plans/`
+            paths. It preserves existing content and appends only absent lines.
 
     Returns:
         None: The project `.gitignore` is created or updated when needed.
@@ -590,7 +599,8 @@ def update_gitignore(target_root: Path, instruction_names: list[str]) -> None:
         existing_text = gitignore_path.read_text(encoding="utf-8")
         existing_lines = existing_text.splitlines()
 
-    missing_names = [name for name in instruction_names if name not in existing_lines]
+    managed_lines = [*instruction_names, *SUPERPOWERS_GITIGNORE_LINES]
+    missing_names = [name for name in managed_lines if name not in existing_lines]
     needs_header = GITIGNORE_HEADER not in existing_lines
     if not missing_names and not needs_header:
         return
