@@ -4,7 +4,6 @@
   "effortLevel": "medium",
   "autoMemoryEnabled": false,
   "permissions": {
-    "defaultMode": "bypassPermissions",
-    "disableBypassPermissionsMode": false
+    "defaultMode": "bypassPermissions"
   }
 }
