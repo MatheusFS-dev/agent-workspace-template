@@ -166,10 +166,10 @@ For LaTeX acronym use, define each acronym with `\DeclareAcronym{...}` and refer
 Search references before reading them fully:
 
 ```bash
-python3 .agent/scripts/search_reference.py .agent/skills/scribe-with-review/references/scribe-style-guide.md citation acronym latex
-python3 .agent/scripts/search_reference.py .agent/skills/scribe-with-review/references/writing-guide-pages-27-52.md abstract introduction discussion
-python3 .agent/scripts/search_reference.py .agent/skills/scribe-with-review/references/reviewer-derived-paragraph-examples.md novelty deployment proxy latency baseline metric table acronym
-python3 .agent/scripts/search_reference.py .agent/skills/scribe-with-review/references/section-specific-writing-guides.md abstract introduction related conclusion reverse outline
+python3 scripts/search_reference.py references/scribe-style-guide.md citation acronym latex
+python3 scripts/search_reference.py references/writing-guide-pages-27-52.md abstract introduction discussion
+python3 scripts/search_reference.py references/reviewer-derived-paragraph-examples.md novelty deployment proxy latency baseline metric table acronym
+python3 scripts/search_reference.py references/section-specific-writing-guides.md abstract introduction related conclusion reverse outline
 ```
 
 Use `section-specific-writing-guides.md` for Abstract, Introduction, Related Work, Conclusion, internal brainstorming prompts, and reverse-outlining diagnostics.

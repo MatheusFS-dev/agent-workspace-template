@@ -1,287 +1,114 @@
-![header](https://capsule-render.vercel.app/api?height=190&type=blur&color=4ea7f7&section=header&text=Agent%20Workspace%20Template&fontColor=f8f8f2&fontSize=40)
+# Portable Agent Workspace Template
 
-<p align="center">
-<a href="https://github.com/DenverCoder1/readme-typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Time+New+Roman&color=%234ea7f7&size=25&center=true&vCenter=true&width=600&height=30&lines=👋+Welcome!"></a>
-</p>
+This repository provides user-scoped rules, tool settings, and reusable skill
+packages for Codex, Claude Code, and Antigravity CLI, plus minimal project
+instruction files. It intentionally does not install an agent workspace,
+project memory, user settings, or skills into a project.
 
-<p align="center">
-  <a href="https://github.com/MatheusFS-dev/agent-workspace-template"><img src="https://img.shields.io/github/license/MatheusFS-dev/agent-workspace-template?style=flat-square" alt="License"/></a>
-  <a href="https://github.com/MatheusFS-dev/agent-workspace-template/stargazers"><img src="https://img.shields.io/github/stars/MatheusFS-dev/agent-workspace-template?style=flat-square" alt="Stars"/></a>
-  <a href="https://github.com/MatheusFS-dev/agent-workspace-template/network/members"><img src="https://img.shields.io/github/forks/MatheusFS-dev/agent-workspace-template?style=flat-square" alt="Forks"/></a>
-  <a href="https://visitor-badge.laobi.icu/badge?page_id=MatheusFS-dev/agent-workspace-template"><img src="https://visitor-badge.laobi.icu/badge?page_id=MatheusFS-dev/agent-workspace-template" alt="Visitors"/></a>
-</p>
-
-This template adds a reusable `.agent` workspace to your project.
-
-It helps an AI coding agent understand how to work in your project without loading too much unnecessary context.
-
-## Table of Contents
-
-- [⚠️ Installer Warning](#️-installer-warning)
-- [🛠️ Install with the Script](#️-install-with-the-script)
-- [📦 What to Copy Into Your Project](#what-to-copy-into-your-project)
-- [🧭 What Each File Does](#what-each-file-does)
-- [🚀 First Use in a Project](#first-use-in-a-project)
-- [🔄 Updating the Project Map Later](#updating-the-project-map-later)
-- [💬 Using the Agent Day to Day](#using-the-agent-day-to-day)
-- [🧠 Memories](#memories)
-- [⏳ Long Tasks](#long-tasks)
-- [🛠️ Skills Included](#skills-included)
-- [🚫 What Not to Copy](#what-not-to-copy)
-- [🤝 Contributing](#contributing)
-- [📜 License](#license)
-
-## ⚠️ Installer Warning
-
-The installer script overwrites any existing copies of these paths in the target
-project root without asking for confirmation:
+## Template layout
 
 ```text
-.agent/
-AGENTS.md
-CLAUDE.md
-GEMINI.md
+configs/
+  antigravity/settings.json
+  claude/settings.json
+  codex/config.toml.template
+  codex/research.config.toml
+instructions/
+  global.md
+project/
+  AGENTS.md
+  CLAUDE.md
+skills/
+  <skill-name>/SKILL.md
+scripts/
+  install_template.py
 ```
 
-Use it only when replacing those files is acceptable.
+`instructions/global.md` is the only editable global-instructions source.
+Codex renders it into `config.toml` at install time. Claude Code and
+Antigravity CLI receive that file directly, so there are no duplicate global
+instruction templates to keep synchronized.
 
-## 🛠️ Install with the Script
+Every direct `skills/<name>/SKILL.md` folder is a complete global skill package.
+The bundled `scribe` package contains its own `scripts/search_reference.py`.
 
-Run the installer from this template repository:
+## Install
+
+Run the installer from this repository:
 
 ```bash
 python3 scripts/install_template.py
 ```
 
-The script will:
+Choose one workflow:
 
-1. Prompt for the target project root directory.
-2. Copy `.agent`, `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md` into that
-   directory.
-3. Overwrite any existing copies of those paths.
-4. Ask whether to add those paths to the target project's `.gitignore` so the
-   configuration stays local.
+1. Global Codex
+2. Global Claude
+3. Global Antigravity CLI
+4. Project instructions
 
-The `.gitignore` prompt defaults to `no`. If you answer `yes`, the installer
-creates `.gitignore` when it does not exist and appends only the missing
-template entries:
+The named functions are also available for focused Python tests or embedding:
+`install_global_codex`, `install_global_claude`, `install_global_antigravity`,
+and `install_project`.
 
-```text
-# Agent stuff
-.agent/
-AGENTS.md
-CLAUDE.md
-GEMINI.md
+### Global installs
+
+| Tool | Installed paths |
+| --- | --- |
+| Codex | `~/.codex/config.toml`, selected `~/.codex/*.config.toml` profile files, and `~/.codex/skills/<skill-name>/` |
+| Claude Code | `~/.claude/CLAUDE.md`, `~/.claude/settings.json`, and `~/.claude/skills/<skill-name>/` |
+| Antigravity CLI | `~/.gemini/GEMINI.md`, `~/.gemini/antigravity-cli/settings.json`, and `~/.gemini/antigravity-cli/skills/<skill-name>/` |
+
+Antigravity support is intentionally CLI-only. Its global rules stay in
+`~/.gemini/GEMINI.md`; Antigravity CLI discovers global skills from its separate
+`~/.gemini/antigravity-cli/skills/` directory. See the
+[Antigravity CLI migration guide](https://www.antigravity.google/docs/cli/gcli-migration/)
+and [global skills documentation](https://www.antigravity.google/docs/cli/plugins/).
+
+### Project installs
+
+The installer prompts for an existing project directory and a non-empty
+selection of `codex`, `antigravity`, and/or `claude`.
+
+- Codex and Antigravity install `AGENTS.md`.
+- Claude installs `CLAUDE.md`, which imports `AGENTS.md`.
+- Skills and user-level settings are never copied to a project.
+
+Claude Code supports user-level `CLAUDE.md` and project `CLAUDE.md` imports; see
+its [memory documentation](https://code.claude.com/docs/en/memory).
+
+After selecting project files, the installer can add only those installed
+instruction filenames to the target `.gitignore`. The update is idempotent and
+defaults to no.
+
+## Conflict and backup behavior
+
+Before any write, the selected installer validates its sources and lists all
+managed destination paths that already exist. If there are conflicts, one
+replacement confirmation is required and defaults to no. If replacement is
+accepted, the installer separately asks whether to create backups.
+
+When backups are requested, only conflicting managed paths are copied to unique
+timestamped sibling names before replacement. The installer never merges,
+silently overwrites, prunes unrelated destinations, or restores failed writes.
+It replaces only same-named managed skills and leaves skills that are not in the
+source template untouched.
+
+## Add or update a skill
+
+Drop a complete folder containing `SKILL.md` directly under `skills/`, then rerun
+the relevant global installer. The installer validates every direct skill package
+and copies every valid package for that tool. Project installs intentionally do
+not copy skills.
+
+## Verification
+
+Run the focused installer tests:
+
+```bash
+python3 -m unittest tests/test_install_template.py
 ```
 
-## 📦 What to Copy Into Your Project
-
-Copy these items into the root folder of your project:
-
-### Copy List
-
-```text
-.agent/
-AGENTS.md
-CLAUDE.md
-GEMINI.md
-```
-
-### Example Final Structure
-
-```text
-your-project/
-  .agent/
-  AGENTS.md
-  CLAUDE.md
-  GEMINI.md
-  src/
-  tests/
-  README.md
-```
-
-`CLAUDE.md` and `GEMINI.md` are optional, but useful if you use Claude Code or Gemini-based agents.
-
-## 🧭 What Each File Does
-
-### AGENTS.md
-
-Main instruction file for the AI agent.
-
-The agent reads this first.
-
-### .agent/
-
-Internal workspace used by the agent.
-
-It contains:
-
-- routing rules,
-- compact task instructions,
-- risk-specific coding example cards,
-- project memory,
-- paper-writing support,
-- plotting support,
-- helper scripts.
-
-You usually do not need to edit files inside `.agent` manually.
-
-### CLAUDE.md
-
-Small compatibility file for Claude Code.
-
-It points Claude to `AGENTS.md`.
-
-### GEMINI.md
-
-Small compatibility file for Gemini agents.
-
-It points Gemini to `AGENTS.md`.
-
-## 🚀 First Use in a Project
-
-After copying the template into your project, ask the AI:
-
-```text
-Update the project map for this repository.
-```
-
-The AI will inspect the project and update:
-
-```text
-.agent/context/project-map.md
-```
-
-You do not need to run any scripts yourself.
-
-## 🔄 Updating the Project Map Later
-
-When your project structure changes, ask:
-
-```text
-Update the project map.
-```
-
-The AI will handle the internal command.
-
-## 💬 Using the Agent Day to Day
-
-Ask normally. For example:
-
-```text
-fix this bug.
-```
-
-```text
-refactor this file without changing behavior.
-```
-
-```text
-create a publication-quality plot.
-```
-
-```text
-rewrite this paragraph.
-```
-
-The agent will decide which `.agent` files are relevant.
-
-## 🧠 Memories
-
-The file below stores compact long-term project context:
-
-```text
-.agent/context/memories.md
-```
-
-Use it for durable decisions only.
-
-Good examples:
-
-- preferred model architecture,
-- accepted experiment protocol,
-- naming convention,
-- important project constraint.
-
-Bad examples:
-
-- temporary task notes,
-- one-time debugging output,
-- copied logs,
-- large explanations.
-
-To update memories, ask:
-
-```text
-Update the project memories with this decision: ...
-```
-
-The AI should keep the memory file short and remove outdated context.
-
-## ⏳ Long Tasks
-
-For long tasks, ask the AI to create task state:
-
-```text
-Create a task state file for this refactor and keep it updated.
-```
-
-The AI will create a local state file only for that task.
-
-Do not use task state for small edits.
-
-## 🛠️ Skills Included
-
-This template keeps only two automatic skills.
-
-### Scientific plot maker
-
-Used when you ask for plots, figures, charts, histograms, scatter plots, or publication-quality visualizations.
-
-Example:
-
-```text
-Create a publication-quality histogram for these results.
-```
-
-### Scribe
-
-Used when you ask for academic writing, paper editing, reviewer responses, abstracts, introductions, conclusions, or manuscript text.
-
-Example:
-
-```text
-Rewrite this paragraph for an IEEE-style paper.
-```
-
-## 🚫 What Not to Copy
-
-Do not copy prompt libraries or unused skills into `.agent`.
-
-Avoid folders like:
-
-```text
-.agent/prompts/
-.agent/skills/some-other-skill/
-```
-
-Keeping unused files inside `.agent` can make agents read too much context.
-
-Save it outside `.agent`.
-
-## 🤝 Contributing
-
-> [!IMPORTANT]
-> First read the `CONTRIBUTING.md` file if your project provides one.
-
-Contributions are what make the open-source community amazing. To contribute:
-
-1. Fork the project.
-2. Create a feature branch.
-3. Commit your changes.
-4. Push to the branch.
-5. Open a Pull Request.
-
-## 📜 License
-
-This project is licensed under the **[Apache License 2.0](LICENSE)**.
+The tests cover source-template validation, single-source Codex rendering,
+global destination mappings, complete skill copying, project selection, repeated
+`.gitignore` updates, conflict cancellation, replacement, and optional backups.

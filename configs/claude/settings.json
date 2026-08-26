@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "model": "sonnet",
+  "effortLevel": "medium",
+  "autoMemoryEnabled": false,
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "disableBypassPermissionsMode": false
+  }
+}

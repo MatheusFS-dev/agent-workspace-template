@@ -1,0 +1,49 @@
+# User configuration: ~/.codex/config.toml
+# Full local and network access is intentional.
+sandbox_mode = "danger-full-access"
+approval_policy = "never"
+
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
+plan_mode_reasoning_effort = "medium"
+model_reasoning_summary = "none"
+model_verbosity = "low"
+
+# General sessions can search the OpenAI-maintained index. Use the research
+# profile or --search when current pages and recent papers matter.
+web_search = "cached"
+service_tier = "default"
+tool_output_token_limit = 6000
+
+personality = "pragmatic"
+cli_auth_credentials_store = "file"
+
+developer_instructions = '''{{GLOBAL_INSTRUCTIONS}}'''
+
+[features]
+# Avoid higher-credit fast-tier selection and automatic background continuation.
+fast_mode = false
+goals = false
+
+# Disable automatic cross-session memory processing to avoid extra context and
+# model work. Re-enable explicitly if durable Codex memory is desired.
+memories = false
+
+[agents]
+# Keep subagents available, but bound fan-out and use a cheaper supporting model.
+max_concurrent_threads_per_session = 2
+default_subagent_model = "gpt-5.6-terra"
+default_subagent_reasoning_effort = "medium"
+
+[plugins."superpowers@openai-curated"]
+enabled = true
+
+[plugins."github@openai-curated"]
+enabled = true
+
+[tui]
+pet = "codex"
+
+[notice]
+hide_full_access_warning = true
+hide_rate_limit_model_nudge = false

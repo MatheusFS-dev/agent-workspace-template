@@ -1,0 +1,9 @@
+# Optional live-research profile: ~/.codex/research.config.toml
+# Start with: codex --profile research
+# This file inherits all unspecified values from config.toml.
+web_search = "live"
+model_verbosity = "medium"
+tool_output_token_limit = 8000
+
+[tools]
+web_search = { context_size = "medium" }
