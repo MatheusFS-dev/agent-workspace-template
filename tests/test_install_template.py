@@ -1,36 +1,71 @@
 """Focused tests for the portable agent template installer."""
 
 import importlib.util
+import os
 from pathlib import Path
+import shutil
+import subprocess
+import sys
 import tempfile
 import tomllib
 import unittest
 
 
-INSTALLER_PATH = Path(__file__).resolve().parents[1] / "scripts" / "install_template.py"
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+# Exercise only the native implementation while using the opposite scripts to
+# prove that platform rejection happens before any interactive or write path.
+if sys.platform.startswith("linux"):
+    PLATFORM_NAME = "linux"
+    OTHER_PLATFORM_NAME = "windows"
+    HOME_ENVIRONMENT_VARIABLE = "HOME"
+    OTHER_PLATFORM_ERROR = "Windows installer requires Windows."
+elif sys.platform == "win32":
+    PLATFORM_NAME = "windows"
+    OTHER_PLATFORM_NAME = "linux"
+    HOME_ENVIRONMENT_VARIABLE = "USERPROFILE"
+    OTHER_PLATFORM_ERROR = "Linux installer requires Linux."
+else:
+    raise RuntimeError("Installer tests require Linux or Windows.")
+
+INSTALLER_PATHS = {
+    name: REPOSITORY_ROOT / "scripts" / PLATFORM_NAME / f"install_{name}.py"
+    for name in ("codex", "claude", "antigravity", "project")
+}
+OTHER_INSTALLER_PATHS = {
+    name: REPOSITORY_ROOT / "scripts" / OTHER_PLATFORM_NAME / f"install_{name}.py"
+    for name in ("codex", "claude", "antigravity", "project")
+}
 
 
-def load_installer():
-    """Load the installer module directly from its script path.
+def load_installer(name: str):
+    """Load one workflow installer module directly from its script path.
 
     Args:
-        None.
+        name: Workflow name from `INSTALLER_PATHS` whose module should load.
 
     Returns:
         module: Imported installer module used by the focused tests.
 
     Raises:
+        KeyError: If `name` does not identify a configured workflow.
         ImportError: If the installer cannot be loaded from its expected path.
     """
-    spec = importlib.util.spec_from_file_location("template_installer", INSTALLER_PATH)
+    installer_path = INSTALLER_PATHS[name]
+    spec = importlib.util.spec_from_file_location(
+        f"template_installer_{name}",
+        installer_path,
+    )
     if spec is None or spec.loader is None:
-        raise ImportError(f"Could not load installer: {INSTALLER_PATH}")
+        raise ImportError(f"Could not load installer: {installer_path}")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
-INSTALLER = load_installer()
+CODEX_INSTALLER = load_installer("codex")
+CLAUDE_INSTALLER = load_installer("claude")
+ANTIGRAVITY_INSTALLER = load_installer("antigravity")
+PROJECT_INSTALLER = load_installer("project")
 
 
 def prompt_answers(*answers: str):
@@ -171,14 +206,14 @@ class InstallTemplateTest(unittest.TestCase):
         config_path = self.template_root / "configs" / "codex" / "config.toml.template"
         config_path.write_text("model = 'test'\n", encoding="utf-8")
         with self.assertRaisesRegex(RuntimeError, "exactly one"):
-            INSTALLER.validate_sources(self.template_root)
+            CODEX_INSTALLER.validate_sources(self.template_root)
 
         config_path.write_text(
             "a = '''{{GLOBAL_INSTRUCTIONS}}'''\nb = '''{{GLOBAL_INSTRUCTIONS}}'''\n",
             encoding="utf-8",
         )
         with self.assertRaisesRegex(RuntimeError, "exactly one"):
-            INSTALLER.validate_sources(self.template_root)
+            CODEX_INSTALLER.validate_sources(self.template_root)
 
     def test_codex_renders_single_source_and_copies_selected_profile_and_skills(self) -> None:
         """Render global instructions once into Codex and copy all skills.
@@ -193,7 +228,7 @@ class InstallTemplateTest(unittest.TestCase):
         Raises:
             None.
         """
-        installed = INSTALLER.install_global_codex(
+        installed = CODEX_INSTALLER.install_global_codex(
             self.template_root,
             self.home_root,
             prompt_answers("research"),
@@ -228,7 +263,7 @@ class InstallTemplateTest(unittest.TestCase):
             None.
         """
         self.assertTrue(
-            INSTALLER.install_global_claude(
+            CLAUDE_INSTALLER.install_global_claude(
                 self.template_root,
                 self.home_root,
                 prompt_answers(),
@@ -236,7 +271,7 @@ class InstallTemplateTest(unittest.TestCase):
             )
         )
         self.assertTrue(
-            INSTALLER.install_global_antigravity(
+            ANTIGRAVITY_INSTALLER.install_global_antigravity(
                 self.template_root,
                 self.home_root,
                 prompt_answers(),
@@ -279,7 +314,7 @@ class InstallTemplateTest(unittest.TestCase):
         for index, (selection, expected_files) in enumerate(cases.items()):
             target_root = self.root / f"project-{index}"
             target_root.mkdir()
-            installed = INSTALLER.install_project(
+            installed = PROJECT_INSTALLER.install_project(
                 self.template_root,
                 input_function=prompt_answers(str(target_root), selection, "yes"),
                 output_function=self.output.append,
@@ -292,7 +327,7 @@ class InstallTemplateTest(unittest.TestCase):
             instruction_names = ["AGENTS.md"] if expected_files[0] else []
             if expected_files[1]:
                 instruction_names.append("CLAUDE.md")
-            INSTALLER.update_gitignore(target_root, instruction_names)
+            PROJECT_INSTALLER.update_gitignore(target_root, instruction_names)
             gitignore_text = (target_root / ".gitignore").read_text(encoding="utf-8")
             for name in instruction_names:
                 self.assertEqual(gitignore_text.splitlines().count(name), 1)
@@ -316,7 +351,7 @@ class InstallTemplateTest(unittest.TestCase):
         instruction_path = claude_root / "CLAUDE.md"
         instruction_path.write_text("keep this\n", encoding="utf-8")
 
-        cancelled = INSTALLER.install_global_claude(
+        cancelled = CLAUDE_INSTALLER.install_global_claude(
             self.template_root,
             self.home_root,
             prompt_answers("no"),
@@ -325,7 +360,7 @@ class InstallTemplateTest(unittest.TestCase):
         self.assertFalse(cancelled)
         self.assertEqual(instruction_path.read_text(encoding="utf-8"), "keep this\n")
 
-        installed = INSTALLER.install_global_claude(
+        installed = CLAUDE_INSTALLER.install_global_claude(
             self.template_root,
             self.home_root,
             prompt_answers("yes", "yes"),
@@ -339,3 +374,203 @@ class InstallTemplateTest(unittest.TestCase):
         backups = list(claude_root.glob("CLAUDE.md.backup-*"))
         self.assertEqual(len(backups), 1)
         self.assertEqual(backups[0].read_text(encoding="utf-8"), "keep this\n")
+
+    def test_each_workflow_ignores_unrelated_template_sources(self) -> None:
+        """Install each workflow without source assets owned by other workflows.
+
+        Args:
+            None.
+
+        Returns:
+            None: Assertions verify that every installer has a narrow source
+            validation boundary and still creates its expected destination.
+
+        Raises:
+            OSError: If a temporary fixture cannot be created or removed.
+        """
+        cases = (
+            (
+                CODEX_INSTALLER.install_global_codex,
+                ("",),
+                ("configs/claude", "configs/antigravity", "project"),
+                ".codex/config.toml",
+            ),
+            (
+                CLAUDE_INSTALLER.install_global_claude,
+                (),
+                ("configs/codex", "configs/antigravity", "project"),
+                ".claude/CLAUDE.md",
+            ),
+            (
+                ANTIGRAVITY_INSTALLER.install_global_antigravity,
+                (),
+                ("configs/codex", "configs/claude", "project"),
+                ".gemini/GEMINI.md",
+            ),
+        )
+        for index, (installer, answers, removed_paths, destination) in enumerate(cases):
+            with self.subTest(destination=destination):
+                template_root = self.root / f"isolated-template-{index}"
+                template_root.mkdir()
+                create_template(template_root)
+                for relative_path in removed_paths:
+                    shutil.rmtree(template_root / relative_path)
+                home_root = self.root / f"isolated-home-{index}"
+                home_root.mkdir()
+
+                installed = installer(
+                    template_root,
+                    home_root,
+                    prompt_answers(*answers),
+                    self.output.append,
+                )
+
+                self.assertTrue(installed)
+                self.assertTrue((home_root / destination).exists())
+
+        project_template_root = self.root / "isolated-template-project"
+        project_template_root.mkdir()
+        create_template(project_template_root)
+        shutil.rmtree(project_template_root / "instructions")
+        shutil.rmtree(project_template_root / "configs")
+        shutil.rmtree(project_template_root / "skills")
+        target_root = self.root / "isolated-project"
+        target_root.mkdir()
+
+        installed = PROJECT_INSTALLER.install_project(
+            project_template_root,
+            input_function=prompt_answers(str(target_root), "codex", "no"),
+            output_function=self.output.append,
+        )
+
+        self.assertTrue(installed)
+        self.assertTrue((target_root / "AGENTS.md").is_file())
+
+    def test_workflows_reject_invalid_required_sources(self) -> None:
+        """Reject malformed or missing sources owned by each workflow.
+
+        Args:
+            None.
+
+        Returns:
+            None: Assertions verify explicit validation errors for Claude,
+            Antigravity, and project-owned inputs. Codex rendering validation is
+            covered separately by the placeholder test.
+
+        Raises:
+            OSError: If a temporary fixture cannot be created or changed.
+        """
+        invalid_json_cases = (
+            (CLAUDE_INSTALLER, "claude"),
+            (ANTIGRAVITY_INSTALLER, "antigravity"),
+        )
+        for index, (installer, config_name) in enumerate(invalid_json_cases):
+            with self.subTest(config_name=config_name):
+                template_root = self.root / f"invalid-template-{index}"
+                template_root.mkdir()
+                create_template(template_root)
+                settings_path = template_root / "configs" / config_name / "settings.json"
+                settings_path.write_text("not json\n", encoding="utf-8")
+
+                with self.assertRaisesRegex(RuntimeError, "Invalid JSON source"):
+                    installer.validate_sources(template_root)
+
+        project_template_root = self.root / "invalid-template-project"
+        project_template_root.mkdir()
+        create_template(project_template_root)
+        (project_template_root / "project" / "CLAUDE.md").unlink()
+
+        with self.assertRaisesRegex(RuntimeError, "Project template source is missing"):
+            PROJECT_INSTALLER.validate_sources(project_template_root)
+
+    def test_scripts_run_directly_without_a_workflow_menu(self) -> None:
+        """Run each script as its documented workflow entry point.
+
+        Args:
+            None.
+
+        Returns:
+            None: Assertions verify zero exit codes and installed output files
+            under isolated home and project directories.
+
+        Raises:
+            OSError: If a subprocess cannot start or a temporary path fails.
+            subprocess.TimeoutExpired: If an installer does not complete within
+                the ten-second smoke-test limit.
+        """
+        smoke_home = self.root / "smoke-home"
+        smoke_home.mkdir()
+        environment = os.environ.copy()
+        environment[HOME_ENVIRONMENT_VARIABLE] = str(smoke_home)
+        commands = (
+            ("codex", "\n"),
+            ("claude", ""),
+            ("antigravity", ""),
+        )
+        for name, input_text in commands:
+            with self.subTest(name=name):
+                result = subprocess.run(
+                    [sys.executable, str(INSTALLER_PATHS[name])],
+                    input=input_text,
+                    text=True,
+                    capture_output=True,
+                    env=environment,
+                    cwd=REPOSITORY_ROOT,
+                    timeout=10,
+                    check=False,
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+
+        target_root = self.root / "smoke-project"
+        target_root.mkdir()
+        project_result = subprocess.run(
+            [sys.executable, str(INSTALLER_PATHS["project"])],
+            input=f"{target_root}\ncodex\nno\n",
+            text=True,
+            capture_output=True,
+            env=environment,
+            cwd=REPOSITORY_ROOT,
+            timeout=10,
+            check=False,
+        )
+        self.assertEqual(project_result.returncode, 0, project_result.stderr)
+        self.assertTrue((smoke_home / ".codex" / "config.toml").is_file())
+        self.assertTrue((smoke_home / ".claude" / "CLAUDE.md").is_file())
+        self.assertTrue((smoke_home / ".gemini" / "GEMINI.md").is_file())
+        self.assertTrue((target_root / "AGENTS.md").is_file())
+
+    def test_other_platform_scripts_fail_before_writing(self) -> None:
+        """Reject every opposite-platform entry point before filesystem writes.
+
+        Args:
+            None.
+
+        Returns:
+            None: Assertions verify nonzero exits, explicit platform errors,
+            and an untouched temporary home directory.
+
+        Raises:
+            OSError: If a subprocess cannot start or a temporary path fails.
+            subprocess.TimeoutExpired: If an installer does not complete within
+                the ten-second smoke-test limit.
+        """
+        wrong_home = self.root / "wrong-platform-home"
+        wrong_home.mkdir()
+        environment = os.environ.copy()
+        environment[HOME_ENVIRONMENT_VARIABLE] = str(wrong_home)
+
+        for name, installer_path in OTHER_INSTALLER_PATHS.items():
+            with self.subTest(name=name):
+                result = subprocess.run(
+                    [sys.executable, str(installer_path)],
+                    text=True,
+                    capture_output=True,
+                    env=environment,
+                    cwd=REPOSITORY_ROOT,
+                    timeout=10,
+                    check=False,
+                )
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(OTHER_PLATFORM_ERROR, result.stderr)
+
+        self.assertEqual(list(wrong_home.iterdir()), [])

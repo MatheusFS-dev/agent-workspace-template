@@ -1,0 +1,50 @@
+name: Installer tests
+
+on:
+  pull_request:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Python 3.11 on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Run installer tests
+        run: python -m unittest tests/test_install_template.py -v
+      - name: Compile installer scripts
+        run: >
+          python -m py_compile
+          scripts/linux/install_codex.py
+          scripts/linux/install_claude.py
+          scripts/linux/install_antigravity.py
+          scripts/linux/install_project.py
+          scripts/windows/install_codex.py
+          scripts/windows/install_claude.py
+          scripts/windows/install_antigravity.py
+          scripts/windows/install_project.py
+      - name: Run installer doctests
+        run: >
+          python -m doctest
+          scripts/linux/install_codex.py
+          scripts/linux/install_claude.py
+          scripts/linux/install_antigravity.py
+          scripts/linux/install_project.py
+          scripts/windows/install_codex.py
+          scripts/windows/install_claude.py
+          scripts/windows/install_antigravity.py
+          scripts/windows/install_project.py

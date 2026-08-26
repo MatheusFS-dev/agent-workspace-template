@@ -39,7 +39,16 @@ project/
 skills/
   <skill-name>/SKILL.md
 scripts/
-  install_template.py
+  linux/
+    install_antigravity.py
+    install_claude.py
+    install_codex.py
+    install_project.py
+  windows/
+    install_antigravity.py
+    install_claude.py
+    install_codex.py
+    install_project.py
 ```
 
 `instructions/global.md` is the only editable global-instructions source.
@@ -52,22 +61,30 @@ The bundled `scribe` package contains its own `scripts/search_reference.py`.
 
 ## Install
 
-Run the installer from this repository:
+Python 3.11 or newer is required. On Linux, run the installer for the workflow
+you need with `python3`:
 
 ```bash
-python3 scripts/install_template.py
+python3 scripts/linux/install_codex.py
+python3 scripts/linux/install_claude.py
+python3 scripts/linux/install_antigravity.py
+python3 scripts/linux/install_project.py
 ```
 
-Choose one workflow:
+On Windows, use the Python launcher from PowerShell or Command Prompt:
 
-1. Global Codex
-2. Global Claude
-3. Global Antigravity CLI
-4. Project instructions
+```powershell
+py scripts\windows\install_codex.py
+py scripts\windows\install_claude.py
+py scripts\windows\install_antigravity.py
+py scripts\windows\install_project.py
+```
 
-The named functions are also available for focused Python tests or embedding:
-`install_global_codex`, `install_global_claude`, `install_global_antigravity`,
-and `install_project`.
+Each script runs one workflow directly, rejects the wrong operating system
+before prompting or writing, and does not import another local installer
+module. The corresponding `install_global_codex`, `install_global_claude`,
+`install_global_antigravity`, and `install_project` functions remain available
+for focused Python tests or embedding.
 
 ### Global installs
 
@@ -76,6 +93,8 @@ and `install_project`.
 | Codex | `~/.codex/config.toml`, selected `~/.codex/*.config.toml` profile files, and `~/.codex/skills/<skill-name>/` |
 | Claude Code | `~/.claude/CLAUDE.md`, `~/.claude/settings.json`, and `~/.claude/skills/<skill-name>/` |
 | Antigravity CLI | `~/.gemini/GEMINI.md`, `~/.gemini/antigravity-cli/settings.json`, and `~/.gemini/antigravity-cli/skills/<skill-name>/` |
+
+On Windows, `~` is the current `%USERPROFILE%` directory.
 
 Antigravity support is intentionally CLI-only. Its global rules stay in
 `~/.gemini/GEMINI.md`; Antigravity CLI discovers global skills from its separate
@@ -124,9 +143,10 @@ not copy skills.
 Run the focused installer tests:
 
 ```bash
-python3 -m unittest tests/test_install_template.py
+python -m unittest tests/test_install_template.py
 ```
 
-The tests cover source-template validation, single-source Codex rendering,
-global destination mappings, complete skill copying, project selection, repeated
-`.gitignore` updates, conflict cancellation, replacement, and optional backups.
+The tests cover platform rejection, source-template validation, single-source
+Codex rendering, global destination mappings, complete skill copying, project
+selection, repeated `.gitignore` updates, conflict cancellation, replacement,
+and optional backups.
