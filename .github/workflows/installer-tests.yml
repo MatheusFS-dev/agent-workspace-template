@@ -25,7 +25,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Run installer tests
-        run: python -m unittest tests/test_install_template.py -v
+        run: python -m unittest discover -s tests -v
       - name: Compile installer scripts
         run: >
           python -m py_compile
@@ -37,6 +37,8 @@ jobs:
           scripts/windows/install_claude.py
           scripts/windows/install_antigravity.py
           scripts/windows/install_project.py
+          scripts/linux/python3/toolbox_adapter.py
+          scripts/windows/toolbox_adapter.py
       - name: Run installer doctests
         run: >
           python -m doctest
@@ -56,6 +58,10 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
+      - name: Install Python 2 TOML dependency
+        run: pip install -r scripts/linux/python2/requirements.txt
+      - name: Run Python 2 toolbox adapter tests
+        run: python tests/python2_toolbox_adapter_test.py
       - name: Compile Python 2 installer scripts
         run: >
           python -m py_compile
@@ -63,3 +69,4 @@ jobs:
           scripts/linux/python2/install_claude.py
           scripts/linux/python2/install_antigravity.py
           scripts/linux/python2/install_project.py
+          scripts/linux/python2/toolbox_adapter.py
