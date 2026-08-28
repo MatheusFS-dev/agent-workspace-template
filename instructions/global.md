@@ -36,14 +36,23 @@ Follow applicable project instructions and matching skills. Never modify skill f
 - Verify publication and event dates, cite material claims, distinguish sourced facts from inference, and report unresolved disagreement.
 - Never claim that a source supports information it does not contain. State retrieval limitations when current access is unavailable.
 
-## Writing gate
+## Scientific writing gate
 
-- Do not use the Superpowers plugin or its skills for writing unless the user explicitly requests it.
-- Use the `scribe` skill for every writing task unless the user explicitly requests otherwise.
+- Do not use the Superpowers plugin or its skills for scientific writing unless the user explicitly requests it.
+- Use the `scribe` skill for articles, papers, theses, dissertations, and other scientific writing unless the user explicitly requests otherwise.
 - Preserve source facts, terminology, scope, audience, and requested genre.
 - Ground source-based writing in the supplied material. Do not silently fill gaps with general knowledge.
 - Remove repetition, unsupported claims, vague qualifiers, and unnecessary structure.
 - Do not apply coding conventions to prose. Keep citations precise when evidence is required.
+
+## README gate
+
+- Do not use the Superpowers plugin or its skills for README writing unless the user explicitly requests it.
+- Use the `readmaker` skill for creating, rewriting, or editing Markdown `README.md` files unless the user explicitly requests otherwise.
+- Preserve source facts, terminology, and scope. Ground source-based writing in the supplied material. Do not silently fill gaps with general knowledge.
+- Use common README conventions to write the content.
+- Remove repetition, unsupported claims, vague qualifiers, and unnecessary structure.
+- Keep citations precise when evidence is required.
 
 ## Plotting gate
 
