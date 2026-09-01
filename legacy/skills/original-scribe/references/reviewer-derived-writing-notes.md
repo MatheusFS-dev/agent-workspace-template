@@ -1,6 +1,6 @@
 # Reviewer-Derived Writing Notes
 
-These notes summarize the additional writing failure modes encoded in the topical files under `reviewer-examples/`. They are not meant to be quoted in manuscripts.
+These notes summarize the additional writing failure modes encoded in `reviewer-derived-paragraph-examples.md`. They are not meant to be quoted in manuscripts.
 
 - Broad system claims must match the level of experimental validation actually reported.
 - Implemented modules should not be presented as empirically validated unless module-level or task-level evidence exists.
