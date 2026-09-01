@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 import shutil
 import sys
-from typing import Callable
+from typing import Callable, Optional
 
 
 GITIGNORE_HEADER = "# Agent workspace template"
@@ -353,7 +353,7 @@ def update_gitignore(target_root: Path, ignored_paths: list[str]) -> None:
 
 
 def install_project(
-    template_root: Path | None = None,
+    template_root: Optional[Path] = None,
     input_function: InputFunction = input,
     output_function: OutputFunction = print,
 ) -> bool:

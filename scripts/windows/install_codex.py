@@ -2,17 +2,54 @@
 """Install the Codex global assets on Windows from this portable template."""
 
 from datetime import datetime
+import importlib.util
 from pathlib import Path
 import shutil
 import sys
-import tomllib
-from typing import Callable
+from typing import Callable, Optional
 
 
 GLOBAL_INSTRUCTIONS_PLACEHOLDER = "{{GLOBAL_INSTRUCTIONS}}"
 InputFunction = Callable[[str], str]
 OutputFunction = Callable[[str], None]
-InstallItem = tuple[Path | None, Path, str | None]
+InstallItem = tuple[Optional[Path], Path, Optional[str]]
+
+
+def _load_bundled_tomli():
+    """Load the vendored Tomli package directly from this script family.
+
+    Args:
+        None.
+
+    Returns:
+        module: Bundled Tomli parser module.
+
+    Raises:
+        ImportError: If the bundled package cannot be loaded from disk.
+    """
+    package_root = Path(__file__).resolve().parent / "_vendor" / "tomli"
+    package_path = package_root / "__init__.py"
+    spec = importlib.util.spec_from_file_location(
+        "_agent_workspace_bundled_tomli",
+        package_path,
+        submodule_search_locations=[str(package_root)],
+    )
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Could not load bundled TOML parser: {package_path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    try:
+        spec.loader.exec_module(module)
+    except Exception:
+        sys.modules.pop(spec.name, None)
+        raise
+    return module
+
+
+try:
+    import tomllib
+except ModuleNotFoundError:
+    tomllib = _load_bundled_tomli()
 
 
 def get_template_root() -> Path:
@@ -255,7 +292,11 @@ def copy_backup(destination_path: Path) -> Path:
     return backup_destination
 
 
-def replace_path(source_path: Path | None, destination_path: Path, content: str | None) -> None:
+def replace_path(
+    source_path: Optional[Path],
+    destination_path: Path,
+    content: Optional[str],
+) -> None:
     """Replace a destination with either a source copy or rendered text.
 
     Args:
@@ -339,8 +380,8 @@ def install_items(
 
 
 def install_global_codex(
-    template_root: Path | None = None,
-    home_root: Path | None = None,
+    template_root: Optional[Path] = None,
+    home_root: Optional[Path] = None,
     input_function: InputFunction = input,
     output_function: OutputFunction = print,
 ) -> bool:

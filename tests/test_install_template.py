@@ -1,5 +1,6 @@
 """Focused tests for the portable agent template installer."""
 
+import builtins
 import importlib.util
 import os
 from pathlib import Path
@@ -7,8 +8,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import tomllib
 import unittest
+from unittest import mock
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
@@ -64,6 +65,36 @@ def load_installer(name: str):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def load_codex_without_tomllib():
+    """Load the native Codex installer while hiding the stdlib TOML parser.
+
+    Args:
+        None.
+
+    Returns:
+        module: Codex installer loaded through its bundled TOML fallback path.
+
+    Raises:
+        AssertionError: If the installer cannot load without stdlib `tomllib`.
+        ImportError: If another installer dependency cannot be imported.
+    """
+    original_import = builtins.__import__
+
+    def import_without_tomllib(name, globals=None, locals=None, fromlist=(), level=0):
+        """Reject only the stdlib TOML parser import during module loading."""
+        if name == "tomllib":
+            raise ModuleNotFoundError("No module named 'tomllib'", name="tomllib")
+        return original_import(name, globals, locals, fromlist, level)
+
+    try:
+        with mock.patch.object(builtins, "__import__", side_effect=import_without_tomllib):
+            return load_installer("codex")
+    except ModuleNotFoundError as error:
+        raise AssertionError(
+            "Codex installer did not load its bundled TOML parser fallback"
+        ) from error
 
 
 CODEX_INSTALLER = load_installer("codex")
@@ -219,6 +250,76 @@ class InstallTemplateTest(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "exactly one"):
             CODEX_INSTALLER.validate_sources(self.template_root)
 
+    def test_codex_fallback_loads_bundled_tomli_2_2_1(self) -> None:
+        """Load the native bundled Tomli package when `tomllib` is absent.
+
+        Args:
+            None.
+
+        Returns:
+            None: Assertions verify the fallback version and file location.
+
+        Raises:
+            None.
+        """
+        fallback_installer = load_codex_without_tomllib()
+
+        self.assertEqual(fallback_installer.tomllib.__version__, "2.2.1")
+        self.assertEqual(
+            Path(fallback_installer.tomllib.__file__).resolve(),
+            (PLATFORM_SCRIPT_ROOT / "_vendor" / "tomli" / "__init__.py").resolve(),
+        )
+
+    def test_codex_fallback_parses_valid_rendered_config(self) -> None:
+        """Parse a rendered Codex configuration through bundled Tomli.
+
+        Args:
+            None.
+
+        Returns:
+            None: Assertions verify real fallback parsing of rendered content.
+
+        Raises:
+            None.
+        """
+        fallback_installer = load_codex_without_tomllib()
+
+        rendered = fallback_installer.render_codex_config(self.template_root)
+
+        self.assertEqual(
+            fallback_installer.tomllib.loads(rendered)["developer_instructions"],
+            "# Canonical instructions\n\nUse evidence.\n",
+        )
+
+    def test_codex_fallback_rejects_malformed_toml_before_writes(self) -> None:
+        """Reject malformed fallback-parsed TOML before creating destinations.
+
+        Args:
+            None.
+
+        Returns:
+            None: Assertions verify validation failure and an untouched home.
+
+        Raises:
+            None.
+        """
+        fallback_installer = load_codex_without_tomllib()
+        config_path = self.template_root / "configs" / "codex" / "config.toml.template"
+        config_path.write_text(
+            "developer_instructions = '''{{GLOBAL_INSTRUCTIONS}}'''\nbroken = [\n",
+            encoding="utf-8",
+        )
+
+        with self.assertRaisesRegex(RuntimeError, "invalid TOML"):
+            fallback_installer.install_global_codex(
+                self.template_root,
+                self.home_root,
+                prompt_answers(),
+                self.output.append,
+            )
+
+        self.assertEqual(list(self.home_root.iterdir()), [])
+
     def test_codex_renders_single_source_and_copies_selected_profile_and_skills(self) -> None:
         """Render global instructions once into Codex and copy all skills.
 
@@ -245,7 +346,7 @@ class InstallTemplateTest(unittest.TestCase):
         self.assertIn("# Canonical instructions", config_text)
         self.assertNotIn("{{GLOBAL_INSTRUCTIONS}}", config_text)
         self.assertEqual(
-            tomllib.loads(config_text)["developer_instructions"],
+            CODEX_INSTALLER.tomllib.loads(config_text)["developer_instructions"],
             "# Canonical instructions\n\nUse evidence.\n",
         )
         self.assertTrue((self.home_root / ".codex" / "research.config.toml").is_file())

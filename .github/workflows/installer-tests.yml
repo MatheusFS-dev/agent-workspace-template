@@ -9,36 +9,37 @@ permissions:
 
 jobs:
   test:
-    name: Python 3.11 on ${{ matrix.os }}
+    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
+        include:
+          - os: ubuntu-latest
+            python-version: "3.9"
+          - os: ubuntu-latest
+            python-version: "3.10"
+          - os: ubuntu-latest
+            python-version: "3.14"
+          - os: windows-latest
+            python-version: "3.9"
+          - os: windows-latest
+            python-version: "3.10"
+          - os: windows-latest
+            python-version: "3.14"
+          - os: ubuntu-24.04-arm
+            python-version: "3.14"
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
+          python-version: ${{ matrix.python-version }}
       - name: Run installer tests
         run: python -m unittest discover -s tests -v
       - name: Compile installer scripts
-        run: >
-          python -m py_compile
-          scripts/linux/python3/install_codex.py
-          scripts/linux/python3/install_claude.py
-          scripts/linux/python3/install_antigravity.py
-          scripts/linux/python3/install_project.py
-          scripts/windows/install_codex.py
-          scripts/windows/install_claude.py
-          scripts/windows/install_antigravity.py
-          scripts/windows/install_project.py
-          scripts/linux/python3/toolbox_adapter.py
-          scripts/windows/toolbox_adapter.py
+        run: python -m compileall -q scripts/linux/python3 scripts/windows
       - name: Run installer doctests
         run: >
           python -m doctest

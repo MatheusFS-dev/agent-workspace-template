@@ -68,7 +68,7 @@ The bundled `scribe` package contains its own `scripts/search_reference.py`.
 
 ## Install
 
-The primary installers require Python 3.11 or newer. On Linux, run the installer
+The primary installers require Python 3.9 or newer. On Linux, run the installer
 for the workflow you need with `python3`:
 
 ```bash
@@ -77,6 +77,9 @@ python3 scripts/linux/python3/install_claude.py
 python3 scripts/linux/python3/install_antigravity.py
 python3 scripts/linux/python3/install_project.py
 ```
+
+On Python 3.9 and 3.10, the Codex installers use the bundled Tomli 2.2.1 TOML
+parser fallback; no package installation is required.
 
 Linux-only Python 2.7 variants are also available. Install the Codex variant's
 pinned TOML dependency, then run the required workflow with `python2.7`:

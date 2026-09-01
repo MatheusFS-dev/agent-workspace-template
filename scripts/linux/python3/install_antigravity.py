@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import shutil
 import sys
-from typing import Callable
+from typing import Callable, Optional
 
 
 InputFunction = Callable[[str], str]
@@ -242,8 +242,8 @@ def install_items(
 
 
 def install_global_antigravity(
-    template_root: Path | None = None,
-    home_root: Path | None = None,
+    template_root: Optional[Path] = None,
+    home_root: Optional[Path] = None,
     input_function: InputFunction = input,
     output_function: OutputFunction = print,
 ) -> bool:
