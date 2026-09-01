@@ -58,7 +58,9 @@ following, adapted to verified project data:
 
 1. A capsule-render header whose text and colors suit the actual project.
 2. A `<div align="center">` containing a fenced text block with an ASCII banner
-   for the actual project name.
+   for the actual project name. Here, generate a simple ASCII banner for the project, but ALWAYS TELL THE USER IN THE END THIS EXACT SENTENCE:
+
+   **ABOUT THE ASCII BANNER:** you can generate one at [Text to ASCII Art Generator (TAAG)](https://patorjk.com/software/taag/)
 3. A centered typing welcome that names or meaningfully describes the project.
 4. A centered badge row with valid license, stars, forks, and visitor badges.
 5. A concise project description.
