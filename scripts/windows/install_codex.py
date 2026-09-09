@@ -173,18 +173,22 @@ def validate_sources(template_root: Path) -> list[Path]:
     return skill_packages
 
 
-def prompt_codex_profiles(template_root: Path, input_function: InputFunction) -> list[Path]:
+def prompt_codex_profiles(
+    template_root: Path,
+    input_function: InputFunction,
+    output_function: OutputFunction,
+) -> list[Path]:
     """Prompt for optional Codex profiles to install with the base config.
 
     Args:
         template_root: Absolute template root containing Codex profile files.
         input_function: Prompt callable that returns the user's response.
+        output_function: Reporting callable used for invalid responses.
 
     Returns:
         list[Path]: Selected profile files, or an empty list for a blank answer.
 
     Raises:
-        ValueError: If a profile name is unknown, empty, or repeated.
         OSError: If the profile directory cannot be enumerated.
     """
     profiles = sorted((template_root / "configs" / "codex").glob("*.config.toml"))
@@ -195,22 +199,21 @@ def prompt_codex_profiles(template_root: Path, input_function: InputFunction) ->
         profile.name.removesuffix(".config.toml"): profile for profile in profiles
     }
     available_names = ", ".join(profile_by_name)
-    response = input_function(
-        f"Codex profiles to install ({available_names}; default: research): "
-    ).strip()
-    if not response:
-        response = "research"
-
-    selected_names = [name.strip() for name in response.split(",")]
-    if not all(selected_names):
-        raise ValueError("Codex profile selection cannot contain an empty name.")
-    if len(set(selected_names)) != len(selected_names):
-        raise ValueError("Codex profile selection cannot repeat a profile.")
-
-    unknown_names = [name for name in selected_names if name not in profile_by_name]
-    if unknown_names:
-        raise ValueError(f"Unknown Codex profile: {', '.join(unknown_names)}")
-    return [profile_by_name[name] for name in selected_names]
+    prompt = f"Codex profiles to install ({available_names}; default: research): "
+    while True:
+        response = input_function(prompt).strip() or "research"
+        selected_names = [name.strip() for name in response.split(",")]
+        if not all(selected_names):
+            output_function("Codex profile selection cannot contain an empty name.")
+            continue
+        if len(set(selected_names)) != len(selected_names):
+            output_function("Codex profile selection cannot repeat a profile.")
+            continue
+        unknown_names = [name for name in selected_names if name not in profile_by_name]
+        if unknown_names:
+            output_function(f"Unknown Codex profile: {', '.join(unknown_names)}")
+            continue
+        return [profile_by_name[name] for name in selected_names]
 
 
 def prompt_yes_no(
@@ -432,7 +435,7 @@ def install_global_codex(
     root = template_root or get_template_root()
     home = home_root or Path.home()
     skill_packages = validate_sources(root)
-    selected_profiles = prompt_codex_profiles(root, input_function)
+    selected_profiles = prompt_codex_profiles(root, input_function, output_function)
     codex_root = home / ".codex"
     items = [(None, codex_root / "config.toml", render_codex_config(root))]
     items.extend((profile, codex_root / profile.name, None) for profile in selected_profiles)

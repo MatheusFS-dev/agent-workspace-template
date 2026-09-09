@@ -374,6 +374,54 @@ class InstallTemplateTest(unittest.TestCase):
         self.assertTrue((self.home_root / ".codex" / "research.config.toml").is_file())
         self.assertIn("default: research", prompts[0])
 
+    def test_codex_profile_selection_retries_invalid_input(self) -> None:
+        """Warn and repeat the profile question until its value is valid."""
+        prompts = []
+        answers = iter(("unknown", "research"))
+
+        def answer(prompt: str) -> str:
+            prompts.append(prompt)
+            return next(answers)
+
+        selected = CODEX_INSTALLER.prompt_codex_profiles(
+            self.template_root, answer, self.output.append
+        )
+
+        self.assertEqual([path.name for path in selected], ["research.config.toml"])
+        self.assertEqual(len(prompts), 2)
+        self.assertIn("Unknown Codex profile", self.output[0])
+
+    def test_project_path_and_tool_selection_retry_invalid_input(self) -> None:
+        """Warn and repeat project path and format prompts before continuing."""
+        path_prompts = []
+        path_answers = iter((str(self.root / "missing"), str(self.home_root)))
+
+        def path_answer(prompt: str) -> str:
+            path_prompts.append(prompt)
+            return next(path_answers)
+
+        selected_root = PROJECT_INSTALLER.prompt_target_root(
+            path_answer, self.output.append
+        )
+        self.assertEqual(selected_root, self.home_root.resolve())
+        self.assertEqual(len(path_prompts), 2)
+        self.assertIn("does not exist", self.output[0])
+
+        self.output.clear()
+        tool_prompts = []
+        tool_answers = iter(("codex,invalid", "codex,claude"))
+
+        def tool_answer(prompt: str) -> str:
+            tool_prompts.append(prompt)
+            return next(tool_answers)
+
+        selected_tools = PROJECT_INSTALLER.prompt_project_tools(
+            tool_answer, self.output.append
+        )
+        self.assertEqual(selected_tools, {"codex", "claude"})
+        self.assertEqual(len(tool_prompts), 2)
+        self.assertIn("Unknown project tool", self.output[0])
+
     def test_claude_and_antigravity_destination_mappings(self) -> None:
         """Install global files into the documented Claude and Antigravity paths.
 

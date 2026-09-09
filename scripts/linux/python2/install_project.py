@@ -85,70 +85,65 @@ def validate_sources(template_root):
         )
 
 
-def prompt_target_root(input_function):
+def prompt_target_root(input_function, output_function):
     """Prompt for an existing destination project directory.
 
     Args:
         input_function (callable): Prompt callable returning the path response.
+        output_function (callable): Reporting callable for invalid responses.
 
     Returns:
         str: Absolute existing project directory selected by the user.
 
     Raises:
-        ValueError: If the response is empty.
-        IOError: With ENOENT if the supplied directory does not exist.
-        OSError: With ENOTDIR if the supplied path is not a directory.
+        OSError: If the supplied path cannot be resolved or inspected.
     """
     default_root = os.getcwd()
-    target_text = input_function(
-        "Target project directory (default: {0}): ".format(default_root)
-    ).strip()
-    if not target_text:
-        target_text = default_root
-
-    target_root = os.path.abspath(os.path.expanduser(target_text))
-    if not os.path.exists(target_root):
-        raise IOError(
-            errno.ENOENT, "Target project directory does not exist", target_root
-        )
-    if not os.path.isdir(target_root):
-        raise OSError(
-            errno.ENOTDIR, "Target project path is not a directory", target_root
-        )
-    return target_root
+    prompt = "Target project directory (default: {0}): ".format(default_root)
+    while True:
+        target_text = input_function(prompt).strip() or default_root
+        target_root = os.path.abspath(os.path.expanduser(target_text))
+        if not os.path.exists(target_root):
+            output_function("Target project directory does not exist: {0}".format(target_root))
+            continue
+        if not os.path.isdir(target_root):
+            output_function("Target project path is not a directory: {0}".format(target_root))
+            continue
+        return target_root
 
 
-def prompt_project_tools(input_function):
+def prompt_project_tools(input_function, output_function):
     """Prompt for the project instruction formats to install.
 
     Args:
         input_function (callable): Prompt callable returning the tool response.
+        output_function (callable): Reporting callable for invalid responses.
 
     Returns:
         set of str: Non-empty selection from codex, antigravity, and claude.
 
     Raises:
-        ValueError: If the response is empty, repeated, or contains an unknown
-            or empty tool name.
+        None.
     """
-    response = input_function(
+    prompt = (
         "Project tools (codex, antigravity, claude; comma-separated; "
         "default: codex, antigravity, claude): "
-    ).strip().lower()
-    if not response:
-        response = "codex, antigravity, claude"
-
-    selected_tools = [tool.strip() for tool in response.split(",")]
-    if not all(selected_tools):
-        raise ValueError("Project tool selection cannot contain an empty value.")
-    if len(set(selected_tools)) != len(selected_tools):
-        raise ValueError("Project tool selection cannot repeat a tool.")
-
-    allowed_tools = set(("codex", "antigravity", "claude"))
-    unknown_tools = sorted(set(selected_tools) - allowed_tools)
-    if unknown_tools:
-        raise ValueError("Unknown project tool: {0}".format(", ".join(unknown_tools)))
-    return set(selected_tools)
+    )
+    while True:
+        response = input_function(prompt).strip().lower() or "codex, antigravity, claude"
+        selected_tools = [tool.strip() for tool in response.split(",")]
+        if not all(selected_tools):
+            output_function("Project tool selection cannot contain an empty value.")
+            continue
+        if len(set(selected_tools)) != len(selected_tools):
+            output_function("Project tool selection cannot repeat a tool.")
+            continue
+        allowed_tools = set(("codex", "antigravity", "claude"))
+        unknown_tools = sorted(set(selected_tools) - allowed_tools)
+        if unknown_tools:
+            output_function("Unknown project tool: {0}".format(", ".join(unknown_tools)))
+            continue
+        return set(selected_tools)
 
 
 def prompt_yes_no(question, default, input_function, output_function):
@@ -431,8 +426,8 @@ def install_project(
     validate_platform()
     root = template_root or get_template_root()
     validate_sources(root)
-    target_root = prompt_target_root(input_function)
-    selected_tools = prompt_project_tools(input_function)
+    target_root = prompt_target_root(input_function, output_function)
+    selected_tools = prompt_project_tools(input_function, output_function)
 
     # Codex and Antigravity share AGENTS.md while Claude consumes its separate
     # importing file, so mixed selections create each destination only once.

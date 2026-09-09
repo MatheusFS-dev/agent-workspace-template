@@ -13,6 +13,12 @@ REPOSITORY_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 ADAPTER_PATH = os.path.join(
     REPOSITORY_ROOT, "scripts", "linux", "python2", "toolbox_adapter.py"
 )
+CODEX_INSTALLER_PATH = os.path.join(
+    REPOSITORY_ROOT, "scripts", "linux", "python2", "install_codex.py"
+)
+PROJECT_INSTALLER_PATH = os.path.join(
+    REPOSITORY_ROOT, "scripts", "linux", "python2", "install_project.py"
+)
 
 
 def write_text(path, content):
@@ -97,6 +103,12 @@ class Python2ToolboxAdapterTest(unittest.TestCase):
         write_text(os.path.join(self.template, "project", "CLAUDE.md"), u"@AGENTS.md\n")
         write_text(os.path.join(self.template, "skills", "sample", "SKILL.md"), u"# Sample\n")
         self.adapter = imp.load_source("python2_toolbox_adapter", ADAPTER_PATH)
+        self.codex_installer = imp.load_source(
+            "python2_install_codex", CODEX_INSTALLER_PATH
+        )
+        self.project_installer = imp.load_source(
+            "python2_install_project", PROJECT_INSTALLER_PATH
+        )
 
     def tearDown(self):
         """Remove the isolated fixture tree.
@@ -166,6 +178,35 @@ class Python2ToolboxAdapterTest(unittest.TestCase):
         self.assertEqual(response, {"status": "ready"})
         with io.open(os.path.join(self.project, "AGENTS.md"), "r", encoding="utf-8") as source:
             self.assertEqual(source.read(), u"Project rules\n")
+
+    def test_standalone_prompts_retry_invalid_profiles_paths_and_tools(self):
+        """Catch Python 2 fallback prompts aborting instead of retrying."""
+        output = []
+        profile_answers = iter(("unknown", "research"))
+        selected_profiles = self.codex_installer.prompt_codex_profiles(
+            self.template, lambda prompt: next(profile_answers), output.append
+        )
+        self.assertEqual(
+            [os.path.basename(path) for path in selected_profiles],
+            ["research.config.toml"],
+        )
+        self.assertIn("Unknown Codex profile", output[0])
+
+        output[:] = []
+        path_answers = iter((os.path.join(self.root, "missing"), self.project))
+        selected_root = self.project_installer.prompt_target_root(
+            lambda prompt: next(path_answers), output.append
+        )
+        self.assertEqual(selected_root, self.project)
+        self.assertIn("does not exist", output[0])
+
+        output[:] = []
+        tool_answers = iter(("codex,unknown", "codex,claude"))
+        selected_tools = self.project_installer.prompt_project_tools(
+            lambda prompt: next(tool_answers), output.append
+        )
+        self.assertEqual(selected_tools, set(("codex", "claude")))
+        self.assertIn("Unknown project tool", output[0])
 
 
 if __name__ == "__main__":
