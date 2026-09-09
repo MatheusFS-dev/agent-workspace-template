@@ -85,9 +85,12 @@ def prompt_target_root(input_function: InputFunction) -> Path:
         FileNotFoundError: If the supplied directory does not exist.
         NotADirectoryError: If the supplied path is not a directory.
     """
-    target_text = input_function("Target project directory: ").strip()
+    default_root = Path.cwd()
+    target_text = input_function(
+        f"Target project directory (default: {default_root}): "
+    ).strip()
     if not target_text:
-        raise ValueError("Target project directory cannot be empty.")
+        target_text = str(default_root)
 
     target_root = Path(target_text).expanduser().resolve()
     if not target_root.exists():
@@ -111,10 +114,11 @@ def prompt_project_tools(input_function: InputFunction) -> set[str]:
             or empty tool name.
     """
     response = input_function(
-        "Project tools (codex, antigravity, claude; comma-separated): "
+        "Project tools (codex, antigravity, claude; comma-separated; "
+        "default: codex, antigravity, claude): "
     ).strip().lower()
     if not response:
-        raise ValueError("Choose at least one project tool.")
+        response = "codex, antigravity, claude"
 
     selected_tools = [tool.strip() for tool in response.split(",")]
     if not all(selected_tools):
@@ -129,25 +133,39 @@ def prompt_project_tools(input_function: InputFunction) -> set[str]:
     return set(selected_tools)
 
 
-def prompt_yes_no(prompt: str, input_function: InputFunction) -> bool:
-    """Prompt for an explicit yes or no response with a no default.
+def prompt_yes_no(
+    question: str,
+    default: bool,
+    input_function: InputFunction,
+    output_function: OutputFunction,
+) -> bool:
+    """Prompt until a valid yes or no response is supplied.
 
     Args:
-        prompt: Full prompt text, including any displayed default.
+        question: Prompt text without the displayed default.
+        default: Value returned for an empty response.
         input_function: Prompt callable that returns the user's response.
+        output_function: Reporting callable used for invalid responses.
 
     Returns:
-        bool: True for yes; false for no or an empty response.
+        bool: Parsed response, or the configured default for an empty response.
 
     Raises:
-        ValueError: If the response is not an accepted yes/no value.
+        None.
     """
-    response = input_function(prompt).strip().lower()
-    if response in ("", "n", "no"):
-        return False
-    if response in ("y", "yes"):
-        return True
-    raise ValueError("Enter yes, y, no, n, or press Enter for no.")
+    prompt = f"{question} [{'Y/n' if default else 'y/N'}]: "
+    while True:
+        response = input_function(prompt).strip().lower()
+        if not response:
+            return default
+        if response in ("n", "no"):
+            return False
+        if response in ("y", "yes"):
+            return True
+        default_name = "yes" if default else "no"
+        output_function(
+            f"Enter yes, y, no, n, or press Enter for {default_name}."
+        )
 
 
 def path_exists(path: Path) -> bool:
@@ -267,10 +285,14 @@ def install_items(
         output_function("Conflicting managed destinations:")
         for destination in conflicts:
             output_function(f"- {destination}")
-        if not prompt_yes_no("Replace all listed paths? [y/N]: ", input_function):
+        if not prompt_yes_no(
+            "Replace all listed paths?", True, input_function, output_function
+        ):
             output_function("Installation cancelled; no files were changed.")
             return False
-        if prompt_yes_no("Create backups of conflicting paths? [y/N]: ", input_function):
+        if prompt_yes_no(
+            "Create backups of conflicting paths?", False, input_function, output_function
+        ):
             for destination in conflicts:
                 output_function(f"Backed up {destination} to {copy_backup(destination)}")
 
@@ -282,6 +304,7 @@ def install_items(
 def prompt_gitignore_updates(
     instruction_names: list[str],
     input_function: InputFunction,
+    output_function: OutputFunction,
 ) -> tuple[bool, bool]:
     """Prompt separately for project-instruction and Superpowers ignore rules.
 
@@ -289,6 +312,7 @@ def prompt_gitignore_updates(
         instruction_names: Installed project instruction filenames included in
             the first prompt.
         input_function: Prompt callable for both yes/no decisions.
+        output_function: Reporting callable used for invalid responses.
 
     Returns:
         tuple[bool, bool]: Whether to ignore the installed instruction files,
@@ -299,12 +323,16 @@ def prompt_gitignore_updates(
     """
     names = " and ".join(instruction_names)
     ignore_instructions = prompt_yes_no(
-        f"Add {names} to .gitignore? [y/N]: ",
+        f"Add {names} to .gitignore?",
+        False,
         input_function,
+        output_function,
     )
     ignore_superpowers = prompt_yes_no(
-        "Add Superpowers docs to .gitignore? [y/N]: ",
+        "Add Superpowers docs to .gitignore?",
+        True,
         input_function,
+        output_function,
     )
     return ignore_instructions, ignore_superpowers
 
@@ -403,6 +431,7 @@ def install_project(
     ignore_instructions, ignore_superpowers = prompt_gitignore_updates(
         instruction_names,
         input_function,
+        output_function,
     )
     installed = install_items(items, input_function, output_function)
     if not installed:

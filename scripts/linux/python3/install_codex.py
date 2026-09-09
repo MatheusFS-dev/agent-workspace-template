@@ -196,10 +196,10 @@ def prompt_codex_profiles(template_root: Path, input_function: InputFunction) ->
     }
     available_names = ", ".join(profile_by_name)
     response = input_function(
-        f"Codex profiles to install ({available_names}; blank for none): "
+        f"Codex profiles to install ({available_names}; default: research): "
     ).strip()
     if not response:
-        return []
+        response = "research"
 
     selected_names = [name.strip() for name in response.split(",")]
     if not all(selected_names):
@@ -213,25 +213,39 @@ def prompt_codex_profiles(template_root: Path, input_function: InputFunction) ->
     return [profile_by_name[name] for name in selected_names]
 
 
-def prompt_yes_no(prompt: str, input_function: InputFunction) -> bool:
-    """Prompt for an explicit yes or no response with a no default.
+def prompt_yes_no(
+    question: str,
+    default: bool,
+    input_function: InputFunction,
+    output_function: OutputFunction,
+) -> bool:
+    """Prompt until a valid yes or no response is supplied.
 
     Args:
-        prompt: Full prompt text, including any displayed default.
+        question: Prompt text without the displayed default.
+        default: Value returned for an empty response.
         input_function: Prompt callable that returns the user's response.
+        output_function: Reporting callable used for invalid responses.
 
     Returns:
-        bool: True for yes; false for no or an empty response.
+        bool: Parsed response, or the configured default for an empty response.
 
     Raises:
-        ValueError: If the response is not an accepted yes/no value.
+        None.
     """
-    response = input_function(prompt).strip().lower()
-    if response in ("", "n", "no"):
-        return False
-    if response in ("y", "yes"):
-        return True
-    raise ValueError("Enter yes, y, no, n, or press Enter for no.")
+    prompt = f"{question} [{'Y/n' if default else 'y/N'}]: "
+    while True:
+        response = input_function(prompt).strip().lower()
+        if not response:
+            return default
+        if response in ("n", "no"):
+            return False
+        if response in ("y", "yes"):
+            return True
+        default_name = "yes" if default else "no"
+        output_function(
+            f"Enter yes, y, no, n, or press Enter for {default_name}."
+        )
 
 
 def path_exists(path: Path) -> bool:
@@ -367,10 +381,14 @@ def install_items(
         output_function("Conflicting managed destinations:")
         for destination in conflicts:
             output_function(f"- {destination}")
-        if not prompt_yes_no("Replace all listed paths? [y/N]: ", input_function):
+        if not prompt_yes_no(
+            "Replace all listed paths?", True, input_function, output_function
+        ):
             output_function("Installation cancelled; no files were changed.")
             return False
-        if prompt_yes_no("Create backups of conflicting paths? [y/N]: ", input_function):
+        if prompt_yes_no(
+            "Create backups of conflicting paths?", False, input_function, output_function
+        ):
             for destination in conflicts:
                 output_function(f"Backed up {destination} to {copy_backup(destination)}")
 

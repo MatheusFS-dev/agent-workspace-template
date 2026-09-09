@@ -122,7 +122,7 @@ def validate_sources(template_root):
     return skill_packages
 
 
-def prompt_yes_no(prompt, input_function):
+def prompt_yes_no(question, default, input_function, output_function):
     """Prompt for an explicit yes or no response with a no default.
 
     Args:
@@ -135,12 +135,19 @@ def prompt_yes_no(prompt, input_function):
     Raises:
         ValueError: If the response is not an accepted yes/no value.
     """
-    response = input_function(prompt).strip().lower()
-    if response in ("", "n", "no"):
-        return False
-    if response in ("y", "yes"):
-        return True
-    raise ValueError("Enter yes, y, no, n, or press Enter for no.")
+    prompt = "{0} [{1}]: ".format(question, "Y/n" if default else "y/N")
+    while True:
+        response = input_function(prompt).strip().lower()
+        if not response:
+            return default
+        if response in ("n", "no"):
+            return False
+        if response in ("y", "yes"):
+            return True
+        default_name = "yes" if default else "no"
+        output_function(
+            "Enter yes, y, no, n, or press Enter for {0}.".format(default_name)
+        )
 
 
 def path_exists(path):
@@ -275,10 +282,13 @@ def install_items(items, input_function, output_function):
         output_function("Conflicting managed destinations:")
         for destination in conflicts:
             output_function("- {0}".format(destination))
-        if not prompt_yes_no("Replace all listed paths? [y/N]: ", input_function):
+        if not prompt_yes_no(
+                "Replace all listed paths?", True, input_function, output_function):
             output_function("Installation cancelled; no files were changed.")
             return False
-        if prompt_yes_no("Create backups of conflicting paths? [y/N]: ", input_function):
+        if prompt_yes_no(
+                "Create backups of conflicting paths?", False,
+                input_function, output_function):
             for destination in conflicts:
                 output_function(
                     "Backed up {0} to {1}".format(destination, copy_backup(destination))

@@ -99,9 +99,12 @@ def prompt_target_root(input_function):
         IOError: With ENOENT if the supplied directory does not exist.
         OSError: With ENOTDIR if the supplied path is not a directory.
     """
-    target_text = input_function("Target project directory: ").strip()
+    default_root = os.getcwd()
+    target_text = input_function(
+        "Target project directory (default: {0}): ".format(default_root)
+    ).strip()
     if not target_text:
-        raise ValueError("Target project directory cannot be empty.")
+        target_text = default_root
 
     target_root = os.path.abspath(os.path.expanduser(target_text))
     if not os.path.exists(target_root):
@@ -129,10 +132,11 @@ def prompt_project_tools(input_function):
             or empty tool name.
     """
     response = input_function(
-        "Project tools (codex, antigravity, claude; comma-separated): "
+        "Project tools (codex, antigravity, claude; comma-separated; "
+        "default: codex, antigravity, claude): "
     ).strip().lower()
     if not response:
-        raise ValueError("Choose at least one project tool.")
+        response = "codex, antigravity, claude"
 
     selected_tools = [tool.strip() for tool in response.split(",")]
     if not all(selected_tools):
@@ -147,7 +151,7 @@ def prompt_project_tools(input_function):
     return set(selected_tools)
 
 
-def prompt_yes_no(prompt, input_function):
+def prompt_yes_no(question, default, input_function, output_function):
     """Prompt for an explicit yes or no response with a no default.
 
     Args:
@@ -160,12 +164,19 @@ def prompt_yes_no(prompt, input_function):
     Raises:
         ValueError: If the response is not an accepted yes/no value.
     """
-    response = input_function(prompt).strip().lower()
-    if response in ("", "n", "no"):
-        return False
-    if response in ("y", "yes"):
-        return True
-    raise ValueError("Enter yes, y, no, n, or press Enter for no.")
+    prompt = "{0} [{1}]: ".format(question, "Y/n" if default else "y/N")
+    while True:
+        response = input_function(prompt).strip().lower()
+        if not response:
+            return default
+        if response in ("n", "no"):
+            return False
+        if response in ("y", "yes"):
+            return True
+        default_name = "yes" if default else "no"
+        output_function(
+            "Enter yes, y, no, n, or press Enter for {0}.".format(default_name)
+        )
 
 
 def path_exists(path):
@@ -300,10 +311,13 @@ def install_items(items, input_function, output_function):
         output_function("Conflicting managed destinations:")
         for destination in conflicts:
             output_function("- {0}".format(destination))
-        if not prompt_yes_no("Replace all listed paths? [y/N]: ", input_function):
+        if not prompt_yes_no(
+                "Replace all listed paths?", True, input_function, output_function):
             output_function("Installation cancelled; no files were changed.")
             return False
-        if prompt_yes_no("Create backups of conflicting paths? [y/N]: ", input_function):
+        if prompt_yes_no(
+                "Create backups of conflicting paths?", False,
+                input_function, output_function):
             for destination in conflicts:
                 output_function(
                     "Backed up {0} to {1}".format(destination, copy_backup(destination))
@@ -314,7 +328,7 @@ def install_items(items, input_function, output_function):
     return True
 
 
-def prompt_gitignore_updates(instruction_names, input_function):
+def prompt_gitignore_updates(instruction_names, input_function, output_function):
     """Prompt separately for instruction and Superpowers ignore rules.
 
     Args:
@@ -331,10 +345,12 @@ def prompt_gitignore_updates(instruction_names, input_function):
     """
     names = " and ".join(instruction_names)
     ignore_instructions = prompt_yes_no(
-        "Add {0} to .gitignore? [y/N]: ".format(names), input_function
+        "Add {0} to .gitignore?".format(names), False,
+        input_function, output_function
     )
     ignore_superpowers = prompt_yes_no(
-        "Add Superpowers docs to .gitignore? [y/N]: ", input_function
+        "Add Superpowers docs to .gitignore?", True,
+        input_function, output_function
     )
     return ignore_instructions, ignore_superpowers
 
@@ -436,7 +452,7 @@ def install_project(
         )
 
     ignore_instructions, ignore_superpowers = prompt_gitignore_updates(
-        instruction_names, input_function
+        instruction_names, input_function, output_function
     )
     installed = install_items(items, input_function, output_function)
     if not installed:

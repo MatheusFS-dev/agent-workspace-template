@@ -355,6 +355,25 @@ class InstallTemplateTest(unittest.TestCase):
             ["first-skill", "second-skill"],
         )
 
+    def test_codex_blank_profile_selection_installs_documented_default(self) -> None:
+        """Install the research profile when the profile answer is blank."""
+        prompts = []
+
+        def answer(prompt: str) -> str:
+            prompts.append(prompt)
+            return ""
+
+        installed = CODEX_INSTALLER.install_global_codex(
+            self.template_root,
+            self.home_root,
+            answer,
+            self.output.append,
+        )
+
+        self.assertTrue(installed)
+        self.assertTrue((self.home_root / ".codex" / "research.config.toml").is_file())
+        self.assertIn("default: research", prompts[0])
+
     def test_claude_and_antigravity_destination_mappings(self) -> None:
         """Install global files into the documented Claude and Antigravity paths.
 
@@ -540,6 +559,73 @@ class InstallTemplateTest(unittest.TestCase):
         backups = list(claude_root.glob("CLAUDE.md.backup-*"))
         self.assertEqual(len(backups), 1)
         self.assertEqual(backups[0].read_text(encoding="utf-8"), "keep this\n")
+
+    def test_conflict_prompts_retry_invalid_answers_and_apply_defaults(self) -> None:
+        """Retry invalid input, default replacement to yes, and backups to no."""
+        claude_root = self.home_root / ".claude"
+        claude_root.mkdir()
+        instruction_path = claude_root / "CLAUDE.md"
+        instruction_path.write_text("replace this\n", encoding="utf-8")
+        answers = iter(("b", "", ""))
+        prompts = []
+
+        def answer(prompt: str) -> str:
+            prompts.append(prompt)
+            return next(answers)
+
+        installed = CLAUDE_INSTALLER.install_global_claude(
+            self.template_root,
+            self.home_root,
+            answer,
+            self.output.append,
+        )
+
+        self.assertTrue(installed)
+        self.assertEqual(
+            instruction_path.read_text(encoding="utf-8"),
+            (self.template_root / "instructions" / "global.md").read_text(
+                encoding="utf-8"
+            ),
+        )
+        self.assertEqual(list(claude_root.glob("CLAUDE.md.backup-*")), [])
+        self.assertEqual(prompts, [
+            "Replace all listed paths? [Y/n]: ",
+            "Replace all listed paths? [Y/n]: ",
+            "Create backups of conflicting paths? [y/N]: ",
+        ])
+        self.assertIn("Enter yes, y, no, n, or press Enter for yes.", self.output)
+
+    def test_project_blank_answers_use_documented_defaults(self) -> None:
+        """Use current directory, all agents, and documented ignore defaults."""
+        target_root = self.root / "default-project"
+        target_root.mkdir()
+        prompts = []
+
+        def answer(prompt: str) -> str:
+            prompts.append(prompt)
+            return ""
+
+        with mock.patch.object(PROJECT_INSTALLER.Path, "cwd", return_value=target_root):
+            installed = PROJECT_INSTALLER.install_project(
+                self.template_root,
+                input_function=answer,
+                output_function=self.output.append,
+            )
+
+        self.assertTrue(installed)
+        self.assertTrue((target_root / "AGENTS.md").is_file())
+        self.assertTrue((target_root / "CLAUDE.md").is_file())
+        gitignore_lines = (target_root / ".gitignore").read_text(
+            encoding="utf-8"
+        ).splitlines()
+        self.assertNotIn("AGENTS.md", gitignore_lines)
+        self.assertNotIn("CLAUDE.md", gitignore_lines)
+        self.assertIn("docs/superpowers/specs/", gitignore_lines)
+        self.assertIn("docs/superpowers/plans/", gitignore_lines)
+        self.assertIn(f"default: {target_root}", prompts[0])
+        self.assertIn("default: codex, antigravity, claude", prompts[1])
+        self.assertIn("[y/N]", prompts[2])
+        self.assertIn("[Y/n]", prompts[3])
 
     def test_each_workflow_ignores_unrelated_template_sources(self) -> None:
         """Install each workflow without source assets owned by other workflows.
