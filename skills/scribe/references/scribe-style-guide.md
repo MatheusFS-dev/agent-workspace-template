@@ -28,6 +28,19 @@ Prefer third person unless the user or venue requires otherwise. Sentences shoul
 
 Ensure LaTeX code is syntactically correct and that special characters are properly escaped. Use standard notation for equations, variables, operators, and units.
 
+### Paragraphs After Displayed Equations
+
+A source-code line break after `equation`, `align`, or `\[...\]` does not begin a new LaTeX paragraph. First determine whether prose following the display is semantically a new paragraph. If it is, explicitly end the preceding paragraph and begin the new one with an indent:
+
+```latex
+\begin{equation}
+E = mc^2.
+\end{equation}
+\par\indent In Equation~\ref{eq:example}, ...
+```
+
+Do not add `\par\indent` when the prose continues the same sentence or paragraph that introduced the equation; `\indent` alone is insufficient while LaTeX still considers the text part of that paragraph. After editing, compile the document and visually inspect the affected pages to confirm the intended indentation rendered correctly.
+
 ### Focusing Citations on Relevant Aspects
 
 When summarizing references, emphasize the aspects that align with the user’s research focus. The same reference may be described differently depending on whether the user is focusing on methodology, modeling, implementation, evaluation, or limitations.
