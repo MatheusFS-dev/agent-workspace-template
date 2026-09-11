@@ -60,6 +60,8 @@ Use the heavier scope when uncertain. Upgrade if hidden complexity appears.
 
 Load `references/scribe-style-guide.md` only for LaTeX, citations, acronyms, equations, units, or formatting. Load one topical file under `references/reviewer-examples/` only when the corresponding reviewer risk is material. Use `references/writing-guide-pages-27-52.md` only for broader publication, reproducibility, ethics, or peer-review guidance.
 
+Use `references/bad-response-patterns.md` only when a draft or source exhibits a matching weakness or the user requests examples. Never read it in full during ordinary work. Search its headings or keywords, then read no more than two matching `##` sections per task.
+
 ## Scope Paths
 
 ### Micro

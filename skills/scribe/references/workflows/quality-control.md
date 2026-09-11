@@ -7,11 +7,20 @@
 Apply this phase exactly once after drafting or materially rewriting prose. Review the initial draft internally for:
 
 - unclear explanation or buried main message,
-- redundancy and compressible length,
+- unsupported conclusions placed before their method or evidence,
+- observations, explanations, assumptions, or limitations blurred together,
+- speculative, repetitive, or disproportionate caveats that obscure a supported result,
+- differences mislabeled as deficiencies,
+- dense sentences, redundancy, and compressible length,
 - awkward transitions or paragraph order,
 - claim wording stronger than the evidence,
+- undefined notation or metrics, unverifiable comparisons, or irrelevant implementation detail,
+- confusing or redundant tables, figures, labels, or captions,
+- inconsistent scope or terminology and dependent text left contradictory after an edit,
 - reviewer-trigger wording that can be corrected textually,
 - preservation drift in facts, numbers, citations, equations, labels, or terminology.
+
+Use the bad-response-pattern reference only when one of these checks identifies a concrete weakness and an example would help resolve it.
 
 Create a brief hidden revision report, apply its changes once, then stop general polishing. Do not expose the report unless requested.
 

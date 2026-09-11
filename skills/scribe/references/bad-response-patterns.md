@@ -2,7 +2,9 @@
 
 Use this compact reference to detect weak writing and reasoning. The examples are intentionally topic-neutral. Preserve valid scope and uncertainty, but do not manufacture weaknesses or bury the answer in caveats.
 
-## 1. Unsupported or premature claims
+Keep each independent pattern in a descriptive `##` section of no more than 200 words. Extend a section only while it remains within that limit; otherwise add a new section. Search headings or keywords and read only the matching sections.
+
+## Unsupported or premature claims
 
 **Avoid:** Stating conclusions before presenting their method or evidence.
 
@@ -20,7 +22,7 @@ Use this compact reference to detect weak writing and reasoning. The examples ar
 
 > The normalized variant performed better in this evaluation. The available experiment does not isolate the cause.
 
-## 2. Caveats that overwhelm the result
+## Caveats that overwhelm the result
 
 **Avoid:** Following every result with a long list of untested conditions.
 
@@ -34,13 +36,13 @@ This is repetitive, defensive, and may imply that a valid scoped result is usele
 
 Add a limitation only when it changes interpretation, answers a likely objection, or motivates future work. Never remove a real limitation merely to sound stronger.
 
-### Limitations that appear to invalidate the work
+## Limitations that appear to invalidate the work
 
 **Avoid:** Describing scope boundaries as fundamental defects or listing every untested possibility.
 
 > The evaluation uses one dataset and therefore cannot establish that the method is useful in practice. Other inputs, environments, objectives, or implementations may produce different behavior.
 
-This overstates what the missing evidence means. It shifts attention away from the demonstrated result and gives readers grounds to dismiss more than the evidence justifies.
+This overstates what the missing evidence means and invites readers to dismiss more than the evidence justifies.
 
 **Prefer:** State the established result first, identify the exact boundary, and explain its consequence without speculation.
 
@@ -52,9 +54,9 @@ Frame limitations with three elements:
 2. **Exact boundary:** What was not evaluated or cannot be inferred.
 3. **Proportionate consequence:** What remains uncertain, without implying that the demonstrated result is invalid.
 
-Do not use language such as “the method is not practical,” “the result is not generalizable,” or “the evidence is insufficient” unless the evidence establishes that strong conclusion. Prefer precise statements such as “practical deployment was not evaluated” or “transfer to other populations remains to be measured.” Keep limitations specific, brief, and located where they aid interpretation. Consolidate secondary limitations in a dedicated discussion or future-work passage instead of attaching a defensive disclaimer to every result.
+Use strong conclusions such as “the method is not practical,” “the result is not generalizable,” or “the evidence is insufficient” only when the evidence supports them. Otherwise name the unevaluated dimension precisely. Keep limitations brief and consolidate secondary ones in a discussion or future-work passage instead of attaching a defensive disclaimer to every result.
 
-## 3. Treating differences as deficiencies
+## Treating differences as deficiencies
 
 **Avoid:** Calling every difference from the current work a limitation.
 
@@ -66,7 +68,7 @@ Do not use language such as “the method is not practical,” “the result is 
 
 Discuss a prior limitation only when the current work supplies relevant evidence or capability.
 
-## 4. Repeated evidence-boundary disclaimers
+## Repeated evidence-boundary disclaimers
 
 **Avoid:** Repeating the same comparison warning after every item.
 
@@ -76,7 +78,7 @@ Discuss a prior limitation only when the current work supplies relevant evidence
 
 > Numerical results are compared only within shared evaluation protocols. Study-specific differences are noted below where they affect interpretation.
 
-## 5. Dense, overloaded sentences
+## Dense, overloaded sentences
 
 **Avoid:** Packing setup, transformation, optimization, and selection into one sentence.
 
@@ -88,7 +90,7 @@ Discuss a prior limitation only when the current work supplies relevant evidence
 
 Split a sentence when it contains multiple stages, contrasts, or definitions. Do not split related ideas into choppy fragments merely to shorten them.
 
-## 6. Unexplained notation, acronyms, and indexing
+## Unexplained notation, acronyms, and indexing
 
 **Avoid:** Introducing symbols, abbreviations, thresholds, scale factors, or index conventions without definitions.
 
@@ -100,7 +102,7 @@ Split a sentence when it contains multiple stages, contrasts, or definitions. Do
 
 Use one term and symbol for one concept throughout. Do not present finite values as exact limiting cases unless an explicit approximation convention is stated.
 
-## 7. Ambiguous metrics and aggregation
+## Ambiguous metrics and aggregation
 
 **Avoid:** Calling a metric decisive without defining its denominator, stabilizer, weights, or sensitivity.
 
@@ -112,7 +114,7 @@ Use one term and symbol for one concept throughout. Do not present finite values
 
 For resampling or confidence intervals, state what is resampled, whether pairing is preserved, how many replicates are used, and what statistic is recomputed.
 
-## 8. Unverifiable or vague comparisons
+## Unverifiable or vague comparisons
 
 **Avoid:** Claims that a reader cannot confirm from a nearly overlapping figure.
 
@@ -124,7 +126,7 @@ For resampling or confidence intervals, state what is resampled, whether pairing
 
 Check every quoted value against the source artifact. Do not infer computational cost, difficulty, or causality from a proxy unless the evidence supports that inference.
 
-## 9. Irrelevant implementation detail
+## Irrelevant implementation detail
 
 **Avoid:** Including validation guards, conversion checks, file-state commentary, unused configuration, command internals, or packaging details that do not help the audience understand or reproduce the result.
 
@@ -136,7 +138,7 @@ Check every quoted value against the source artifact. Do not infer computational
 
 Do not omit details required for reproducibility, such as sample selection, calibration, environment versions, failure reasons, or measurement protocol. Put operational material in the appropriate reproducibility section rather than the main argument.
 
-## 10. Confusing presentation
+## Confusing presentation
 
 **Avoid:** Dense prose in narrow table cells, redundant columns, unexplained labels, tiny text, inconsistent visual styles, or captions written like headlines.
 
@@ -149,7 +151,7 @@ Do not omit details required for reproducibility, such as sample selection, cali
 - Write captions in sentence case unless a required style says otherwise.
 - Use figures for patterns and tables for exact values.
 
-## 11. Redundancy and obvious commentary
+## Redundancy and obvious commentary
 
 **Avoid:** Narrating presentation choices or repeating conclusions.
 
@@ -161,7 +163,7 @@ Do not omit details required for reproducibility, such as sample selection, cali
 
 Keep definitions in one authoritative location and use a short reminder or cross-reference elsewhere.
 
-## 12. Inconsistent scope and terminology
+## Inconsistent scope and terminology
 
 **Avoid:** Switching between validation and test data, exact and approximate labels, percentage and proportion, singular and set-valued targets, or short and official names without explanation.
 
@@ -169,21 +171,8 @@ Keep definitions in one authoritative location and use a short reminder or cross
 
 When removing or changing a concept, also check references, summaries, captions, tables, and downstream conclusions for contradictions.
 
-## 13. Weak revision behavior
+## Weak revision behavior
 
 **Avoid:** Copying an informal instruction directly into polished prose, editing only the named sentence when the change creates contradictions, or broadening the task into unrelated rewrites.
 
 **Prefer:** Infer the intended claim, rewrite it for the target audience, and make the smallest set of consistency edits required. Preserve confirmed facts and leave unrelated content unchanged.
-
-## Response check
-
-Before finalizing, ask:
-
-1. Does each claim have evidence at the point where it is made?
-2. Are observations, explanations, assumptions, and limitations clearly separated?
-3. Is every symbol, acronym, metric, index, and non-obvious label defined?
-4. Are caveats material and stated once rather than repeated?
-5. Are comparisons numerically verifiable and protocol-consistent?
-6. Can any sentence, table field, implementation detail, or disclaimer be removed without losing meaning or reproducibility?
-7. Did the revision create contradictions elsewhere?
-8. Is the response direct, readable, and appropriately scoped?
