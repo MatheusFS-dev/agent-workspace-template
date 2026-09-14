@@ -68,6 +68,28 @@ Use strong conclusions such as “the method is not practical,” “the result 
 
 Discuss a prior limitation only when the current work supplies relevant evidence or capability.
 
+**Avoid:** Ranking a related formulation negatively merely because its objective differs.
+
+> The related predictor addresses a different operating problem rather than an inherently weaker formulation.
+
+**Prefer:** Describe the objective difference and its relevance without inventing a hierarchy.
+
+> The related predictor addresses a different operating objective and provides complementary evidence for partial-observation methods.
+
+## Gaps defined by an exact problem formulation
+
+**Avoid:** Claiming a gap from an overly narrow conjunction of policy, objective, model, and setting.
+
+> Existing studies do not evaluate this exact threshold-aware policy for the selected-output objective used here.
+
+This wording makes the absence unsurprising and weakens the motivation.
+
+**Prefer:** State the substantive unresolved capability and why it matters.
+
+> Existing studies establish the value of partial observation, but leave unresolved how measured inputs should be selected when the decision depends on a target operating threshold.
+
+Use only the conditions needed to define the scientific problem. Do not manufacture breadth or ignore directly relevant prior work.
+
 ## Repeated evidence-boundary disclaimers
 
 **Avoid:** Repeating the same comparison warning after every item.
@@ -77,6 +99,18 @@ Discuss a prior limitation only when the current work supplies relevant evidence
 **Prefer:** State the common comparison rule once, then retain only item-specific qualifications.
 
 > Numerical results are compared only within shared evaluation protocols. Study-specific differences are noted below where they affect interpretation.
+
+## Protocol differences treated as total incomparability
+
+**Avoid:** Concluding that different thresholds or protocols make every cross-study observation contradictory or meaningless.
+
+> The studies use different thresholds, so neither their values nor their behavior can be compared, which undermines the combined evidence.
+
+**Prefer:** Separate the quantities that require a shared protocol from the behavior that remains meaningfully comparable.
+
+> Absolute values are interpreted within each study because the thresholds differ. Across studies, the analysis compares qualitative behavior under matched definitions and notes where operating regimes could change that interpretation.
+
+Within-study comparisons can isolate method behavior when competing methods share the same threshold and conditions. Cross-study trends, tendencies, or mechanisms may still be compared when their definitions and regimes support the comparison. Do not claim that behavior is invariant when threshold choice could change rankings or conclusions.
 
 ## Dense, overloaded sentences
 
@@ -89,6 +123,30 @@ Discuss a prior limitation only when the current work supplies relevant evidence
 > Sparse inputs are first mapped to a fixed-size tensor. The model reconstructs the target profile by minimizing mean squared error. At inference, it selects the largest predicted value.
 
 Split a sentence when it contains multiple stages, contrasts, or definitions. Do not split related ideas into choppy fragments merely to shorten them.
+
+## Repetitive contrast templates
+
+**Avoid:** Repeating the same construction until the prose sounds mechanical.
+
+> Method A improves stability rather than peak accuracy. Method B reduces cost rather than changing the estimator. Method C targets robustness rather than throughput.
+
+**Prefer:** Preserve each contrast while varying sentence structure.
+
+> Method A prioritizes stability over peak accuracy. Method B reduces cost while leaving the estimator unchanged. Method C targets robustness instead of raw throughput.
+
+Do not replace every occurrence mechanically. Merge a contrast, state a positive objective directly, or use `while`, `instead of`, `over`, or a separate sentence when each form preserves the intended relationship.
+
+## Semicolons in manuscript prose
+
+**Avoid:** Joining manuscript clauses with a semicolon.
+
+> The evaluated pipeline fails under this condition; the experiment does not attribute the loss to one stage.
+
+**Prefer:** Use sentences, commas, or conjunctions.
+
+> The evaluated pipeline fails under this condition. The experiment does not attribute the loss to one stage.
+
+Do not emit semicolons in drafted or revised manuscript prose. When revising an in-scope manuscript, search for and replace every prose occurrence while preserving LaTeX syntax, code, and bibliographic data.
 
 ## Unexplained notation, acronyms, and indexing
 
@@ -151,6 +209,18 @@ Do not omit details required for reproducibility, such as sample selection, cali
 - Write captions in sentence case unless a required style says otherwise.
 - Use figures for patterns and tables for exact values.
 
+## Tables with weak row or column separation
+
+**Avoid:** Dense tables whose rows are difficult to track or whose adjacent headers appear merged.
+
+**Prefer:** Add horizontal separation between body rows when required by the user or established document convention, and provide enough column width or padding to distinguish neighboring fields. Apply the same treatment to structurally similar tables. Preserve readable type and the venue's mandatory format.
+
+## LaTeX content exceeding the text width
+
+**Avoid:** Leaving long prose, inline parameter sets, equations, or table cells outside the text block.
+
+**Prefer:** Break the sentence, move a long expression to display math, or use suitable wrapping columns. Compile and inspect the affected page after the edit. Do not hide an overfull box by shrinking all text or clipping content.
+
 ## Redundancy and obvious commentary
 
 **Avoid:** Narrating presentation choices or repeating conclusions.
@@ -176,3 +246,29 @@ When removing or changing a concept, also check references, summaries, captions,
 **Avoid:** Copying an informal instruction directly into polished prose, editing only the named sentence when the change creates contradictions, or broadening the task into unrelated rewrites.
 
 **Prefer:** Infer the intended claim, rewrite it for the target audience, and make the smallest set of consistency edits required. Preserve confirmed facts and leave unrelated content unchanged.
+
+When a reported defect is likely systematic, search the full in-scope artifact and correct every occurrence. Check structurally similar tables, captions, summaries, and downstream conclusions instead of fixing only the named location.
+
+## Blunt attribution caveats after pipeline results
+
+**Avoid:** Ending a pipeline-level result with a crude disclaimer that overshadows the established evidence.
+
+> The complete pipeline fails. This does not isolate the contribution of any individual stage.
+
+**Prefer:** State the supported level of attribution and the remaining resolution neutrally.
+
+> The evaluation identifies failure at the complete-pipeline level. Stage-specific contributions remain unresolved by this experiment.
+
+Do not imply that pipeline evidence is invalid merely because component attribution requires a separate analysis.
+
+## Caveats that negate a justified stage decision
+
+**Avoid:** Justifying a screening decision and immediately rejecting it for lacking universal optimality.
+
+> Backbone B is retained after improving latency and energy, but this does not establish that it is best under every architecture and deployment configuration.
+
+**Prefer:** Match the conclusion to the decision stage and identify the next stage's role.
+
+> Backbone B is retained for architecture search because it improves the screening objectives while maintaining comparable validation performance. The subsequent search evaluates configuration-specific trade-offs.
+
+A screening experiment must justify retention under its stated criteria. It need not solve an optimization problem assigned to a later stage. Preserve real screening limitations without using them to negate the supported decision.

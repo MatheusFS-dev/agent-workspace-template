@@ -9,18 +9,21 @@ Apply this phase exactly once after drafting or materially rewriting prose. Revi
 - unclear explanation or buried main message,
 - unsupported conclusions placed before their method or evidence,
 - observations, explanations, assumptions, or limitations blurred together,
-- speculative, repetitive, or disproportionate caveats that obscure a supported result,
-- differences mislabeled as deficiencies,
-- dense sentences, redundancy, and compressible length,
+- speculative, repetitive, or disproportionate caveats that obscure a supported result, erase a supported comparison, or negate a justified stage decision,
+- differences mislabeled as deficiencies or research gaps defined by an arbitrary conjunction of conditions,
+- dense sentences, repeated contrast templates, redundancy, and compressible length,
+- semicolons in manuscript prose,
 - awkward transitions or paragraph order,
 - claim wording stronger than the evidence,
 - undefined notation or metrics, unverifiable comparisons, or irrelevant implementation detail,
-- confusing or redundant tables, figures, labels, or captions,
+- confusing or redundant tables, figures, labels, or captions, including weak row or column separation and content beyond the text width,
 - inconsistent scope or terminology and dependent text left contradictory after an edit,
 - reviewer-trigger wording that can be corrected textually,
 - preservation drift in facts, numbers, citations, equations, labels, or terminology.
 
 Use the bad-response-pattern reference only when one of these checks identifies a concrete weakness and an example would help resolve it.
+
+When a defect may recur, search the full in-scope artifact before verification and correct every occurrence without broadening into unrelated rewriting. Apply presentation fixes consistently to structurally similar tables and passages.
 
 Create a brief hidden revision report, apply its changes once, then stop general polishing. Do not expose the report unless requested.
 

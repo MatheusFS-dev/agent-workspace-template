@@ -22,11 +22,17 @@ Every acronym appearing in LaTeX text must be defined in the acronym file using 
 
 ### Writing Style
 
-Prefer third person unless the user or venue requires otherwise. Sentences should be concise and logically connected. In double-column layout, split long explanations across shorter sentences. Prefer commas and full stops over semicolons or long dashes.
+Prefer third person unless the user or venue requires otherwise. Sentences should be concise and logically connected. In double-column layout, split long explanations across shorter sentences. Do not use semicolons in manuscript prose. Use full stops, commas, or conjunctions instead.
 
 ### LaTeX Conventions
 
 Ensure LaTeX code is syntactically correct and that special characters are properly escaped. Use standard notation for equations, variables, operators, and units.
+
+### Tables and Page Layout
+
+Use a horizontal divider between body rows when the user requests per-row separation, the document has established that convention, or dense rows are otherwise difficult to track. Apply the choice consistently to comparable tables. Keep adjacent headers and data columns visually distinct by adjusting column widths, alignment, `\tabcolsep`, or explicit padding as the table environment permits. Do not reduce type to an unreadable size to force a fit.
+
+Keep prose, mathematics, and tables within the text block. Break long setup sentences, move long parameter sets or equations to display math, and use wrapping columns where appropriate. Compile after layout edits, inspect the affected pages and structurally similar tables, and resolve overfull boxes, crowded headers, and collisions in the source.
 
 ### Paragraphs After Displayed Equations
 
