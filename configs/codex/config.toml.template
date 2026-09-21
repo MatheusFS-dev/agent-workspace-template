@@ -43,6 +43,8 @@ enabled = true
 
 [tui]
 pet = "codex"
+status_line = ["model-with-reasoning", "current-dir", "context-used", "five-hour-limit", "weekly-limit"]
+status_line_use_colors = true
 
 [notice]
 hide_full_access_warning = true

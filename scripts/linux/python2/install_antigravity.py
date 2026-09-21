@@ -92,8 +92,9 @@ def validate_sources(template_root):
     """
     instructions_path = os.path.join(template_root, "instructions", "global.md")
     settings_path = os.path.join(template_root, "configs", "antigravity", "settings.json")
+    statusline_path = os.path.join(template_root, "configs", "statusline", "statusline.py")
     skills_root = os.path.join(template_root, "skills")
-    required_paths = (instructions_path, settings_path, skills_root)
+    required_paths = (instructions_path, settings_path, statusline_path, skills_root)
     missing_paths = [path for path in required_paths if not os.path.exists(path)]
     if missing_paths:
         raise RuntimeError(
@@ -339,6 +340,8 @@ def install_global_antigravity(
          os.path.join(gemini_root, "GEMINI.md")),
         (os.path.join(root, "configs", "antigravity", "settings.json"),
          os.path.join(antigravity_root, "settings.json")),
+        (os.path.join(root, "configs", "statusline", "statusline.py"),
+         os.path.join(antigravity_root, "statusline.py")),
     ]
     items.extend(
         (package, os.path.join(antigravity_root, "skills", os.path.basename(package)))

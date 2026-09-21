@@ -92,8 +92,9 @@ def validate_sources(template_root):
     """
     instructions_path = os.path.join(template_root, "instructions", "global.md")
     settings_path = os.path.join(template_root, "configs", "claude", "settings.json")
+    statusline_path = os.path.join(template_root, "configs", "statusline", "statusline.py")
     skills_root = os.path.join(template_root, "skills")
-    required_paths = (instructions_path, settings_path, skills_root)
+    required_paths = (instructions_path, settings_path, statusline_path, skills_root)
     missing_paths = [path for path in required_paths if not os.path.exists(path)]
     if missing_paths:
         raise RuntimeError(
@@ -338,6 +339,8 @@ def install_global_claude(
          os.path.join(claude_root, "CLAUDE.md")),
         (os.path.join(root, "configs", "claude", "settings.json"),
          os.path.join(claude_root, "settings.json")),
+        (os.path.join(root, "configs", "statusline", "statusline.py"),
+         os.path.join(claude_root, "statusline.py")),
     ]
     items.extend(
         (package, os.path.join(claude_root, "skills", os.path.basename(package)))

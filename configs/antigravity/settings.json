@@ -4,5 +4,9 @@
   "enableTerminalSandbox": false,
   "allowNonWorkspaceAccess": true,
   "agentMode": "accept-edits",
-  "verbosity": "low"
+  "verbosity": "low",
+  "statusLine": {
+    "type": "command",
+    "command": "~/.gemini/antigravity-cli/statusline.py"
+  }
 }

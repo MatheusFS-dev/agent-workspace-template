@@ -62,8 +62,9 @@ def validate_sources(template_root: Path) -> list[Path]:
     """
     instructions_path = template_root / "instructions" / "global.md"
     settings_path = template_root / "configs" / "claude" / "settings.json"
+    statusline_path = template_root / "configs" / "statusline" / "statusline.py"
     skills_root = template_root / "skills"
-    required_paths = (instructions_path, settings_path, skills_root)
+    required_paths = (instructions_path, settings_path, statusline_path, skills_root)
     missing_paths = [path for path in required_paths if not path.exists()]
     if missing_paths:
         missing_text = ", ".join(str(path) for path in missing_paths)
@@ -298,6 +299,7 @@ def install_global_claude(
     items = [
         (root / "instructions" / "global.md", claude_root / "CLAUDE.md"),
         (root / "configs" / "claude" / "settings.json", claude_root / "settings.json"),
+        (root / "configs" / "statusline" / "statusline.py", claude_root / "statusline.py"),
     ]
     items.extend(
         (package, claude_root / "skills" / package.name) for package in skill_packages

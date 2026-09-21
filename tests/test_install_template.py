@@ -155,6 +155,7 @@ def create_template(template_root: Path, include_profile: bool = True) -> None:
     (template_root / "configs" / "codex").mkdir(parents=True)
     (template_root / "configs" / "claude").mkdir(parents=True)
     (template_root / "configs" / "antigravity").mkdir(parents=True)
+    (template_root / "configs" / "statusline").mkdir(parents=True)
     (template_root / "project").mkdir()
     (template_root / "skills" / "first-skill").mkdir(parents=True)
     (template_root / "skills" / "second-skill").mkdir(parents=True)
@@ -177,6 +178,10 @@ def create_template(template_root: Path, include_profile: bool = True) -> None:
     )
     (template_root / "configs" / "antigravity" / "settings.json").write_text(
         "{\"verbosity\": \"low\"}\n",
+        encoding="utf-8",
+    )
+    (template_root / "configs" / "statusline" / "statusline.py").write_text(
+        "#!/usr/bin/env python3\n",
         encoding="utf-8",
     )
     (template_root / "project" / "AGENTS.md").write_text("Project rules\n", encoding="utf-8")
@@ -455,10 +460,14 @@ class InstallTemplateTest(unittest.TestCase):
             (self.template_root / "instructions" / "global.md").read_text(encoding="utf-8"),
         )
         self.assertTrue((self.home_root / ".claude" / "settings.json").is_file())
+        self.assertTrue((self.home_root / ".claude" / "statusline.py").is_file())
         self.assertTrue((self.home_root / ".claude" / "skills" / "first-skill").is_dir())
         self.assertTrue((self.home_root / ".gemini" / "GEMINI.md").is_file())
         self.assertTrue(
             (self.home_root / ".gemini" / "antigravity-cli" / "settings.json").is_file()
+        )
+        self.assertTrue(
+            (self.home_root / ".gemini" / "antigravity-cli" / "statusline.py").is_file()
         )
         self.assertTrue(
             (self.home_root / ".gemini" / "antigravity-cli" / "skills" / "second-skill").is_dir()

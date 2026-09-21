@@ -5,5 +5,9 @@
   "autoMemoryEnabled": false,
   "permissions": {
     "defaultMode": "bypassPermissions"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.py"
   }
 }
