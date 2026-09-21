@@ -62,6 +62,17 @@ Follow applicable project instructions and matching skills. Never modify skill f
 - Apply this gate even when plotting is only one part of a coding, debugging, research, or writing task.
 - Preserve the data semantics, labels, units, uncertainty representation, and requested output format.
 
+## Ingest gate
+
+- Activate this gate only when the user explicitly asks to ingest, index, import,
+  or prepare material as reusable agent context.
+- Use the `ingest-context` skill for ingestion of the material.
+- Never store generated ingestion artifacts elsewhere unless explicitly requested.
+- Preserve source provenance and distinguish source content from generated
+  summaries or interpretation.
+- Never recursively load all of `.agents/context/` into context. Retrieve from
+  the catalog, then the package overview, then only the required detailed files.
+
 ## Python
 
 - Do not use `argparse` unless explicitly requested.
