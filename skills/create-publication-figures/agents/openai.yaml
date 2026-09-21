@@ -1,0 +1,15 @@
+interface:
+  display_name: Create Publication Figures
+  short_description: Generate and revise reviewed scientific figures
+  default_prompt: Use $create-publication-figures to generate or strictly revise a publication-ready
+    scientific figure, review its scientific and visual consistency, and return matching
+    high-quality PNG and PDF files.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

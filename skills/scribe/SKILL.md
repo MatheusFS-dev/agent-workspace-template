@@ -96,6 +96,11 @@ Do not require a visible plan or approval gate for a clear micro edit.
 - Objective corrections found during verification are permitted. A new general polishing pass is not.
 - Archived files under `docs/` are for traceability, not normal context.
 
+## Generating figures for the paper
+
+- When generating new figures (that are not graphs or results figures, such as diagrams to explain the system or others), use the skill $create-publication-figures.
+- If the skill is not available, then do not create the figure. Warn the user and just add a placeholder.
+
 ## Stop Conditions
 
 Stop and report the exact limitation when an essential source is missing, requirements conflict, a requested claim lacks support, or a structural discovery invalidates an approved manuscript plan. Do not fill the gap with plausible academic prose.
