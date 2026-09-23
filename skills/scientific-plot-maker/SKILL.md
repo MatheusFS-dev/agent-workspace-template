@@ -1,8 +1,8 @@
 ---
 name: scientific-plot-maker
 description: |
-  Creates and reviews publication-style scientific plots with a muted serif visual language.
-  Use for plotting, figure generation, Matplotlib code, chart styling, and figure review.
+  Use when creating or reviewing plots, graphs, charts, axes-based data displays,
+  results visualizations, Matplotlib code, or plot styling.
 allowed-tools:
   - Read
   - Grep
@@ -12,7 +12,9 @@ allowed-tools:
 
 # Scientific Plot Maker
 
-Use this skill for plots, figures, charts, graphs, histograms, scatter plots, boxplots, error-bar plots, Matplotlib style changes, and publication-figure review.
+Use this skill for axes-based data displays and results visualizations, including plots, graphs, charts, histograms, scatter plots, boxplots, error-bar plots, and Matplotlib style changes. This routing still applies when plotting is part of coding, debugging, research, or writing.
+
+Do not use it for conceptual illustrations, architecture or system diagrams, or data-flow diagrams. An explicit user request for another skill or method overrides this default routing.
 
 ## Visual contract
 

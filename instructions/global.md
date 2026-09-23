@@ -57,9 +57,10 @@ Follow applicable project instructions and matching skills. Never modify skill f
 
 ## Plotting gate
 
-- Use the Superpowers plugin and its applicable skills for plotting tasks unless the user explicitly requests otherwise.
-- Use the `scientific-plot-maker` skill whenever creating, modifying, styling, or reviewing any plot, graph, chart, or scientific figure, unless the user explicitly requests otherwise.
-- Apply this gate even when plotting is only one part of a coding, debugging, research, or writing task.
+- Use the Superpowers plugin and the `scientific-plot-maker` skill when creating, modifying, styling, or reviewing plots, graphs, charts, axes-based data displays, or results visualizations.
+- Apply this routing when plotting is nested inside a coding, debugging, research, or writing task.
+- Do not use the plotting skill for conceptual illustrations, architecture diagrams, system diagrams, or data-flow diagrams.
+- An explicit user request for another skill or method overrides this default routing.
 - Preserve the data semantics, labels, units, uncertainty representation, and requested output format.
 
 ## Ingest gate
