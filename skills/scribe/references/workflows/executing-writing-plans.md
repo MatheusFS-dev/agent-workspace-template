@@ -35,4 +35,4 @@ Correct objective inconsistencies directly. Do not run a new general polishing p
 
 ## Completion
 
-After all tasks, check every plan task and global constraint, run final cross-section verification through `quality-control.md` Phase B, and report unresolved evidence limitations. Do not claim completion from section-level success alone.
+After all tasks, map each explicit request and plan deliverable to its location in the final manuscript. Check the actual text before marking it complete; an overview or table does not fulfill a requested individual discussion. Run final cross-section verification through `quality-control.md` Phase B and report unresolved evidence limitations. Do not claim completion from section-level success alone.

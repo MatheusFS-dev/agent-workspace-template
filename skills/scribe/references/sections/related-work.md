@@ -2,10 +2,6 @@
 
 Load this file only for a Related Work section.
 
-Organize prior work into two to four technical categories. For each category:
+Connect the discussion to the gap established in the Introduction. Group works by question or mechanism when that clarifies the comparison. Discuss each close work's mechanism, study scope, and relation to the present question in prose. If used, a comparison table summarizes that discussion rather than replacing it. Give closest works more space than distant context. Different objectives are distinctions, not automatic deficiencies.
 
-1. summarize the shared mechanism or assumption,
-2. identify the limitation relevant to the paper's target challenge,
-3. explain the paper's exact distinction.
-
-End with a positioning statement naming the closest relation and the mechanism, assumption, scope, or evidence difference. Do not organize only chronologically, give equal space to weak and close work, hide strong baselines, or produce a citation dump. Novelty cannot follow merely from different wording. Related-work claims require supplied citations, and missing citations must not be invented.
+End by positioning the present study against its closest relations through a supported difference in mechanism, assumption, scope, or evidence. Avoid chronological lists and citation dumps. Related-work claims require supplied citations; do not invent missing sources or claim novelty from different wording.

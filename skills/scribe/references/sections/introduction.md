@@ -12,3 +12,5 @@ Build the section through six moves:
 6. **Result preview:** present the strongest supported empirical takeaway without implying broad superiority from aggregate-only, unpaired, single-dataset, or representation-dependent evidence.
 
 Each contribution should map to a method section, experiment, figure, table, analysis, or explicit limitation. The final paragraph must follow from the stated gap rather than present a disconnected generic list. State dataset, benchmark, representation, hardware, protocol, or baseline scope when it bounds a claim.
+
+Develop the context and challenge enough for a reader to understand why the study design addresses the gap. Name substantive resources, methods, analyses, or supported findings as contributions; incidental equipment and reporting metrics belong elsewhere. Add a brief paper-organization paragraph when the venue expects one.

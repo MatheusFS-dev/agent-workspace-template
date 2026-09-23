@@ -43,6 +43,7 @@ Use the heavier scope when uncertain. Upgrade if hidden complexity appears.
 3. **Preservation:** Rewriting does not authorize changes to facts, numbers, units, citations, equations, labels, terminology, or measured versus proposed status.
 4. **Revision:** Every drafted or materially rewritten deliverable receives exactly one reviewer-informed revision pass.
 5. **Verification:** Verification checks the revised artifact and must not become a second general rewrite.
+6. **Paper register:** Keep internal ledgers, archive sizes, and index record counts out of Methods and Results unless storage or indexing is itself under study. Put relevant access details in availability material when needed.
 
 ## Routing Table
 
@@ -52,6 +53,8 @@ Use the heavier scope when uncertain. Upgrade if hidden complexity appears.
 | Abstract | Drafting, `references/sections/abstract.md`, then quality control |
 | Introduction | Drafting, `references/sections/introduction.md`, then quality control |
 | Related Work | Drafting, `references/sections/related-work.md`, then quality control |
+| Methods or experimental protocol | Drafting, `references/sections/methods.md`, then quality control |
+| Results | Drafting, `references/sections/results.md`, then quality control |
 | Conclusion | Drafting, `references/sections/conclusion.md`, then quality control |
 | Manuscript or section review | `references/workflows/reviewing-manuscripts.md`, then quality control for the review report |
 | Reviewer response | `references/workflows/responding-to-reviewers.md`, then quality control |
