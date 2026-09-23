@@ -26,43 +26,66 @@ class RoutingContractTest(unittest.TestCase):
         """Route nested plots while excluding conceptual diagrams."""
         instructions = read("instructions/global.md")
 
-        for display in ("plot", "graph", "chart", "axes-based data display"):
-            self.assertIn(display, instructions)
-        for containing_task in ("coding", "debugging", "research", "writing"):
-            self.assertIn(containing_task, instructions)
-        for excluded_visual in (
-            "conceptual illustration",
-            "architecture diagram",
-            "system diagram",
-            "data-flow diagram",
-        ):
-            self.assertIn(excluded_visual, instructions)
-        self.assertIn("explicit user request", instructions)
-        self.assertIn("overrides", instructions)
+        self.assertIn(
+            "`scientific-plot-maker` skill when creating, modifying, styling, or "
+            "reviewing plots, graphs, charts, axes-based data displays, or results "
+            "visualizations",
+            instructions,
+        )
+        self.assertIn(
+            "plotting is nested inside a coding, debugging, research, or writing task",
+            instructions,
+        )
+        self.assertIn(
+            "do not use the plotting skill for conceptual illustrations, architecture "
+            "diagrams, system diagrams, or data-flow diagrams",
+            instructions,
+        )
+        self.assertIn(
+            "explicit user request for another skill or method overrides this default "
+            "routing",
+            instructions,
+        )
 
     def test_plot_skill_excludes_non_plot_figures_and_preserves_override(self) -> None:
         """Prevent the plotting skill from claiming diagrams or user overrides."""
         skill = read("skills/scientific-plot-maker/SKILL.md")
 
-        self.assertIn("axes-based", skill)
-        self.assertIn("results visualization", skill)
-        self.assertIn("conceptual illustration", skill)
-        self.assertIn("architecture", skill)
-        self.assertIn("data-flow diagram", skill)
-        self.assertIn("explicit user request", skill)
-        self.assertIn("overrides", skill)
+        self.assertIn(
+            "use this skill for axes-based data displays and results visualizations",
+            skill,
+        )
+        self.assertIn(
+            "do not use it for conceptual illustrations, architecture or system "
+            "diagrams, or data-flow diagrams",
+            skill,
+        )
+        self.assertIn(
+            "explicit user request for another skill or method overrides this default "
+            "routing",
+            skill,
+        )
 
     def test_scribe_routes_paper_visuals_by_visual_type(self) -> None:
         """Send manuscript charts to plotting and diagrams to figure creation."""
         skill = read("skills/scribe/SKILL.md")
 
-        self.assertIn("scientific-plot-maker", skill)
-        self.assertIn("create-publication-figures", skill)
-        self.assertIn("results visualization", skill)
-        self.assertIn("architecture", skill)
-        self.assertIn("data-flow", skill)
-        self.assertIn("explicit user request", skill)
-        self.assertIn("overrides", skill)
+        self.assertIn(
+            "route plots, graphs, charts, axes-based data displays, and results "
+            "visualizations to `scientific-plot-maker`",
+            skill,
+        )
+        self.assertIn(
+            "route non-plot paper visuals, including conceptual illustrations, "
+            "architecture or system diagrams, and data-flow diagrams, to "
+            "`create-publication-figures`",
+            skill,
+        )
+        self.assertIn(
+            "explicit user request for another skill or method overrides this default "
+            "routing",
+            skill,
+        )
 
 
 if __name__ == "__main__":
