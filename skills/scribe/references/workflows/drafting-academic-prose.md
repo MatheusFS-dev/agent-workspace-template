@@ -25,7 +25,7 @@ Do not expose these notes unless the user requested an outline or plan.
 - Keep novelty, causality, superiority, deployment, robustness, interpretability, significance, and generalization claims conservative and explicitly scoped.
 - Do not present standard models, optimizers, compression methods, tools, or ordinary combinations as novelty unless the supplied work establishes that contribution.
 - Do not infer statistical significance from small aggregate differences, end-to-end performance from a module metric, or broad deployment readiness from one device or timing result.
-- Avoid unnecessary bullets in manuscript prose. Do not use semicolons or em dashes in manuscript prose. Replace them with full stops, commas, or conjunctions. Vary repeated contrast templates such as `rather than` while preserving the logical relationship. Split dense sentences for double-column readability.
+- Avoid unnecessary bullets in manuscript prose. Do not use semicolons or em dashes in manuscript prose, captions, or table-cell text. Replace them with full stops, commas, or conjunctions. Vary repeated contrast templates such as `rather than` while preserving the logical relationship. Split dense sentences for double-column readability.
 - Replace stacked abstract labels with a concrete subject, action, and implication. Explain arithmetic or statistical shorthand that a reader could easily misinterpret.
 
 ## Claim Construction

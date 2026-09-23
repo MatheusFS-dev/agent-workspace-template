@@ -27,7 +27,8 @@ Check whether the manuscript:
 - describes downstream decision, ranking, warning, tracking, scoring, or control components without evaluating them,
 - generalizes from one dataset, site, simulator, device, workload, or adverse condition,
 - omits class imbalance, annotation quality, rare-class, and heterogeneous-source limitations,
-- contains inconsistent terminology, acronyms, notation, figure labels, table ordering, spelling, or em dashes in manuscript prose.
+- contains inconsistent terminology, acronyms, notation, figure labels, table ordering, or spelling,
+- uses semicolons or em dashes in manuscript prose, captions, or table-cell text.
 
 Load one relevant file under `references/reviewer-examples/` when an example is needed. Do not load the entire reviewer corpus.
 

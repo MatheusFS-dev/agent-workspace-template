@@ -22,7 +22,7 @@ Every acronym appearing in LaTeX text must be defined in the acronym file using 
 
 ### Writing Style
 
-Prefer third person unless the user or venue requires otherwise. Sentences should be concise and logically connected. In double-column layout, split long explanations across shorter sentences. Do not use semicolons in manuscript prose. Use full stops, commas, or conjunctions instead.
+Prefer third person unless the user or venue requires otherwise. Sentences should be concise and logically connected. In double-column layout, split long explanations across shorter sentences. Do not use semicolons or em dashes in manuscript prose, captions, or table-cell text. Use full stops, commas, or conjunctions instead.
 
 ### LaTeX Conventions
 

@@ -12,7 +12,7 @@ Apply this phase exactly once after drafting or materially rewriting prose. Revi
 - speculative, repetitive, or disproportionate caveats that obscure a supported result, erase a supported comparison, or negate a justified stage decision,
 - differences mislabeled as deficiencies or research gaps defined by an arbitrary conjunction of conditions,
 - dense sentences, repeated contrast templates, redundancy, and compressible length,
-- semicolons or em dashes in manuscript prose,
+- semicolons or em dashes in manuscript prose, captions, or table-cell text,
 - awkward transitions or paragraph order,
 - claim wording stronger than the evidence,
 - undefined notation or metrics, unverifiable comparisons, or irrelevant implementation detail,
