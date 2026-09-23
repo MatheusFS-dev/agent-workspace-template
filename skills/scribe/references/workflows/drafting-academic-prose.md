@@ -25,7 +25,8 @@ Do not expose these notes unless the user requested an outline or plan.
 - Keep novelty, causality, superiority, deployment, robustness, interpretability, significance, and generalization claims conservative and explicitly scoped.
 - Do not present standard models, optimizers, compression methods, tools, or ordinary combinations as novelty unless the supplied work establishes that contribution.
 - Do not infer statistical significance from small aggregate differences, end-to-end performance from a module metric, or broad deployment readiness from one device or timing result.
-- Avoid unnecessary bullets in manuscript prose. Do not use semicolons in manuscript prose. Replace them with full stops, commas, or conjunctions. Vary repeated contrast templates such as `rather than` while preserving the logical relationship. Split dense sentences for double-column readability.
+- Avoid unnecessary bullets in manuscript prose. Do not use semicolons or em dashes in manuscript prose, captions, or table-cell text. Replace them with full stops, commas, or conjunctions. Vary repeated contrast templates such as `rather than` while preserving the logical relationship. Split dense sentences for double-column readability.
+- Replace stacked abstract labels with a concrete subject, action, and implication. Explain arithmetic or statistical shorthand that a reader could easily misinterpret.
 
 ## Claim Construction
 
@@ -45,7 +46,7 @@ A paragraph should have one main message, the mechanism or evidence needed to su
 
 ## Code-to-Prose Translation
 
-Describe mechanisms, inputs, outputs, assumptions, parameter roles, scientifically relevant processing order, limitations, failure conditions, and measured behavior. Do not narrate loops, assignments, logging, file handling, or implementation trivia unless they affect reproducibility or interpretation.
+Write from the paper reader's perspective. State completed methods and findings directly. Explain inputs, mechanisms, outputs, parameter roles, and scientifically relevant processing order. Do not transfer every supplied note into the paper. When storage or indexing is under study, explain its relevant methods and results. Otherwise, put operational provenance such as ledgers, logs, archive sizes, index record counts, and job accounting in availability material only when readers need it to access or audit the work.
 
 ## Formatting Route
 
