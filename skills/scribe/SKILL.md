@@ -98,7 +98,9 @@ Do not require a visible plan or approval gate for a clear micro edit.
 
 ## Generating figures for the paper
 
-- When generating new figures (that are not graphs or results figures, such as diagrams to explain the system or others), use the skill $create-publication-figures.
+- Route plots, graphs, charts, axes-based data displays, and results visualizations to `scientific-plot-maker`.
+- Route non-plot paper visuals, including conceptual illustrations, architecture or system diagrams, and data-flow diagrams, to `create-publication-figures`.
+- An explicit user request for another skill or method overrides this default routing.
 - If the skill is not available, then do not create the figure. Warn the user and just add a placeholder.
 
 ## Stop Conditions
