@@ -80,3 +80,4 @@ Follow applicable project instructions and matching skills. Never modify skill f
 - Do not use `from __future__ import annotations`.
 - Do not align assignments with extra spaces.
 - Add complete Google-style docstrings to new public functions and methods.
+- Include an `Examples:` section only when it clarifies non-obvious usage. Use concrete input with observable expected output; omit call-only examples and examples containing undefined placeholders.
