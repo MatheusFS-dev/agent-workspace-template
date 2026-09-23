@@ -22,6 +22,17 @@ def read(relative_path: str) -> str:
 class RoutingContractTest(unittest.TestCase):
     """Keep plot routing distinct from conceptual-figure routing."""
 
+    def test_global_gate_routes_explicit_context_handoffs_to_the_skill(self) -> None:
+        """Route only explicit session preservation and restoration requests."""
+        instructions = read("instructions/global.md")
+
+        self.assertIn("## session handoff gate", instructions)
+        self.assertIn("`session-handoff` skill", instructions)
+        self.assertIn("handoff context", instructions)
+        self.assertIn("save, checkpoint, or preserve session context", instructions)
+        self.assertIn("load, resume, or restore session context", instructions)
+        self.assertIn("ordinary progress updates or summaries", instructions)
+
     def test_global_gate_routes_only_axes_based_data_displays_to_plotting(self) -> None:
         """Route nested plots while excluding conceptual diagrams."""
         instructions = read("instructions/global.md")
