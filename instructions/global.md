@@ -74,6 +74,12 @@ Follow applicable project instructions and matching skills. Never modify skill f
 - Never recursively load all of `.agents/context/` into context. Retrieve from
   the catalog, then the package overview, then only the required detailed files.
 
+## Session handoff gate
+
+- Activate this gate only when the user says `handoff context` or explicitly asks to save, checkpoint, or preserve session context; load, resume, or restore session context.
+- Use the `session-handoff` skill to save or restore the portable task handoff.
+- Do not activate this gate for ordinary progress updates or summaries.
+
 ## Python
 
 - Do not use `argparse` unless explicitly requested.
