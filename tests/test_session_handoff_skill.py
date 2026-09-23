@@ -25,6 +25,7 @@ class SessionHandoffSkillContractTest(unittest.TestCase):
         skill = read_skill()
 
         self.assertIn("activate only when the user explicitly asks", skill)
+        self.assertIn("handoff context", skill)
         self.assertIn("save / checkpoint mode", skill)
         self.assertIn("load / resume mode", skill)
         self.assertIn(".agent/state/current_task.md", skill)

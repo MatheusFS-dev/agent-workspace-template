@@ -1,13 +1,11 @@
 ---
 name: session-handoff
-description: Save or restore a portable task handoff when the user explicitly asks to preserve session context, checkpoint work, resume work, or restore session context.
+description: Save or restore a portable task handoff when the user says "handoff context" or explicitly asks to preserve, checkpoint, resume, or restore session context.
 ---
 
 # Session Handoff
 
-Activate only when the user explicitly asks to preserve or restore session
-context. Do not use this skill for ordinary progress updates, summaries, or
-new-task planning.
+Activate only when the user explicitly asks to preserve or restore session context, including `handoff context`. Do not use this skill for ordinary progress updates, summaries, or new-task planning.
 
 The handoff is portable across Codex, Claude Code, and Antigravity CLI. It is
 structured operational context, not a transcript or an export of private model
