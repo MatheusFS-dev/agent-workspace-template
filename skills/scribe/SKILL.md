@@ -51,12 +51,13 @@ Use the heavier scope when uncertain. Upgrade if hidden complexity appears.
 
 | Request | Load |
 |---|---|
-| Sentence or paragraph drafting or rewriting | `references/workflows/drafting-academic-prose.md`, then `quality-control.md` |
+| Sentence or paragraph drafting or rewriting | `references/workflows/drafting-academic-prose.md`, then `references/workflows/quality-control.md` |
 | Abstract | Drafting, `references/sections/abstract.md`, then quality control |
 | Introduction | Drafting, `references/sections/introduction.md`, then quality control |
 | Related Work | Drafting, `references/sections/related-work.md`, then quality control |
 | Methods or experimental protocol | Drafting, `references/sections/methods.md`, then quality control |
 | Results | Drafting, `references/sections/results.md`, then quality control |
+| Discussion | Drafting, `references/sections/discussion.md`, then quality control |
 | Conclusion | Drafting, `references/sections/conclusion.md`, then quality control |
 | Manuscript or section review | `references/workflows/reviewing-manuscripts.md`, then quality control for the review report |
 | Reviewer response or response letter | `references/workflows/responding-to-reviewers.md`, then quality control; start from `assets/response-letter.tex` for LaTeX |

@@ -48,6 +48,8 @@ A paragraph should have one main message, the mechanism or evidence needed to su
 
 Write from the paper reader's perspective. State completed methods and findings directly. Explain inputs, mechanisms, outputs, parameter roles, and scientifically relevant processing order. Do not transfer every supplied note into the paper. When storage or indexing is under study, explain its relevant methods and results. Otherwise, put operational provenance such as ledgers, logs, archive sizes, index record counts, and job accounting in availability material only when readers need it to access or audit the work.
 
+Define study-specific terms at first use, including what they refer to and how they differ from similar terms. Describe a nontrivial procedure through its input, action, and output before implementation detail. Introduce a measurement by the question it answers. Remove sentences about the manuscript's writing choices when they do not explain the research.
+
 ## Formatting Route
 
 Use plain text unless LaTeX is requested. For LaTeX, citations, acronyms, equations, units, BibTeX, or cross-references, load `references/scribe-style-guide.md`. Never invent missing citation metadata.

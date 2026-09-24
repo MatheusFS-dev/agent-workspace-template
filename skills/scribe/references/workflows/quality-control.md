@@ -16,6 +16,7 @@ Apply this phase exactly once after drafting or materially rewriting prose. Revi
 - awkward transitions or paragraph order,
 - claim wording stronger than the evidence,
 - undefined notation or metrics, unverifiable comparisons, or irrelevant implementation detail,
+- undefined recurring terms or comparison questions left unanswered in prose,
 - operational provenance unrelated to the studied method in Methods or Results, totals inconsistent with the crossed or realized design, unexplained calculation, or numeric prose without a takeaway,
 - confusing or redundant tables, figures, labels, or captions that do not describe what is shown, including weak row or column separation and content beyond the text width,
 - inconsistent scope or terminology and dependent text left contradictory after an edit,
@@ -54,6 +55,7 @@ Compare against the supplied source for facts, causal relations, numbers, signs,
 - Reviewer responses answer each comment and promise only changes actually made or clearly proposed.
 - Hidden brainstorming notes, revision reports, placeholders, and tool artifacts are absent.
 - Formatting follows the requested plain-text or LaTeX contract.
+- Every figure and table is cited and interpreted; captions define the metrics and abbreviated columns needed to read them, and decimal formatting is consistent.
 
 When complete LaTeX sources and tools are available, compile or lint before claiming compilation success. Otherwise state only what was inspected.
 

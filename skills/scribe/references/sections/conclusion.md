@@ -12,3 +12,5 @@ Close the argument in this order:
 6. give concrete future work tied to that limitation.
 
 Do not introduce new contributions, baselines, or results. Do not broaden generality beyond the tested setting or convert limitations into vague promises. Future work should name what will be tested, changed, compared, or validated. Be confident about supported results and precise about boundaries.
+
+Give the concrete answers established by the paper, including important trade-offs and the evidence status of those answers. Tie each future-work item to a material unresolved question and name the test or comparison that would address it.
