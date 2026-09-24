@@ -3,12 +3,12 @@
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
 
-model = "gpt-5.6-sol"
-model_reasoning_effort = "medium"
+model = "gpt-6-sol"
+model_reasoning_effort = "low"
 plan_mode_reasoning_effort = "high"
 model_reasoning_summary = "none"
 model_verbosity = "low"
-
+    
 # General sessions can search the OpenAI-maintained index. Use the research
 # profile or --search when current pages and recent papers matter.
 web_search = "cached"
