@@ -1,6 +1,6 @@
 ---
 name: scribe
-description: Use when drafting, rewriting, reviewing, planning, or polishing scientific manuscripts, academic sections, reviewer responses, LaTeX prose, or research writing.
+description: Use when drafting, rewriting, reviewing, planning, or polishing scientific manuscripts, academic sections, cover letters, reviewer responses, LaTeX prose, or research writing.
 allowed-tools:
   - Read
   - Grep
@@ -27,6 +27,7 @@ Classify along both dimensions.
 - **Rewrite:** transform supplied prose without changing its scientific content.
 - **Review:** diagnose structure, clarity, support, and reviewer risk without silently replacing the manuscript.
 - **Reviewer response:** answer comments and describe only supported manuscript changes.
+- **Cover letter:** introduce a submission or revision to an editor using only supplied manuscript and journal facts.
 
 **Scope**
 
@@ -44,6 +45,7 @@ Use the heavier scope when uncertain. Upgrade if hidden complexity appears.
 4. **Revision:** Every drafted or materially rewritten deliverable receives exactly one reviewer-informed revision pass.
 5. **Verification:** Verification checks the revised artifact and must not become a second general rewrite.
 6. **Paper register:** Keep internal ledgers, archive sizes, and index record counts out of Methods and Results unless storage or indexing is itself under study. Put relevant access details in availability material when needed.
+7. **Revision color:** Mark visible edits to an existing LaTeX manuscript in blue. When the user asks to remove the blue coloring, keep the revised content and remove the revision markup from the source. Follow `references/scribe-style-guide.md` for the LaTeX method.
 
 ## Routing Table
 
@@ -57,7 +59,9 @@ Use the heavier scope when uncertain. Upgrade if hidden complexity appears.
 | Results | Drafting, `references/sections/results.md`, then quality control |
 | Conclusion | Drafting, `references/sections/conclusion.md`, then quality control |
 | Manuscript or section review | `references/workflows/reviewing-manuscripts.md`, then quality control for the review report |
-| Reviewer response | `references/workflows/responding-to-reviewers.md`, then quality control |
+| Reviewer response or response letter | `references/workflows/responding-to-reviewers.md`, then quality control; start from `assets/response-letter.tex` for LaTeX |
+| Cover letter | `references/workflows/writing-cover-letters.md`, then quality control; start from `assets/cover-letter.tex` for LaTeX |
+| Editing an existing LaTeX manuscript or removing revision color | The relevant operation module and `references/scribe-style-guide.md` |
 | Manuscript-scale drafting or restructuring | `planning-manuscript-work.md`, `executing-writing-plans.md`, the relevant operation module, then quality control |
 | Modifying this skill | `references/workflows/writing-scribe-skills.md` |
 
@@ -70,7 +74,7 @@ Use `references/bad-response-patterns.md` only when a draft or source exhibits a
 ### Micro
 
 1. Identify the requested transformation and preserved content.
-2. Load drafting and quality control only.
+2. Load drafting and quality control, plus the style guide for LaTeX manuscript edits.
 3. Draft or rewrite, apply one revision, verify, and return the finished text.
 
 Do not require a visible plan or approval gate for a clear micro edit.

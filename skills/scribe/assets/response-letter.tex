@@ -1,0 +1,83 @@
+\documentclass[journal,10pt,onecolumn,draftclsnofoot,a4paper]{IEEEtran}
+
+% This is the starting layout. Replace the class or format if the target
+% journal requires another one. Replace every bracketed placeholder.
+\usepackage[T1]{fontenc}
+\usepackage{xcolor}
+\definecolor{myGreen}{rgb}{0.000,0.555,0.300}
+\newcommand{\changed}[1]{{\color{blue}#1}}
+\setlength{\textheight}{24.8cm}
+\setlength{\textwidth}{16.8cm}
+\setlength{\parskip}{0.06cm}
+
+\newcommand{\ManuscriptTitle}{[Manuscript title]}
+\newcommand{\JournalName}{[Target journal]}
+\newcommand{\RecipientRole}{[Editor or Associate Editor]}
+\newcommand{\Addressees}{[Editor and Reviewers, as applicable]}
+\newcommand{\Signature}{The Authors}
+% Leave empty if the journal does not provide an ID or revision subject.
+\def\ManuscriptID{}
+\def\ReSubject{}
+
+\begin{document}
+\thispagestyle{empty}
+
+\noindent{\Large\textbf{Response Letter}}\par
+\vspace{0.5cm}
+\ifx\ManuscriptID\empty\else
+  \noindent\textbf{Manuscript ID:} \ManuscriptID\par
+\fi
+\noindent\textbf{Title:} \ManuscriptTitle\par
+\noindent\textbf{To:} \Addressees, \JournalName\par
+\ifx\ReSubject\empty\else
+  \noindent\textbf{Re:} \ReSubject\par
+\fi
+
+\vspace{0.5cm}
+\noindent Dear \RecipientRole,\par
+\vspace{0.2cm}
+
+[Thank the editor and reviewers as applicable. State the scope of the
+point-by-point responses and only the manuscript revisions actually made.]
+
+% If the revised manuscript contains blue changes, the following statement
+% may be included: All changes are highlighted in \changed{blue} in the
+% revised manuscript.
+
+\vspace{0.5cm}
+\noindent Best regards,\par
+\vspace{0.5cm}
+\noindent \Signature
+
+\newpage
+\begin{center}
+  {\Large\textbf{Response Letter}}\\
+  \ifx\ManuscriptID\empty\else
+    \textbf{Manuscript ID:} \ManuscriptID\\
+  \fi
+  \ManuscriptTitle
+\end{center}
+
+[Introduce the point-by-point replies and identify the revision status.]
+
+% Add the following section only if the editor supplied a substantive comment.
+% \section{Response to Editor}
+% \textcolor{myGreen}{\textbf{Editor, Comment 1:}}
+% \textit{[Complete editor comment in its original wording.]}
+%
+% \textbf{Author Response E.1:} [Direct answer, support, and exact change.]
+
+\section{Response to Reviewer 1}
+\textcolor{myGreen}{\textbf{Reviewer 1, Comment 1:}}
+\textit{[Complete reviewer comment in its original wording.]}
+
+\textbf{Author Response R1.1:} [Direct answer, supporting evidence, and
+the precise manuscript change or justified decision not to change.]
+
+% Preserve complete comments and address every subpoint. Repeat each comment
+% and response with sequential numbering. Add a section
+% for every other reviewer who supplied comments. When quoting revised
+% manuscript text, use a quote environment and keep the wording exact.
+% Add a references section only when this letter cites actual sources.
+
+\end{document}
