@@ -10,7 +10,7 @@ Plain text format returns only the final text without LaTeX commands or separate
 
 ### Citations
 
-The user may specify direct or indirect citation style.
+Use indirect citations by default. State the supported point, then cite its source. Use direct attribution when the author's identity matters to the argument or the user or venue requests it.
 
 Direct citations attribute a statement explicitly to the cited work. Indirect citations place the citation at the end of the supported sentence.
 
@@ -27,10 +27,11 @@ Prefer third person unless the user or venue requires otherwise. Sentences shoul
 ### LaTeX Conventions
 
 Ensure LaTeX code is syntactically correct and that special characters are properly escaped. Use standard notation for equations, variables, operators, and units.
+Write decimals below one with a leading zero unless the venue requires another style.
 
 ### Visible Manuscript Revisions
 
-When editing an existing LaTeX manuscript, mark the visible changed or added content in blue until the user asks to remove the coloring. Reuse an existing suitable revision command when the document defines one. Otherwise load `xcolor` once and define `\newcommand{\changed}[1]{{\color{blue}#1}}`, then wrap only the changed span, for example `\changed{revised text}`. Preserve citations, equations, labels, and other LaTeX syntax. For a deletion, color any replacement; do not reinsert deleted prose merely to mark it. Do not tint external figure artwork or add LaTeX color codes to plain-text drafts.
+When editing an existing LaTeX manuscript, mark the visible changed or added content in blue until the user asks to remove the coloring. Reuse an existing suitable revision command when the document defines one. Otherwise load `xcolor` once and define `\newcommand{\changed}[1]{{\color{blue}#1}}`, then wrap only the changed span, for example `\changed{revised text}`. Preserve citations, equations, labels, and other LaTeX syntax. For a deletion, color any replacement; do not reinsert deleted prose merely to mark it. For a changed figure, color only its caption blue, not the artwork. Do not add LaTeX color codes to plain-text drafts.
 
 When asked to remove revision coloring, keep the revised content and remove the revision markup from the `.tex` source. Unwrap `\changed{...}` or the document's equivalent carefully, preserving nested commands and braces. Remove the command definition and `xcolor` import only if nothing else needs them. Compile and inspect the affected content after either operation when the complete manuscript and tools are available.
 
