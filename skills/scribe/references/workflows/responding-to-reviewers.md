@@ -6,6 +6,10 @@
 
 Answer the actual comment directly, ground every statement in the manuscript or supplied evidence, and distinguish completed changes from proposed changes. Reviewer authority does not authorize unsupported claims or changes that contradict the work.
 
+For a LaTeX response letter, copy the Scribe asset `assets/response-letter.tex` as the base. Keep its opening letter, page break, and point-by-point responses. Adapt the IEEEtran starting class and letter format to any target-journal requirement. Set `\ManuscriptID` only when the journal provides one and `\ReSubject` only when a context-specific subject is supplied. Include the editor section only for substantive editor comments and one reviewer section per reviewer who supplied comments. Put the comment label in green, quote the actual comment text or a faithful excerpt in italics, and follow it with a directly numbered author response in normal text. Add a separate reference list only for sources actually cited in the letter.
+
+If manuscript changes are highlighted in blue, the opening may state that fact. When the user has asked to remove blue revision coloring, remove that statement too. Do not manufacture comments, completed changes, manuscript locations, or line references. Replace every bracketed placeholder before calling the letter complete.
+
 ## Process
 
 For each comment:

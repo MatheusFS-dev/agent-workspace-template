@@ -1,0 +1,53 @@
+\documentclass[journal,10pt,onecolumn,draftclsnofoot,a4paper]{IEEEtran}
+
+% This is the starting layout. Replace the class or format if the target
+% journal requires another one. Replace every bracketed placeholder.
+\usepackage[T1]{fontenc}
+\setlength{\textheight}{24.8cm}
+\setlength{\textwidth}{16.8cm}
+\setlength{\parskip}{0.08cm}
+
+\newcommand{\LetterHeading}{Cover Letter}
+\newcommand{\ManuscriptTitle}{[Manuscript title]}
+\newcommand{\JournalName}{[Target journal]}
+\newcommand{\RecipientRole}{[Editor or Associate Editor]}
+\newcommand{\Signature}{The Authors}
+% Leave both empty for a first submission. For a revision, set each only when
+% the journal provides it. ReSubject is the subject without the "Re:" label.
+\def\ManuscriptID{}
+\def\ReSubject{}
+
+\begin{document}
+\thispagestyle{empty}
+
+\noindent{\Large\textbf{\LetterHeading}}\par
+\vspace{0.5cm}
+
+\noindent\textbf{Title:} \ManuscriptTitle\par
+\noindent\textbf{Journal:} \JournalName\par
+\ifx\ManuscriptID\empty\else
+  \noindent\textbf{Manuscript ID:} \ManuscriptID\par
+\fi
+\ifx\ReSubject\empty\else
+  \noindent\textbf{Re:} \ReSubject\par
+\fi
+
+\vspace{0.5cm}
+\noindent Dear \RecipientRole,\par
+\vspace{0.2cm}
+
+[State whether this is an initial submission or a revision, and introduce
+``\ManuscriptTitle'' for consideration in \JournalName.]
+
+[Summarize the supported contribution and its fit for this journal. For a
+revision, describe only the changes actually made and any accompanying
+point-by-point response letter.]
+
+[Close with a concise expression of thanks appropriate to the submission.]
+
+\vspace{0.5cm}
+\noindent Sincerely,\par
+\vspace{0.5cm}
+\noindent \Signature
+
+\end{document}
