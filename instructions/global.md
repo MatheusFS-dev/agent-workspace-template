@@ -20,6 +20,7 @@ Follow applicable project instructions and matching skills. Never modify skill f
 - Run the narrowest reliable checks after editing, such as syntax, import, targeted test, smoke test, lint, or type check.
 - Add or preserve regression tests when behavior changes. Remove only temporary diagnostic artifacts.
 - You may create temporary test scripts under `tests/` to validate the implementation. After validation is complete, delete all temporary test scripts, generated artifacts, caches, logs, and other files created solely for testing. Keep a test script or testing artifact only when explicitly requested.
+- Avoid semicolons and em dashes in session responses.
 
 ## Debugging gate
 
