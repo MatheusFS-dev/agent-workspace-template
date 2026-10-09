@@ -6,6 +6,7 @@
 \usepackage{xcolor}
 \definecolor{myGreen}{rgb}{0.000,0.555,0.300}
 \newcommand{\changed}[1]{{\color{blue}#1}}
+\newenvironment{revisionexcerpt}{\begingroup\color{blue}}{\endgroup}
 \setlength{\textheight}{24.8cm}
 \setlength{\textwidth}{16.8cm}
 \setlength{\parskip}{0.06cm}
@@ -72,12 +73,23 @@ point-by-point responses and only the manuscript revisions actually made.]
 \textit{[Complete reviewer comment in its original wording.]}
 
 \textbf{Author Response R1.1:} [Direct answer, supporting evidence, and
-the precise manuscript change or justified decision not to change.]
+the precise manuscript change or justified decision not to change. For every
+completed change, identify its verified location and follow this response with
+a blue revision excerpt.]
+
+\begin{revisionexcerpt}
+[Copy the complete relevant revised or added manuscript material verbatim here.
+Include complete tables, equations, captions, or other changed material, not a
+summary or selected fragment. Add a labeled block for every noncontiguous
+location changed by this response. Remove this block only when no manuscript
+change was made.]
+\end{revisionexcerpt}
 
 % Preserve complete comments and address every subpoint. Repeat each comment
 % and response with sequential numbering. Add a section
 % for every other reviewer who supplied comments. When quoting revised
-% manuscript text, use a quote environment and keep the wording exact.
+% manuscript material, use revisionexcerpt, keep the copy exact, and reproduce
+% every new or revised table in full. Do not use a summary in place of the copy.
 % Add a references section only when this letter cites actual sources.
 
 \end{document}
