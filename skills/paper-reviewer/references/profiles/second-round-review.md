@@ -1,0 +1,5 @@
+# Second-Round Review
+
+This is a separate profile for a revised manuscript. Do not import the initial review profiles or repeat the full initial review. Compare each previous comment and question with the author response and the revised manuscript. Determine whether the response actually resolves the issue, merely promises a change, or leaves it unanswered. Check briefly for new issues introduced by the revision or newly visible material issues. Do not invent earlier comments or demand unrelated new work.
+
+Use exactly one of two outcomes. **Rejection** applies when material previous comments or questions remain unanswered or inadequately addressed. **Minor rejection** applies when the substantive responses are adequate and only textual corrections remain. Use the user's label “minor rejection” exactly. Identify only the unresolved item numbers or concise textual corrections that justify the choice. No additional considerations, detailed re-review, strengths list, or broad new critique. Keep the recommendation consistent in the editor note, author-facing review, and chat summary.
