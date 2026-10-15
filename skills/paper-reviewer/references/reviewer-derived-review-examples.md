@@ -1,13 +1,13 @@
 # Reviewer-Derived Review Example Bank
 
-Use this reference in review mode to generate candidate comments and to stress-test a scientific paper before producing lenient, standard, or adversarial reviewer reports. These examples are abstracted from real reviewer reactions. They cover both text-level problems and technical-review problems. Do not cite these examples as external evidence. Do not force an example onto a manuscript unless the supplied paper actually shows the issue.
+Use this reference only when the user explicitly requests example-driven stress testing. It is an issue-discovery bank, not a voice or phrasing guide. The candidate angles are legacy topic prompts and must not be copied or imitated in the final review. Discover concerns here, verify them against the manuscript, then draft only through Reviewer Voice. These examples are abstracted from real reviewer reactions. Do not cite them as external evidence or force one onto a manuscript unless the supplied paper actually shows the issue.
 
 ## How to use these examples
 
 When reviewing a manuscript, scan the paper for claim-heavy wording and evidence gaps. Typical trigger terms include:
 
 ```bash
-grep -nEi "underexplored|novel|contribution|best|outperform|state of the art|superior|deployment|generaliz|simulation|benchmark|metric|proxy|unified|representation|fair|baseline|figure|vector|end-to-end|interpretable|risk|warning|tracking|motion|embedded|throughput|power|energy|imbalance|rare|adverse|background|confusion|multi-modal|table|acronym|typo|inconsistent|limitation|future work|latency|FLOPs|complexity|statistical|confidence|ablation|robustness|real-time" manuscript.tex
+grep -nEi "underexplored|novel|contribution|best|outperform|state of the art|superior|deployment|generaliz|simulation|benchmark|metric|proxy|unified|representation|fair|baseline|figure|vector|end-to-end|interpretable|risk|warning|tracking|motion|embedded|throughput|power|energy|imbalance|rare|adverse|background|confusion|multi-modal|table|acronym|typo|inconsistent|limitation|future work|latency|FLOPs|complexity|statistical|confidence|ablation|robustness|real-time|measurement|receiver|calibrat|threshold|held-out|subset|independen|Gaussian|impulsive|recording" manuscript.tex
 ```
 
 For each hit, decide whether the issue belongs in grammar/language, lenient review, standard review, or adversarial review:
@@ -638,3 +638,113 @@ What to check:
 Candidate comment angle:
 
 > The manuscript should align capability claims with the evidence provided. If the paper advertises multiple classes, tasks, or downstream functions, the results should discuss class-level or function-level performance rather than relying only on aggregate metrics.
+
+## Example 32, configurations called equivalent are not traceably the same
+
+Trigger:
+
+> Controlled and field experiments are said to use the same implementation, but the apparatus is identified completely in only one condition.
+
+What to check:
+
+- Whether the receiver, front end, gain, filtering, antenna path, calibration, and digital chain are explicitly matched.
+- Whether a hardware or settings change could explain the cross-condition result.
+
+Candidate comment angle:
+
+> The controlled setup identifies the receiver and signal path, whereas the field description states only that the processing operations are preserved. Were both conditions acquired with the same receiver front end and settings? This should be explicit because an apparatus change could contribute to the reported difference.
+
+## Example 33, null-condition calibration assumes an operational reference that may not exist
+
+Trigger:
+
+> Thresholds or normalization parameters are learned from verified negative, empty, healthy, or noise-only observations and the environment varies over time.
+
+What to check:
+
+- How the reference state is verified without circular use of the method under test.
+- How often calibration is updated and what drift invalidates it.
+- Whether the reference state is realistically available during deployment.
+
+Candidate comment angle:
+
+> The threshold procedure depends on a verified reference condition, while the results show that the background distribution changes across measurements. How would the system obtain and refresh that reference during operation, and what criterion would trigger recalibration? The practical feasibility of the thresholding claim depends on these assumptions.
+
+## Example 34, a held-out subset is disjoint but not demonstrably independent
+
+Trigger:
+
+> A single recording, subject, run, or sequence is divided into calibration and validation subsets.
+
+What to check:
+
+- Whether the split is random, chronological, blocked, grouped, or stratified.
+- Whether alternative splits give stable results.
+- Whether dependence or leakage crosses the split boundary.
+
+Candidate comment angle:
+
+> The manuscript reserves a held-out subset from the same acquisition but does not explain how the split was formed. Was it randomized, chronological, or blocked, and are the conclusions stable across alternative valid splits? Disjoint samples alone do not establish independent validation when they share an acquisition.
+
+## Example 35, qualitative regimes drive the conclusion without a reproducible assignment rule
+
+Trigger:
+
+> Results are organized by labels such as Gaussian, impulsive, adverse, clean, noisy, easy, or difficult based mainly on representative plots.
+
+What to check:
+
+- Which statistic or decision rule assigns a recording to each regime.
+- Whether the rule is applied to the disturbance or to a signal-contaminated observation.
+- Whether the condition was selected before inspecting the method's performance.
+
+Candidate comment angle:
+
+> The comparison depends on separating the recordings into two disturbance regimes, but the current evidence is visual. What quantitative criterion assigned each acquisition to a regime, and was that rule defined independently of detector performance? A reproducible classification is needed to interpret the claimed regime-dependent behavior.
+
+## Example 36, many windows are treated as many experiments
+
+Trigger:
+
+> Thousands of samples or windows are derived from one or a few recordings and then used for confidence intervals or generalization claims.
+
+What to check:
+
+- What the independent acquisition or experimental unit is.
+- Whether temporal, spatial, subject-level, or device-level correlation reduces the effective sample size.
+- Whether uncertainty is estimated across independent acquisitions or only derived observations.
+
+Candidate comment angle:
+
+> The reported realizations are consecutive windows from one acquisition rather than independent measurement campaigns. How does within-record dependence affect the effective sample size and the reported uncertainty? The distinction is important because more windows improve within-record estimation but do not establish repeatability across conditions.
+
+## Example 37, one channel or case supports a deployment-level conclusion
+
+Trigger:
+
+> A central comparison uses one positive-negative pair, one site, one device, or one operating condition.
+
+What to check:
+
+- Whether the case was selected by a predeclared rule.
+- Whether the conclusion is framed as illustrative or representative.
+- Whether independent cases show the same ordering.
+
+Candidate comment angle:
+
+> The central comparison is based on one paired condition. How was this pair selected, and does the ordering persist across other independently acquired pairs? Without that information, the result should be framed as evidence for the measured case rather than a general deployment recommendation.
+
+## Example 38, reproducibility details are requested without their scientific purpose
+
+Trigger:
+
+> A draft review asks for a long list of hardware and acquisition metadata without connecting it to a result.
+
+What to check:
+
+- Which omitted setting could change the conclusion, comparison, or ability to reproduce the measurement.
+- Whether separate uncertainties should become separate focused comments.
+
+Candidate comment angle:
+
+> The field results vary with receiver gain and antenna placement, but those settings are not linked to the reported acquisitions. Please identify the settings used for each condition and explain whether they were held fixed. This is needed to distinguish detector behavior from changes in the measurement chain.
