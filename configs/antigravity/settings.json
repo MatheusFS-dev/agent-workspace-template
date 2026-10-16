@@ -7,6 +7,6 @@
   "verbosity": "low",
   "statusLine": {
     "type": "command",
-    "command": "~/.gemini/antigravity-cli/statusline.py"
+    "command": "python ~/.gemini/antigravity-cli/statusline.py"
   }
 }
