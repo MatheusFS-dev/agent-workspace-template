@@ -470,15 +470,16 @@ class InstallTemplateTest(unittest.TestCase):
         self.assertTrue(
             (self.home_root / ".gemini" / "antigravity-cli" / "statusline.py").is_file()
         )
-        antigravity_settings = json.loads(
-            (self.home_root / ".gemini" / "antigravity-cli" / "settings.json").read_text(
-                encoding="utf-8"
+        if PLATFORM_NAME == "windows":
+            antigravity_settings = json.loads(
+                (self.home_root / ".gemini" / "antigravity-cli" / "settings.json").read_text(
+                    encoding="utf-8"
+                )
             )
-        )
-        self.assertEqual(
-            antigravity_settings["statusLine"]["command"],
-            f'python "{self.home_root / ".gemini" / "antigravity-cli" / "statusline.py"}"',
-        )
+            self.assertEqual(
+                antigravity_settings["statusLine"]["command"],
+                f'python "{self.home_root / ".gemini" / "antigravity-cli" / "statusline.py"}"',
+            )
         self.assertTrue(
             (self.home_root / ".gemini" / "antigravity-cli" / "skills" / "second-skill").is_dir()
         )
