@@ -40,6 +40,12 @@ For each important claim, identify:
 
 When support is incomplete, narrow the sentence. Do not compensate with persuasive language such as `best`, `state of the art`, `superior`, `robust`, `generalizable`, `real-time`, or `deployment-ready`.
 
+## Claim and Limitation Balance
+
+State the supported finding before its boundary. Put a limitation next to the inference it changes, and explain that specific effect. Avoid a separate sentence cataloguing every stronger claim the study does not make. If a boundary does not change how the reader should interpret a result, place it in a concise limitations discussion or omit it. Preserve material limitations even when the author asks for a more positive tone.
+
+Use affirmative, scoped wording when it carries the same information. For example, prefer “In the two selected ROC cases, favorable detector orders differed with disturbance conditions” to “These observations do not establish a universally optimal order.” If the study lacks a comparison needed for a claim, omit that claim instead of repeatedly disclaiming it. Do not turn an untested method, setting, or population into a tested one.
+
 ## Paragraph Construction
 
 A paragraph should have one main message, the mechanism or evidence needed to support it, a scoped interpretation, and a transition that advances the section argument. Separate method, result, and interpretation when combining them obscures the logic. Remove repeated motivation and repeated contribution wording.

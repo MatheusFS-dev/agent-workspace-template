@@ -27,6 +27,8 @@ Use the bad-response-pattern reference only when one of these checks identifies 
 
 When a defect may recur, search the full in-scope artifact before verification and correct every occurrence without broadening into unrelated rewriting. Apply presentation fixes consistently to structurally similar tables and passages.
 
+For manuscripts and reviewer responses, perform a claim-balance check during this same revision pass. Search repeated negative constructions such as “does not establish,” “not evaluated,” “cannot,” and “no formal.” Read each hit in context rather than deleting it mechanically. Keep a caveat when it changes the interpretation of a material result. Merge duplicated caveats, move procedural absences out of results prose when appropriate, and recast remaining boundaries as affirmative scoped claims when their meaning is preserved. Check the abstract, contribution statement, discussion, conclusion, and response letter together so that neither a broad claim nor a defensive caveat contradicts the actual evidence. Verify that the central supported contribution remains explicit after revision.
+
 Create a brief hidden revision report, apply its changes once, then stop general polishing. Do not expose the report unless requested.
 
 This phase may merge, split, narrow, qualify, reorder, or remove prose while preserving meaning. It must not invent evidence, redesign the study, demand new experiments, change the scientific position, assess acceptance probability, or replace supplied facts with reviewer preference.
