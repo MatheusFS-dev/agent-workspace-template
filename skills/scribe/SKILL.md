@@ -47,6 +47,7 @@ Use the heavier scope when uncertain. Upgrade if hidden complexity appears.
 6. **Paper register:** Keep internal ledgers, archive sizes, and index record counts out of Methods and Results unless storage or indexing is itself under study. Put relevant access details in availability material when needed.
 7. **Revision color:** Mark visible edits to an existing LaTeX manuscript in blue. When the user asks to remove the blue coloring, keep the revised content and remove the revision markup from the source. Follow `references/scribe-style-guide.md` for the LaTeX method.
 8. **Response-letter evidence:** In every response letter, reproduce the complete relevant changed or added manuscript material after the corresponding response and render that reproduced material in blue. This includes prose, equations, captions, lists, and complete new or revised tables. A summary or location reference does not replace the reproduced change.
+9. **Response-letter references:** Do not repeat manuscript citations or its bibliography in a response letter. Omit citation commands from reproduced manuscript excerpts while preserving their substantive wording. Cite and list a source in the letter only when it supports an explanation made solely in the letter.
 
 ## Routing Table
 

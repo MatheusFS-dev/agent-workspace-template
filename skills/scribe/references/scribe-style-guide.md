@@ -4,7 +4,7 @@ This file preserves detailed operational guidance for academic writing. Load it 
 
 ### Allowed Output Formats
 
-For manuscript LaTeX prose, return the main `.tex` content, `.bib` entries actually used, and acronym definitions using `\DeclareAcronym` when relevant. For a cover or response letter, return one complete `.tex` file based on the corresponding Scribe asset; add bibliography material only when the letter cites actual sources.
+For manuscript LaTeX prose, return the main `.tex` content, `.bib` entries actually used, and acronym definitions using `\DeclareAcronym` when relevant. For a cover or response letter, return one complete `.tex` file based on the corresponding Scribe asset. Do not repeat manuscript citations or its bibliography in a response letter. Add bibliography material only when the letter cites a source for an explanation made solely in that letter.
 
 Plain text format returns only the final text without LaTeX commands or separate files.
 
