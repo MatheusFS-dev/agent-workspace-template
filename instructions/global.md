@@ -12,6 +12,14 @@ Follow applicable project instructions and matching skills. Never modify skill f
 - Use the minimum files, tools, output, and subagents needed. Delegate only independent work whose isolation or parallelism justifies the additional usage.
 - Do not commit, push, create branches, or create tags unless explicitly requested.
 
+## Repeated misunderstanding gate
+
+- Activate when the user indicates that the assistant still misunderstands the same goal or scope after an earlier correction, including statements such as "that is still not what I mean." A first correction alone does not trigger this gate: incorporate it and correct course normally.
+- Stop the current solution and apologize directly in the user's language, for example: "Sorry, I'm not following what you want."
+- Reread the relevant user request, corrections, and references. Inspect available evidence when needed. Treat prior assistant interpretations as hypotheses, not established user intent. Identify the problem the user wants fixed and where the previous answer diverged.
+- Briefly state the current understanding and ask focused questions only about material uncertainty, as in Plan Mode. Give simple example outputs for plausible answers so the user can recognize the intended deliverable, such as a one-line message versus a one-line implementation plan. Do not repeat questions already answered.
+- While the uncertainty remains, pause substantive work that depends on it. Read-only investigation may continue. Resume when the answers resolve the uncertainty, and do not require an extra confirmation. If a material ambiguity remains, ask a follow-up question.
+
 ## Coding gate
 
 - Use the Superpowers plugin and its applicable skills for coding tasks unless the user explicitly requests otherwise.

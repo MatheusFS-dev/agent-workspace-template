@@ -22,6 +22,20 @@ def read(relative_path: str) -> str:
 class RoutingContractTest(unittest.TestCase):
     """Keep plot routing distinct from conceptual-figure routing."""
 
+    def test_repeated_misunderstanding_gate_requests_clarification(self) -> None:
+        """Stop repeated wrong-scope answers until the user's intent is clear."""
+        instructions = read("instructions/global.md")
+
+        self.assertIn("## repeated misunderstanding gate", instructions)
+        self.assertIn("after an earlier correction", instructions)
+        self.assertIn("a first correction alone", instructions)
+        self.assertIn("apologize directly", instructions)
+        self.assertIn("reread the relevant user request, corrections, and references", instructions)
+        self.assertIn("treat prior assistant interpretations as hypotheses", instructions)
+        self.assertIn("simple example outputs", instructions)
+        self.assertIn("resume when the answers resolve the uncertainty", instructions)
+        self.assertIn("do not require an extra confirmation", instructions)
+
     def test_global_gate_routes_explicit_context_handoffs_to_the_skill(self) -> None:
         """Route only explicit session preservation and restoration requests."""
         instructions = read("instructions/global.md")
