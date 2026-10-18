@@ -317,7 +317,7 @@ def install_global_antigravity(
         settings_path = antigravity_root / "settings.json"
         settings = json.loads(settings_path.read_text(encoding="utf-8"))
         settings.setdefault("statusLine", {})["command"] = (
-            f'python "{antigravity_root / "statusline.py"}"'
+            f"python {antigravity_root / 'statusline.py'}"
         )
         settings_path.write_text(json.dumps(settings, indent=2) + "\n", encoding="utf-8")
         output_function(f"Installed Antigravity CLI global template into {gemini_root}")

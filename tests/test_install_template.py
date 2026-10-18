@@ -478,7 +478,7 @@ class InstallTemplateTest(unittest.TestCase):
             )
             self.assertEqual(
                 antigravity_settings["statusLine"]["command"],
-                f'python "{self.home_root / ".gemini" / "antigravity-cli" / "statusline.py"}"',
+                f"python {self.home_root / '.gemini' / 'antigravity-cli' / 'statusline.py'}",
             )
         self.assertTrue(
             (self.home_root / ".gemini" / "antigravity-cli" / "skills" / "second-skill").is_dir()
