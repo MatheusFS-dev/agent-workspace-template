@@ -112,6 +112,24 @@ class RoutingContractTest(unittest.TestCase):
             skill,
         )
 
+    def test_scribe_coloring_marks_only_exact_revised_spans(self) -> None:
+        """Keep unchanged manuscript text outside blue revision markup."""
+        skill = read("skills/scribe/SKILL.md")
+        style_guide = read("skills/scribe/references/scribe-style-guide.md")
+        response_workflow = read("skills/scribe/references/workflows/responding-to-reviewers.md")
+        response_template = read("skills/scribe/assets/response-letter.tex")
+
+        self.assertIn("only the exact modified or added span", skill)
+        self.assertIn("never wrap an entire paragraph in blue", skill)
+        self.assertIn("keep unchanged text outside blue revision markup", style_guide)
+        self.assertIn("never wrap an entire paragraph in blue", style_guide)
+        self.assertIn("only the exact changed or added span in blue", response_workflow)
+        self.assertIn("leave retained context uncolored", response_workflow)
+        self.assertNotIn(
+            r"\newenvironment{revisionexcerpt}{\begingroup\color{blue}}{\endgroup}",
+            response_template,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

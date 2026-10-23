@@ -6,7 +6,7 @@
 \usepackage{xcolor}
 \definecolor{myGreen}{rgb}{0.000,0.555,0.300}
 \newcommand{\changed}[1]{{\color{blue}#1}}
-\newenvironment{revisionexcerpt}{\begingroup\color{blue}}{\endgroup}
+\newenvironment{revisionexcerpt}{\begin{quote}}{\end{quote}}
 \setlength{\textheight}{24.8cm}
 \setlength{\textwidth}{16.8cm}
 \setlength{\parskip}{0.06cm}
@@ -75,21 +75,24 @@ point-by-point responses and only the manuscript revisions actually made.]
 \textbf{Author Response R1.1:} [Direct answer, supporting evidence, and
 the precise manuscript change or justified decision not to change. For every
 completed change, identify its verified location and follow this response with
-a blue revision excerpt.]
+a revision excerpt that marks only the exact changed or added span in blue.]
 
 \begin{revisionexcerpt}
 [Copy the complete relevant revised or added manuscript material verbatim here.
-Include complete tables, equations, captions, or other changed material, not a
-summary or selected fragment. Add a labeled block for every noncontiguous
-location changed by this response. Remove this block only when no manuscript
-change was made.]
+Keep retained context uncolored and wrap only exact changed or added spans in
+\changed{blue}, for example: The method uses \changed{four} sensors. Include
+complete tables, equations, captions, or other changed material, not a summary
+or selected fragment. Add a labeled excerpt for every noncontiguous location
+changed by this response. Remove this block only when no manuscript change was
+made.]
 \end{revisionexcerpt}
 
 % Preserve complete comments and address every subpoint. Repeat each comment
 % and response with sequential numbering. Add a section
 % for every other reviewer who supplied comments. When quoting revised
-% manuscript material, use revisionexcerpt, keep the substantive copy exact
-% while omitting manuscript citation commands, and reproduce
+% manuscript material, use revisionexcerpt, keep the substantive copy exact,
+% keep retained context uncolored, wrap only exact changes in \changed{}, omit
+% manuscript citation commands, and reproduce
 % every new or revised table in full. Do not use a summary in place of the copy.
 % Add a references section only for letter-only sourced explanations.
 
