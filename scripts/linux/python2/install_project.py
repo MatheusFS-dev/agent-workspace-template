@@ -465,4 +465,6 @@ def install_project(
 
 
 if __name__ == "__main__":
-    install_project()
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    from toolbox_output import run_installer
+    sys.exit(run_installer("setup-agents-project", install_project))

@@ -353,4 +353,6 @@ def install_global_claude(
 
 
 if __name__ == "__main__":
-    install_global_claude()
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    from toolbox_output import run_installer
+    sys.exit(run_installer("setup-agents-claude", install_global_claude))

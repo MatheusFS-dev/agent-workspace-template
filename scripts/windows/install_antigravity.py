@@ -325,4 +325,6 @@ def install_global_antigravity(
 
 
 if __name__ == "__main__":
-    install_global_antigravity()
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from toolbox_output import run_installer
+    sys.exit(run_installer("setup-agents-antigravity", install_global_antigravity))

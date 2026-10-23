@@ -62,7 +62,7 @@ def load_installer(name):
 INSTALLERS = {name: load_installer(name) for name in set(COMMAND_MODULES.values())}
 
 
-def question(question_id, question_type, title, options=None):
+def question(question_id, question_type, title, options=None, default=None, required=False):
     """Build one typed questionnaire response.
 
     Args:
@@ -92,6 +92,8 @@ def question(question_id, question_type, title, options=None):
             "id": question_id,
             "type": question_type,
             "title": title,
+            "default": default,
+            "required": required,
         },
     }
     if options is not None:
@@ -242,10 +244,11 @@ def _next_base_question(command, answers, template_root):
             "multiple",
             "Codex profiles to install",
             [{"value": name, "label": name} for name in profile_names],
+            ["research"],
         )
     if command == "setup-agents-project":
         questions = (
-            ("target_directory", "text", "Target project directory", None),
+            ("target_directory", "text", "Target project directory", None, str(Path.cwd())),
             (
                 "agent_formats",
                 "multiple",
@@ -255,23 +258,26 @@ def _next_base_question(command, answers, template_root):
                     {"value": "claude", "label": "Claude"},
                     {"value": "antigravity", "label": "Antigravity"},
                 ],
+                ["codex", "antigravity", "claude"],
             ),
             (
                 "ignore_agent_files",
                 "confirm",
                 "Add installed agent instruction files to .gitignore?",
                 None,
+                False,
             ),
             (
                 "ignore_superpowers",
                 "confirm",
                 "Add Superpowers output directories to .gitignore?",
                 None,
+                True,
             ),
         )
-        for answer_id, answer_type, title, options in questions:
+        for answer_id, answer_type, title, options, default in questions:
             if answer_id not in answers:
-                return question(answer_id, answer_type, title, options)
+                return question(answer_id, answer_type, title, options, default)
     return None
 
 
@@ -503,6 +509,7 @@ def handle_request(request, template_root=None, home_root=None, output_function=
                 "replace_conflicts",
                 "confirm",
                 "Replace all conflicting paths?",
+                default=True,
             )
         if not answers["replace_conflicts"]:
             reason = "replacement declined: " + ", ".join(preparation["conflicts"])
@@ -516,6 +523,7 @@ def handle_request(request, template_root=None, home_root=None, output_function=
                 "create_backups",
                 "confirm",
                 "Create backups of conflicting paths?",
+                default=False,
             )
 
     if operation == "questions":

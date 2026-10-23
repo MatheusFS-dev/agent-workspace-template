@@ -473,4 +473,6 @@ def install_global_codex(
 
 
 if __name__ == "__main__":
-    install_global_codex()
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    from toolbox_output import run_installer
+    sys.exit(run_installer("setup-agents-codex", install_global_codex))
