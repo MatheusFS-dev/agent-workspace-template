@@ -19,7 +19,7 @@ __        _____  ____  _  ______ ____   _    ____ _____
 ```
 
 This repository provides user-scoped rules, tool settings, and reusable skill
-packages for Codex, Claude Code, and Antigravity CLI, plus minimal project
+packages for Codex, Claude Code, Antigravity CLI, and OpenCode, plus minimal project
 instruction files. It intentionally does not install an agent workspace,
 project memory, user settings, or skills into a project.
 
@@ -31,6 +31,7 @@ configs/
   claude/settings.json
   codex/config.toml.template
   codex/research.config.toml
+  opencode/opencode.json
 instructions/
   global.md
 project/
@@ -43,17 +44,20 @@ scripts/
     python2/
       install_antigravity.py
       install_claude.py
+      install_opencode.py
       install_codex.py
       install_project.py
       requirements.txt
     python3/
       install_antigravity.py
       install_claude.py
+      install_opencode.py
       install_codex.py
       install_project.py
   windows/
     install_antigravity.py
     install_claude.py
+    install_opencode.py
     install_codex.py
     install_project.py
 ```
@@ -75,6 +79,7 @@ for the workflow you need with `python3`:
 python3 scripts/linux/python3/install_codex.py
 python3 scripts/linux/python3/install_claude.py
 python3 scripts/linux/python3/install_antigravity.py
+python3 scripts/linux/python3/install_opencode.py
 python3 scripts/linux/python3/install_project.py
 ```
 
@@ -89,6 +94,7 @@ python2.7 -m pip install -r scripts/linux/python2/requirements.txt
 python2.7 scripts/linux/python2/install_codex.py
 python2.7 scripts/linux/python2/install_claude.py
 python2.7 scripts/linux/python2/install_antigravity.py
+python2.7 scripts/linux/python2/install_opencode.py
 python2.7 scripts/linux/python2/install_project.py
 ```
 
@@ -101,13 +107,14 @@ On Windows, use the Python launcher from PowerShell or Command Prompt:
 py scripts\windows\install_codex.py
 py scripts\windows\install_claude.py
 py scripts\windows\install_antigravity.py
+py scripts\windows\install_opencode.py
 py scripts\windows\install_project.py
 ```
 
 Each script runs one workflow directly, rejects the wrong operating system
 before prompting or writing, and does not import another local installer
 module. The corresponding `install_global_codex`, `install_global_claude`,
-`install_global_antigravity`, and `install_project` functions remain available
+`install_global_antigravity`, `install_global_opencode`, and `install_project` functions remain available
 for focused Python tests or embedding.
 
 ### Global installs
@@ -117,6 +124,8 @@ for focused Python tests or embedding.
 | Codex | `~/.codex/config.toml`, selected `~/.codex/*.config.toml` profile files, and `~/.codex/skills/<skill-name>/` |
 | Claude Code | `~/.claude/CLAUDE.md`, `~/.claude/settings.json`, `~/.claude/statusline.py`, and `~/.claude/skills/<skill-name>/` |
 | Antigravity CLI | `~/.gemini/GEMINI.md`, `~/.gemini/antigravity-cli/settings.json`, `~/.gemini/antigravity-cli/statusline.py`, and `~/.gemini/antigravity-cli/skills/<skill-name>/` |
+
+| OpenCode | `~/.config/opencode/AGENTS.md`, `~/.config/opencode/opencode.json`, and `~/.config/opencode/skills/<skill-name>/` |
 
 On Windows, `~` is the current `%USERPROFILE%` directory.
 
@@ -133,9 +142,9 @@ and [global skills documentation](https://www.antigravity.google/docs/cli/plugin
 ### Project installs
 
 The installer prompts for an existing project directory and a non-empty
-selection of `codex`, `antigravity`, and/or `claude`.
+selection of `codex`, `antigravity`, `claude`, and/or `opencode`.
 
-- Codex and Antigravity install `AGENTS.md`.
+- Codex, Antigravity, and OpenCode install `AGENTS.md`.
 - Claude installs `CLAUDE.md`, which imports `AGENTS.md`.
 - Skills and user-level settings are never copied to a project.
 

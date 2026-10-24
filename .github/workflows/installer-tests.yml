@@ -46,10 +46,12 @@ jobs:
           scripts/linux/python3/install_codex.py
           scripts/linux/python3/install_claude.py
           scripts/linux/python3/install_antigravity.py
+          scripts/linux/python3/install_opencode.py
           scripts/linux/python3/install_project.py
           scripts/windows/install_codex.py
           scripts/windows/install_claude.py
           scripts/windows/install_antigravity.py
+          scripts/windows/install_opencode.py
           scripts/windows/install_project.py
 
   python2-syntax:
@@ -69,5 +71,6 @@ jobs:
           scripts/linux/python2/install_codex.py
           scripts/linux/python2/install_claude.py
           scripts/linux/python2/install_antigravity.py
+          scripts/linux/python2/install_opencode.py
           scripts/linux/python2/install_project.py
           scripts/linux/python2/toolbox_adapter.py

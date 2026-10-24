@@ -110,13 +110,13 @@ def prompt_project_tools(
         output_function: Reporting callable used for invalid responses.
 
     Returns:
-        set[str]: Non-empty selection from Codex, Antigravity, and Claude.
+        set[str]: Non-empty selection from Codex, Antigravity, Claude, and OpenCode.
 
     Raises:
         None.
     """
     prompt = (
-        "Project tools (codex, antigravity, claude; comma-separated; "
+        "Project tools (codex, antigravity, claude, opencode; comma-separated; "
         "default: codex, antigravity, claude): "
     )
     while True:
@@ -128,7 +128,7 @@ def prompt_project_tools(
         if len(set(selected_tools)) != len(selected_tools):
             output_function("Project tool selection cannot repeat a tool.")
             continue
-        allowed_tools = {"codex", "antigravity", "claude"}
+        allowed_tools = {"codex", "antigravity", "opencode", "claude"}
         unknown_tools = sorted(set(selected_tools) - allowed_tools)
         if unknown_tools:
             output_function(f"Unknown project tool: {', '.join(unknown_tools)}")
@@ -424,7 +424,7 @@ def install_project(
     # importing file, so mixed selections create each destination only once.
     instruction_names = []
     items = []
-    if selected_tools & {"codex", "antigravity"}:
+    if selected_tools & {"codex", "antigravity", "opencode"}:
         instruction_names.append("AGENTS.md")
         items.append((root / "project" / "AGENTS.md", target_root / "AGENTS.md"))
     if "claude" in selected_tools:

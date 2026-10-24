@@ -14,12 +14,14 @@ COMMAND_MODULES = {
     "setup-agents-codex": "codex",
     "setup-agents-claude": "claude",
     "setup-agents-antigravity": "antigravity",
+    "setup-agents-opencode": "opencode",
     "setup-agents-project": "project",
 }
 BASE_QUESTION_IDS = {
     "setup-agents-codex": ("profiles",),
     "setup-agents-claude": (),
     "setup-agents-antigravity": (),
+    "setup-agents-opencode": (),
     "setup-agents-project": (
         "target_directory",
         "agent_formats",
@@ -200,7 +202,7 @@ def validate_available_answers(command, answers, template_root):
             if not formats:
                 raise ValueError("answer 'agent_formats' must select at least one value")
             unknown = sorted(
-                set(formats) - set(("codex", "claude", "antigravity"))
+                set(formats) - set(("codex", "claude", "antigravity", "opencode"))
             )
             if unknown:
                 raise ValueError(
@@ -251,6 +253,7 @@ def next_base_question(command, answers, template_root):
                     {"value": "codex", "label": "Codex"},
                     {"value": "claude", "label": "Claude"},
                     {"value": "antigravity", "label": "Antigravity"},
+                    {"value": "opencode", "label": "OpenCode"},
                 ],
                 ["codex", "antigravity", "claude"],
             ),
@@ -332,6 +335,15 @@ def prepare(command, answers, template_root=None, home_root=None):
         success_message = "Installed Codex global template into {0}".format(
             destination_root
         )
+    elif command == "setup-agents-opencode":
+        skills = installer.validate_sources(root)
+        destination_root = os.path.join(home, ".config", "opencode")
+        items = [
+            (os.path.join(root, "instructions", "global.md"), os.path.join(destination_root, "AGENTS.md")),
+            (os.path.join(root, "configs", "opencode", "opencode.json"), os.path.join(destination_root, "opencode.json")),
+        ]
+        items.extend((skill, os.path.join(destination_root, "skills", os.path.basename(skill))) for skill in skills)
+        success_message = "Installed OpenCode global template into {0}".format(destination_root)
     elif command in ("setup-agents-claude", "setup-agents-antigravity"):
         skills = installer.validate_sources(root)
         agent_name = COMMAND_MODULES[command]
@@ -371,7 +383,7 @@ def prepare(command, answers, template_root=None, home_root=None):
         selected = set(answers["agent_formats"])
         instruction_names = []
         items = []
-        if selected & set(("codex", "antigravity")):
+        if selected & set(("codex", "antigravity", "opencode")):
             instruction_names.append("AGENTS.md")
             items.append((
                 os.path.join(root, "project", "AGENTS.md"),
