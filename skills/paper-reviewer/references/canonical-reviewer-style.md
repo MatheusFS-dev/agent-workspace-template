@@ -1,6 +1,6 @@
-# Canonical Reviewer Style (Issue #18)
+# Canonical Reviewer Style
 
-This is the authoritative positive example for the *author-facing prose* produced by the paper-reviewer. It comes directly from [issue #18](https://github.com/MatheusFS-dev/agent-workspace-template/issues/18).
+This is the authoritative positive example for the *author-facing prose* produced by the paper-reviewer. It preserves a complete example of the target reviewer's writing style.
 
 ## How to use this reference
 
@@ -13,9 +13,9 @@ This is the authoritative positive example for the *author-facing prose* produce
 
 ## Verbatim original review example
 
-The text between the markers is preserved **exactly** as posted in issue #18. Do not reformat or correct it.
+The text between the markers is preserved **exactly** as supplied in the original example. Do not reformat or correct it.
 
-<!-- BEGIN VERBATIM ISSUE 18 EXAMPLE -->
+<!-- BEGIN VERBATIM REVIEW EXAMPLE -->
 An example:
 Reviewer 4
 Round 1
@@ -25,7 +25,7 @@ For over-the-air measurements, the description of the instrumentation given in S
 It is stated (e.g. lines 298-299) that noise-only measurements (the null hypothesis) obtained in verified unoccupied channels were used for the determination of the empirical CDF. Since the authors have observed significant time-dependent noise variations (Gaussian vs impulsive conditions), it would appear that such a calibration scheme should be periodically (or continuously) updated, with verified unoccupied channels readily available. Is this realistic in practical circumstances? e.g. known abscence of primary users is sufficient to consider a channel as verified unoccupied? A little discussion would be welcome.
 How were the held-out subset (30% of windows) for false-alarm validation selected? Did the authors test if the corresponding results remain consistent for different subset selections?
 The results exhibit a clear distinction between (1) approximately Gaussian and (2) impulsive noise conditions, as shown and discussed in Section 5.3 and depicted in Figure 9. How were the impulsive-noise measurements separated from the near-Gaussian ones for comparison purposes? In other words, how was the classification of measurements (into the two cases) made, i.e. which criterion was used to decide if a specific recording (1E6 samples) corresponds to case (1) or (2) and characterize results accordingly?
-<!-- END VERBATIM ISSUE 18 EXAMPLE -->
+<!-- END VERBATIM REVIEW EXAMPLE -->
 
 ## Observable features to imitate
 
