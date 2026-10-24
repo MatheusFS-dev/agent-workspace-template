@@ -57,7 +57,7 @@ class OpenCodeSetupTests(unittest.TestCase):
                 self.assertEqual(len(prepared['items']), len(list((ROOT / 'skills').iterdir())) + 2)
                 project = adapter.prepare('setup-agents-project', {'target_directory': directory, 'agent_formats': ['codex', 'opencode'], 'ignore_agent_files': False, 'ignore_superpowers': False}, ROOT, home)
                 self.assertEqual(len(project['items']), 1)
-                self.assertEqual(project['items'][0][1], home / 'AGENTS.md')
+                self.assertEqual(project['items'][0][1], home.resolve() / 'AGENTS.md')
 
 
 if __name__ == '__main__':
