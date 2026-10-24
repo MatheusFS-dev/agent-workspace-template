@@ -2,7 +2,7 @@
 
 ## Canonical author-facing writing style
 
-The author-facing review MUST follow the **exact linguistic style** of the original review reproduced in [Canonical Reviewer Style](canonical-reviewer-style.md), taken verbatim from [issue #18](https://github.com/MatheusFS-dev/agent-workspace-template/issues/18). Read the complete source example before drafting or editing any review. Its opening assessment and four comments are the primary few-shot style reference, not merely examples of general politeness.
+The author-facing review MUST follow the **exact linguistic style** of the original review reproduced in [Canonical Reviewer Style](canonical-reviewer-style.md), preserved verbatim in that reference. Read the complete source example before drafting or editing any review. Its opening assessment and four comments are the primary few-shot style reference, not merely examples of general politeness.
 
 Imitate the reviewer's academic voice: sentence structure, phrasing and vocabulary, natural hedging, connective explanations, parenthetical qualifications, manuscript-specific detail, variation in paragraph length, and progression from observations to questions. The result should plausibly read as if written by that reviewer, without copying the example's substantive claims or mechanically repeating its exact phrases. Write correct English rather than reproducing accidental typos in the original.
 
@@ -66,7 +66,7 @@ Describe the scope of the demonstrated result and inquire about the asserted ext
 
 Read only the opening assessment and numbered comments in sequence, with the canonical example nearby. Revise any text that:
 
-- sounds like a checklist rather than the issue #18 reviewer
+- sounds like a checklist rather than the canonical reviewer
 - could have been written without inspecting this manuscript
 - states an uncertain premise as a verified fact
 - substitutes demands for connected methodological questions
@@ -74,4 +74,4 @@ Read only the opening assessment and numbered comments in sequence, with the can
 - requests new work when discussion or appropriately scoped conclusions would suffice
 - omits or distorts a verified serious scientific concern for the sake of sounding pleasant
 
-The primary stylistic acceptance criterion is resemblance to the actual issue #18 prose, not merely politeness or the presence of question marks. This is a qualitative writing review, not a property that static contract tests alone can prove.
+The primary stylistic acceptance criterion is resemblance to the canonical reviewer's prose, not merely politeness or the presence of question marks. This is a qualitative writing review, not a property that static contract tests alone can prove.
