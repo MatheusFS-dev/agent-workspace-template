@@ -21,8 +21,7 @@ class OpenCodeSetupTests(unittest.TestCase):
     def test_standalone_install_and_conflicts(self):
         for platform in ('linux/python3', 'windows'):
             installer = load(ROOT / 'scripts' / platform / 'install_opencode.py')
-            if platform == 'windows':
-                installer.validate_platform = lambda: None
+            installer.validate_platform = lambda: None
             with tempfile.TemporaryDirectory() as directory:
                 home = Path(directory)
                 messages = []
