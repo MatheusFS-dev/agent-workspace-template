@@ -36,7 +36,7 @@ Missing detail is not automatically a defect. First check captions, appendices, 
 
 ## Drafting handoff
 
-After completing the evidence audit, use Reviewer Voice to select and draft the author-facing comments. The audit finds issues; Reviewer Voice determines which issues appear and how they are written. Do not draft from the audit table itself.
+After completing the evidence audit, use Reviewer Voice and [Canonical Reviewer Style](canonical-reviewer-style.md) to select and draft the author-facing comments. The audit finds issues; the canonical issue #18 example determines the actual language of the opening assessment and numbered comments. Do not draft from the audit table itself. Do not turn audit categories into visible issue/impact/action labels or uniform sentence patterns.
 
 ## Novelty and recommendation gate
 
