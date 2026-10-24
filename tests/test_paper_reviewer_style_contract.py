@@ -9,8 +9,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 REVIEWER = ROOT / "skills" / "paper-reviewer"
-START = "<!-- BEGIN VERBATIM ISSUE 18 EXAMPLE -->\n"
-END = "\n<!-- END VERBATIM ISSUE 18 EXAMPLE -->"
+START = "<!-- BEGIN VERBATIM REVIEW EXAMPLE -->\n"
+END = "\n<!-- END VERBATIM REVIEW EXAMPLE -->"
 
 
 def _fnv1a32(text):
@@ -32,7 +32,7 @@ class CanonicalReviewerStyleTests(unittest.TestCase):
             REVIEWER / "references" / "canonical-reviewer-style.md"
         ).read_text(encoding="utf-8")
 
-    def test_canonical_example_preserves_complete_issue_18_body_verbatim(self):
+    def test_canonical_example_preserves_complete_source_verbatim(self):
         self.assertEqual(self.reference.count(START), 1)
         self.assertEqual(self.reference.count(END), 1)
         text = self.reference.split(START, 1)[1].split(END, 1)[0]
