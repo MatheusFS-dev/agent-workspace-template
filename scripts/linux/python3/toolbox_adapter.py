@@ -334,13 +334,14 @@ def prepare(command, answers, template_root=None, home_root=None):
             for path in sorted((root / "configs" / "codex").glob("*.config.toml"))
             if path.name != "config.toml.template"
         }
-        selected_profiles = [profiles_by_name[name] for name in answers["profiles"]]
         destination_root = home / ".codex"
         items = [(None, destination_root / "config.toml", installer.render_codex_config(root))]
-        items.extend(
-            (profile, destination_root / profile.name, None)
-            for profile in selected_profiles
-        )
+        for profile_name in answers["profiles"]:
+            profile = profiles_by_name[profile_name]
+            if profile_name == "maestro":
+                items.append((None, destination_root / profile.name, installer.render_maestro_config(root)))
+            else:
+                items.append((profile, destination_root / profile.name, None))
         items.extend(
             (package, destination_root / "skills" / package.name, None)
             for package in skill_packages

@@ -10,6 +10,7 @@ from typing import Callable, Optional
 
 
 GLOBAL_INSTRUCTIONS_PLACEHOLDER = "{{GLOBAL_INSTRUCTIONS}}"
+MAESTRO_INSTRUCTIONS_PLACEHOLDER = "{{MAESTRO_INSTRUCTIONS}}"
 InputFunction = Callable[[str], str]
 OutputFunction = Callable[[str], None]
 InstallItem = tuple[Optional[Path], Path, Optional[str]]
@@ -130,6 +131,36 @@ def render_codex_config(template_root: Path) -> str:
         tomllib.loads(rendered)
     except tomllib.TOMLDecodeError as error:
         raise RuntimeError(f"Rendered Codex configuration is invalid TOML: {error}") from error
+    return rendered
+
+
+def render_maestro_config(template_root: Path) -> str:
+    """Render the Maestro profile with global and profile-specific instructions.
+
+    Args:
+        template_root: Absolute template repository root.
+
+    Returns:
+        str: Valid TOML profile configuration.
+
+    Raises:
+        RuntimeError: If the profile template cannot be rendered safely.
+        OSError: If a required source cannot be read.
+    """
+    profile_path = template_root / "configs" / "codex" / "maestro.config.toml"
+    global_text = (template_root / "instructions" / "global.md").read_text(encoding="utf-8")
+    maestro_text = (template_root / "instructions" / "maestro.md").read_text(encoding="utf-8")
+    profile_text = profile_path.read_text(encoding="utf-8")
+    instructions = global_text + "\n\n" + maestro_text
+    if profile_text.count(MAESTRO_INSTRUCTIONS_PLACEHOLDER) != 1:
+        raise RuntimeError("Maestro profile must contain exactly one instructions placeholder.")
+    if "'''" in instructions:
+        raise RuntimeError("Maestro instructions cannot contain three consecutive single quotes.")
+    rendered = profile_text.replace(MAESTRO_INSTRUCTIONS_PLACEHOLDER, instructions)
+    try:
+        tomllib.loads(rendered)
+    except tomllib.TOMLDecodeError as error:
+        raise RuntimeError(f"Rendered Maestro configuration is invalid TOML: {error}") from error
     return rendered
 
 
