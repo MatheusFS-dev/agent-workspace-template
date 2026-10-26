@@ -375,6 +375,14 @@ def prepare(command, answers, template_root=None, home_root=None):
                 assets_root / "settings.json",
             ),
         ]
+        if agent_name == "claude":
+            maestro_source = root / "configs" / "claude" / "agents" / "maestro.md"
+            if maestro_source.is_file():
+                items.append((maestro_source, destination_root / "agents" / "maestro.md"))
+        else:
+            maestro_source = root / "configs" / "antigravity" / "agents" / "maestro" / "agent.md"
+            if maestro_source.is_file():
+                items.append((maestro_source, destination_root / "config" / "agents" / "maestro" / "agent.md"))
         items.extend(
             (package, assets_root / "skills" / package.name)
             for package in skill_packages
