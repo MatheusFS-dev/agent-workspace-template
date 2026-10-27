@@ -1,0 +1,28 @@
+% Self-contained drawing. Supply the wrapper's packages and libraries when
+% including this file in a manuscript.
+\begingroup
+\definecolor{figureBlue}{RGB}{31,73,125}
+\definecolor{figureTeal}{RGB}{38,110,110}
+\definecolor{figureAmber}{RGB}{176,108,36}
+\definecolor{figureSlate}{RGB}{90,98,110}
+\begin{tikzpicture}[
+  font=\footnotesize,
+  >={Stealth[length=1.6mm,width=1.3mm]},
+  block/.style={draw, rounded corners=2pt, minimum height=9mm,
+    text width=18mm, align=center, inner sep=2pt, line width=0.6pt},
+  inputblock/.style={block, draw=figureSlate, fill=figureSlate!8},
+  processblock/.style={block, draw=figureBlue, fill=figureBlue!8},
+  outputblock/.style={block, draw=figureTeal, fill=figureTeal!8},
+  feedback/.style={->, draw=figureAmber, line width=0.6pt},
+  flow/.style={->, draw=black!75, line width=0.6pt},
+  label/.style={font=\footnotesize, inner sep=1pt, fill=white}
+]
+\node[inputblock] (input) {Input};
+\node[processblock, right=10mm of input] (process) {Processing};
+\node[outputblock, right=10mm of process] (output) {Output};
+\draw[flow] (input.east) -- node[label, above] {$x$} (process.west);
+\draw[flow] (process.east) -- node[label, above] {$y$} (output.west);
+\draw[feedback] (output.south) -- ++(0,-6mm) -|
+  node[label, near start, below] {Feedback} (process.south);
+\end{tikzpicture}
+\endgroup
