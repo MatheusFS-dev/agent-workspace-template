@@ -1,0 +1,6 @@
+interface:
+  display_name: "Create Publication Figures with LaTeX"
+  short_description: "Create editable scientific diagrams with TikZ"
+  default_prompt: "Use $create-publication-figures-latex to create or revise a publication-ready scientific diagram in LaTeX and TikZ."
+policy:
+  allow_implicit_invocation: true
