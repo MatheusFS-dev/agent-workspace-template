@@ -29,6 +29,38 @@ BASE_QUESTION_IDS = {
         "ignore_superpowers",
     ),
 }
+
+
+def maestro_guide(command, answers, template_root):
+    """Return launch instructions for a setup that installed Maestro."""
+    if command == "setup-agents-codex":
+        if "maestro" not in answers["profiles"]:
+            return ""
+        return (
+            "Maestro is ready for local-LLM coding.\n\n"
+            "  Start a Maestro session:\n"
+            "    codex --profile maestro\n\n"
+            "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
+            "  implementation to your configured local OpenCode and Ollama worker."
+        )
+    if command == "setup-agents-claude" and os.path.isfile(
+            os.path.join(template_root, "configs", "claude", "agents", "maestro.md")):
+        return (
+            "Maestro is ready for local-LLM coding.\n\n"
+            "  Start a Maestro session:\n"
+            "    claude --agent maestro\n\n"
+            "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
+            "  implementation to your configured local OpenCode and Ollama worker."
+        )
+    if command == "setup-agents-antigravity" and os.path.isfile(os.path.join(
+            template_root, "configs", "antigravity", "agents", "maestro", "agent.md")):
+        return (
+            "Maestro is ready for local-LLM coding.\n\n"
+            "  In Antigravity, select the `maestro` agent, then describe the coding task.\n\n"
+            "  Maestro plans and reviews; it delegates implementation to your configured\n"
+            "  local OpenCode and Ollama worker."
+        )
+    return ""
 CONFLICT_QUESTION_IDS = ("replace_conflicts", "create_backups")
 STRING_TYPES = (basestring,)
 
@@ -412,6 +444,7 @@ def prepare(command, answers, template_root=None, home_root=None):
         "target_root": target_root,
         "ignored_paths": ignored_paths,
         "success_message": success_message,
+        "maestro_guide": maestro_guide(command, answers, root),
     }
 
 
@@ -458,6 +491,8 @@ def apply(preparation, replace_conflicts, create_backups, output_function=None):
             preparation["target_root"], preparation["ignored_paths"]
         )
     output(preparation["success_message"])
+    if preparation.get("maestro_guide"):
+        output(preparation["maestro_guide"])
 
 
 def handle_request(request, template_root=None, home_root=None, output_function=None):

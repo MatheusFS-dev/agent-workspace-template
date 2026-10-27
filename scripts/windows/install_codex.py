@@ -10,6 +10,7 @@ from typing import Callable, Optional
 
 
 GLOBAL_INSTRUCTIONS_PLACEHOLDER = "{{GLOBAL_INSTRUCTIONS}}"
+MAESTRO_INSTRUCTIONS_PLACEHOLDER = "{{MAESTRO_INSTRUCTIONS}}"
 InputFunction = Callable[[str], str]
 OutputFunction = Callable[[str], None]
 InstallItem = tuple[Optional[Path], Path, Optional[str]]
@@ -130,6 +131,36 @@ def render_codex_config(template_root: Path) -> str:
         tomllib.loads(rendered)
     except tomllib.TOMLDecodeError as error:
         raise RuntimeError(f"Rendered Codex configuration is invalid TOML: {error}") from error
+    return rendered
+
+
+def render_maestro_config(template_root: Path) -> str:
+    """Render the Maestro profile with global and profile-specific instructions.
+
+    Args:
+        template_root: Absolute template repository root.
+
+    Returns:
+        Valid TOML profile configuration.
+
+    Raises:
+        RuntimeError: If the profile template cannot be rendered safely.
+        OSError: If a required source cannot be read.
+    """
+    profile_path = template_root / "configs" / "codex" / "maestro.config.toml"
+    global_text = (template_root / "instructions" / "global.md").read_text(encoding="utf-8")
+    maestro_text = (template_root / "instructions" / "maestro.md").read_text(encoding="utf-8")
+    profile_text = profile_path.read_text(encoding="utf-8")
+    instructions = global_text + "\n\n" + maestro_text
+    if profile_text.count(MAESTRO_INSTRUCTIONS_PLACEHOLDER) != 1:
+        raise RuntimeError("Maestro profile must contain exactly one instructions placeholder.")
+    if "'''" in instructions:
+        raise RuntimeError("Maestro instructions cannot contain three consecutive single quotes.")
+    rendered = profile_text.replace(MAESTRO_INSTRUCTIONS_PLACEHOLDER, instructions)
+    try:
+        tomllib.loads(rendered)
+    except tomllib.TOMLDecodeError as error:
+        raise RuntimeError(f"Rendered Maestro configuration is invalid TOML: {error}") from error
     return rendered
 
 
@@ -438,7 +469,13 @@ def install_global_codex(
     selected_profiles = prompt_codex_profiles(root, input_function, output_function)
     codex_root = home / ".codex"
     items = [(None, codex_root / "config.toml", render_codex_config(root))]
-    items.extend((profile, codex_root / profile.name, None) for profile in selected_profiles)
+    maestro_selected = False
+    for profile in selected_profiles:
+        if profile.name == "maestro.config.toml":
+            items.append((None, codex_root / profile.name, render_maestro_config(root)))
+            maestro_selected = True
+        else:
+            items.append((profile, codex_root / profile.name, None))
     items.extend(
         (package, codex_root / "skills" / package.name, None)
         for package in skill_packages
@@ -446,6 +483,14 @@ def install_global_codex(
     installed = install_items(items, input_function, output_function)
     if installed:
         output_function(f"Installed Codex global template into {codex_root}")
+        if maestro_selected:
+            output_function(
+                "Maestro is ready for local-LLM coding.\n\n"
+                "  Start a Maestro session:\n"
+                "    codex --profile maestro\n\n"
+                "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
+                "  implementation to your configured local OpenCode and Ollama worker."
+            )
     return installed
 
 

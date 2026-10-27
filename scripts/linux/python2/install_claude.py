@@ -342,6 +342,10 @@ def install_global_claude(
         (os.path.join(root, "configs", "statusline", "statusline.py"),
          os.path.join(claude_root, "statusline.py")),
     ]
+    maestro_source = os.path.join(root, "configs", "claude", "agents", "maestro.md")
+    maestro_installed = os.path.isfile(maestro_source)
+    if maestro_installed:
+        items.append((maestro_source, os.path.join(claude_root, "agents", "maestro.md")))
     items.extend(
         (package, os.path.join(claude_root, "skills", os.path.basename(package)))
         for package in skill_packages
@@ -349,6 +353,14 @@ def install_global_claude(
     installed = install_items(items, input_function, output_function)
     if installed:
         output_function("Installed Claude global template into {0}".format(claude_root))
+        if maestro_installed:
+            output_function(
+                "Maestro is ready for local-LLM coding.\n\n"
+                "  Start a Maestro session:\n"
+                "    claude --agent maestro\n\n"
+                "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
+                "  implementation to your configured local OpenCode and Ollama worker."
+            )
     return installed
 
 

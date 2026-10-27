@@ -469,7 +469,13 @@ def install_global_codex(
     selected_profiles = prompt_codex_profiles(root, input_function, output_function)
     codex_root = home / ".codex"
     items = [(None, codex_root / "config.toml", render_codex_config(root))]
-    items.extend((profile, codex_root / profile.name, None) for profile in selected_profiles)
+    maestro_selected = False
+    for profile in selected_profiles:
+        if profile.name == "maestro.config.toml":
+            items.append((None, codex_root / profile.name, render_maestro_config(root)))
+            maestro_selected = True
+        else:
+            items.append((profile, codex_root / profile.name, None))
     items.extend(
         (package, codex_root / "skills" / package.name, None)
         for package in skill_packages
@@ -477,6 +483,14 @@ def install_global_codex(
     installed = install_items(items, input_function, output_function)
     if installed:
         output_function(f"Installed Codex global template into {codex_root}")
+        if maestro_selected:
+            output_function(
+                "Maestro is ready for local-LLM coding.\n\n"
+                "  Start a Maestro session:\n"
+                "    codex --profile maestro\n\n"
+                "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
+                "  implementation to your configured local OpenCode and Ollama worker."
+            )
     return installed
 
 

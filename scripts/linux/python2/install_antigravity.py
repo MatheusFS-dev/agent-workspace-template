@@ -343,6 +343,15 @@ def install_global_antigravity(
         (os.path.join(root, "configs", "statusline", "statusline.py"),
          os.path.join(antigravity_root, "statusline.py")),
     ]
+    maestro_source = os.path.join(
+        root, "configs", "antigravity", "agents", "maestro", "agent.md"
+    )
+    maestro_installed = os.path.isfile(maestro_source)
+    if maestro_installed:
+        items.append((
+            maestro_source,
+            os.path.join(gemini_root, "config", "agents", "maestro", "agent.md"),
+        ))
     items.extend(
         (package, os.path.join(antigravity_root, "skills", os.path.basename(package)))
         for package in skill_packages
@@ -352,6 +361,13 @@ def install_global_antigravity(
         output_function(
             "Installed Antigravity CLI global template into {0}".format(gemini_root)
         )
+        if maestro_installed:
+            output_function(
+                "Maestro is ready for local-LLM coding.\n\n"
+                "  In Antigravity, select the `maestro` agent, then describe the coding task.\n\n"
+                "  Maestro plans and reviews; it delegates implementation to your configured\n"
+                "  local OpenCode and Ollama worker."
+            )
     return installed
 
 

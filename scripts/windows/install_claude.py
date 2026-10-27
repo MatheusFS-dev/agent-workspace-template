@@ -301,12 +301,24 @@ def install_global_claude(
         (root / "configs" / "claude" / "settings.json", claude_root / "settings.json"),
         (root / "configs" / "statusline" / "statusline.py", claude_root / "statusline.py"),
     ]
+    maestro_source = root / "configs" / "claude" / "agents" / "maestro.md"
+    maestro_installed = maestro_source.is_file()
+    if maestro_installed:
+        items.append((maestro_source, claude_root / "agents" / "maestro.md"))
     items.extend(
         (package, claude_root / "skills" / package.name) for package in skill_packages
     )
     installed = install_items(items, input_function, output_function)
     if installed:
         output_function(f"Installed Claude global template into {claude_root}")
+        if maestro_installed:
+            output_function(
+                "Maestro is ready for local-LLM coding.\n\n"
+                "  Start a Maestro session:\n"
+                "    claude --agent maestro\n\n"
+                "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
+                "  implementation to your configured local OpenCode and Ollama worker."
+            )
     return installed
 
 

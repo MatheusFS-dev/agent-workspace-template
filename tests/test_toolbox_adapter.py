@@ -294,6 +294,50 @@ class ToolboxAdapterTest(unittest.TestCase):
         self.assertEqual(len(backups), 1)
         self.assertEqual(backups[0].read_text(encoding="utf-8"), "existing\n")
 
+    def test_maestro_setup_reports_the_provider_specific_start_command(self):
+        """Catch toolbox setup completion that omits its installed Maestro guide."""
+        output = []
+        self.adapter.handle_request(
+            request(
+                "setup-agents-codex",
+                operation="run",
+                answers={"profiles": ["maestro"]},
+            ),
+            REPOSITORY_ROOT,
+            self.home_root,
+            output_function=output.append,
+        )
+        self.assertIn("codex --profile maestro", "\n".join(output))
+
+        output = []
+        self.adapter.handle_request(
+            request("setup-agents-claude", operation="run"),
+            REPOSITORY_ROOT,
+            self.home_root,
+            output_function=output.append,
+        )
+        self.assertIn("claude --agent maestro", "\n".join(output))
+
+        output = []
+        self.adapter.handle_request(
+            request("setup-agents-antigravity", operation="run"),
+            REPOSITORY_ROOT,
+            self.home_root,
+            output_function=output.append,
+        )
+        self.assertIn("select the `maestro` agent", "\n".join(output))
+
+    def test_setup_does_not_advertise_maestro_when_template_lacks_the_agent(self):
+        """Catch a quick-start guide for a profile the current template did not install."""
+        output = []
+        self.adapter.handle_request(
+            request("setup-agents-claude", operation="run"),
+            self.template_root,
+            self.home_root,
+            output_function=output.append,
+        )
+        self.assertNotIn("Maestro is ready", "\n".join(output))
+
     def test_project_run_applies_all_explicit_answers_without_prompts(self):
         """Catch project application that prompts or ignores form answers.
 
