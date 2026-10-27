@@ -1,3 +1,26 @@
-# Optional local-worker profile. Start with: codex --profile maestro
+# Native Maestro profile. Start with: codex --profile maestro
 model_verbosity = "medium"
+sandbox_mode = "read-only"
+approval_policy = "never"
 developer_instructions = '''{{MAESTRO_INSTRUCTIONS}}'''
+
+[features]
+shell_tool = false
+multi_agent = false
+apps = false
+
+[[hooks.PreToolUse]]
+matcher = ".*"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = 'python3 "$HOME/.codex/maestro_guard.py"'
+command_windows = 'py -3 "$env:USERPROFILE\\.codex\\maestro_guard.py"'
+timeout = 5
+statusMessage = "Enforcing Maestro tool policy"
+
+[mcp_servers.maestro_worker]
+command = "tb"
+args = ["local-llm", "maestro-mcp"]
+default_tools_approval_mode = "approve"
+tool_timeout_sec = 60
