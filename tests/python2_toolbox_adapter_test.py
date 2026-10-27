@@ -94,8 +94,8 @@ class Python2ToolboxAdapterTest(unittest.TestCase):
             u"developer_instructions = '''{{GLOBAL_INSTRUCTIONS}}'''\n",
         )
         write_text(
-            os.path.join(self.template, "configs", "codex", "research.config.toml"),
-            u"web_search = 'live'\n",
+            os.path.join(self.template, "configs", "codex", "maestro.config.toml"),
+            u"developer_instructions = '''{{MAESTRO_INSTRUCTIONS}}'''\n",
         )
         write_text(os.path.join(self.template, "configs", "claude", "settings.json"), u"{}\n")
         write_text(os.path.join(self.template, "configs", "antigravity", "settings.json"), u"{}\n")
@@ -182,13 +182,13 @@ class Python2ToolboxAdapterTest(unittest.TestCase):
     def test_standalone_prompts_retry_invalid_profiles_paths_and_tools(self):
         """Catch Python 2 fallback prompts aborting instead of retrying."""
         output = []
-        profile_answers = iter(("unknown", "research"))
+        profile_answers = iter(("unknown", "maestro"))
         selected_profiles = self.codex_installer.prompt_codex_profiles(
             self.template, lambda prompt: next(profile_answers), output.append
         )
         self.assertEqual(
             [os.path.basename(path) for path in selected_profiles],
-            ["research.config.toml"],
+            ["maestro.config.toml"],
         )
         self.assertIn("Unknown Codex profile", output[0])
 

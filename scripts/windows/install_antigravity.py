@@ -328,9 +328,9 @@ def install_global_antigravity(
         if maestro_installed:
             output_function(
                 "Maestro is ready for local-LLM coding.\n\n"
-                "  In Antigravity, select the `maestro` agent, then describe the coding task.\n\n"
-                "  Maestro plans and reviews; it delegates implementation to your configured\n"
-                "  local OpenCode and Ollama worker."
+                "  This read-only profile has no native Maestro worker MCP integration.\n"
+                "  Start Codex with `codex --profile maestro` or Claude with\n"
+                "  `claude --agent maestro` for supervised implementation."
             )
     return installed
 

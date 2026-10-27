@@ -260,6 +260,18 @@ def install_items(
     return True
 
 
+def select_maestro_profile(input_function: InputFunction, output_function: OutputFunction) -> bool:
+    """Prompt for the optional Maestro controller profile."""
+    prompt = "Claude profiles to install (maestro; default: maestro): "
+    while True:
+        selected = input_function(prompt).strip() or "maestro"
+        if selected == "maestro":
+            return True
+        if selected == "none":
+            return False
+        output_function("Choose maestro or none.")
+
+
 def install_global_claude(
     template_root: Optional[Path] = None,
     home_root: Optional[Path] = None,
@@ -302,7 +314,7 @@ def install_global_claude(
         (root / "configs" / "statusline" / "statusline.py", claude_root / "statusline.py"),
     ]
     maestro_source = root / "configs" / "claude" / "agents" / "maestro.md"
-    maestro_installed = maestro_source.is_file()
+    maestro_installed = maestro_source.is_file() and select_maestro_profile(input_function, output_function)
     if maestro_installed:
         items.append((maestro_source, claude_root / "agents" / "maestro.md"))
     items.extend(
@@ -316,8 +328,8 @@ def install_global_claude(
                 "Maestro is ready for local-LLM coding.\n\n"
                 "  Start a Maestro session:\n"
                 "    claude --agent maestro\n\n"
-                "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
-                "  implementation to your configured local OpenCode and Ollama worker."
+                "  Then describe the coding task. Maestro delegates implementation and\n"
+                "  verification to its local worker MCP server."
             )
     return installed
 

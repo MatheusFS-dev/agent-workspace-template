@@ -246,7 +246,7 @@ def _next_base_question(command, answers, template_root):
             "multiple",
             "Codex profiles to install",
             [{"value": name, "label": name} for name in profile_names],
-            ["research"],
+            [name for name in ("maestro",) if name in profile_names],
         )
     if command == "setup-agents-project":
         questions = (
@@ -337,10 +337,24 @@ def prepare(command, answers, template_root=None, home_root=None):
         selected_profiles = [profiles_by_name[name] for name in answers["profiles"]]
         destination_root = home / ".codex"
         items = [(None, destination_root / "config.toml", installer.render_codex_config(root))]
-        items.extend(
-            (profile, destination_root / profile.name, None)
-            for profile in selected_profiles
-        )
+        for profile in selected_profiles:
+            if profile.name == "maestro.config.toml":
+                items.append(
+                    (
+                        None,
+                        destination_root / profile.name,
+                        installer.render_maestro_config(root),
+                    )
+                )
+                items.append(
+                    (
+                        root / "configs" / "codex" / "maestro_guard.py",
+                        destination_root / "maestro_guard.py",
+                        None,
+                    )
+                )
+            else:
+                items.append((profile, destination_root / profile.name, None))
         items.extend(
             (package, destination_root / "skills" / package.name, None)
             for package in skill_packages

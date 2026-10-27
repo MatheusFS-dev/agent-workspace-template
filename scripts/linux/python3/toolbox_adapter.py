@@ -18,8 +18,8 @@ COMMAND_MODULES = {
 }
 BASE_QUESTION_IDS = {
     "setup-agents-codex": ("profiles",),
-    "setup-agents-claude": (),
-    "setup-agents-antigravity": (),
+    "setup-agents-claude": ("profiles",),
+    "setup-agents-antigravity": ("profiles",),
     "setup-agents-opencode": (),
     "setup-agents-project": (
         "target_directory",
@@ -39,23 +39,22 @@ def maestro_guide(command, answers, template_root):
             "Maestro is ready for local-LLM coding.\n\n"
             "  Start a Maestro session:\n"
             "    codex --profile maestro\n\n"
-            "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
-            "  implementation to your configured local OpenCode and Ollama worker."
+            "  Then describe the coding task. Maestro delegates implementation and\n"
+            "  verification to its local worker MCP server."
         )
-    if command == "setup-agents-claude" and (template_root / "configs" / "claude" / "agents" / "maestro.md").is_file():
+    if command == "setup-agents-claude" and "maestro" in answers["profiles"] and (template_root / "configs" / "claude" / "agents" / "maestro.md").is_file():
         return (
             "Maestro is ready for local-LLM coding.\n\n"
             "  Start a Maestro session:\n"
             "    claude --agent maestro\n\n"
-            "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
-            "  implementation to your configured local OpenCode and Ollama worker."
+            "  Then describe the coding task. Maestro delegates implementation and\n"
+            "  verification to its local worker MCP server."
         )
-    if command == "setup-agents-antigravity" and (template_root / "configs" / "antigravity" / "agents" / "maestro" / "agent.md").is_file():
+    if command == "setup-agents-antigravity" and "maestro" in answers["profiles"] and (template_root / "configs" / "antigravity" / "agents" / "maestro" / "agent.md").is_file():
         return (
             "Maestro is ready for local-LLM coding.\n\n"
-            "  In Antigravity, select the `maestro` agent, then describe the coding task.\n\n"
-            "  Maestro plans and reviews; it delegates implementation to your configured\n"
-            "  local OpenCode and Ollama worker."
+            "  Antigravity's installed profile is read-only and has no native Maestro\n"
+            "  worker MCP integration. Start Codex or Claude Maestro instead."
         )
     return ""
 CONFLICT_QUESTION_IDS = ("replace_conflicts", "create_backups")
@@ -220,16 +219,11 @@ def _validate_available_answers(command, answers, template_root):
         if answer_id in answers and not isinstance(answers[answer_id], bool):
             raise TypeError(f"answer {answer_id!r} must be a boolean")
 
-    if command == "setup-agents-codex" and "profiles" in answers:
+    if command in ("setup-agents-codex", "setup-agents-claude", "setup-agents-antigravity") and "profiles" in answers:
         profiles = _require_string_list(answers["profiles"], "profiles")
-        available = {
-            path.name.removesuffix(".config.toml")
-            for path in (template_root / "configs" / "codex").glob("*.config.toml")
-            if path.name != "config.toml.template"
-        }
-        unknown = sorted(set(profiles) - available)
+        unknown = sorted(set(profiles) - {"maestro"})
         if unknown:
-            raise ValueError(f"unknown Codex profiles: {', '.join(unknown)}")
+            raise ValueError(f"unknown Maestro profiles: {', '.join(unknown)}")
 
     if command == "setup-agents-project":
         if "target_directory" in answers and not isinstance(
@@ -265,18 +259,13 @@ def _next_base_question(command, answers, template_root):
     Raises:
         OSError: If profile source directories cannot be enumerated.
     """
-    if command == "setup-agents-codex" and "profiles" not in answers:
-        profile_names = sorted(
-            path.name.removesuffix(".config.toml")
-            for path in (template_root / "configs" / "codex").glob("*.config.toml")
-            if path.name != "config.toml.template"
-        )
+    if command in ("setup-agents-codex", "setup-agents-claude", "setup-agents-antigravity") and "profiles" not in answers:
         return question(
             "profiles",
             "multiple",
-            "Codex profiles to install",
-            [{"value": name, "label": name} for name in profile_names],
-            ["research"],
+            f"{COMMAND_MODULES[command].capitalize()} profiles to install",
+            [{"value": "maestro", "label": "maestro"}],
+            ["maestro"],
         )
     if command == "setup-agents-project":
         questions = (
@@ -359,19 +348,18 @@ def prepare(command, answers, template_root=None, home_root=None):
 
     if command == "setup-agents-codex":
         skill_packages = installer.validate_sources(root)
-        profiles_by_name = {
-            path.name.removesuffix(".config.toml"): path
-            for path in sorted((root / "configs" / "codex").glob("*.config.toml"))
-            if path.name != "config.toml.template"
-        }
         destination_root = home / ".codex"
         items = [(None, destination_root / "config.toml", installer.render_codex_config(root))]
         for profile_name in answers["profiles"]:
-            profile = profiles_by_name[profile_name]
             if profile_name == "maestro":
-                items.append((None, destination_root / profile.name, installer.render_maestro_config(root)))
-            else:
-                items.append((profile, destination_root / profile.name, None))
+                items.append((None, destination_root / "maestro.config.toml", installer.render_maestro_config(root)))
+                items.append(
+                    (
+                        root / "configs" / "codex" / "maestro_guard.py",
+                        destination_root / "maestro_guard.py",
+                        None,
+                    )
+                )
         items.extend(
             (package, destination_root / "skills" / package.name, None)
             for package in skill_packages
@@ -408,11 +396,11 @@ def prepare(command, answers, template_root=None, home_root=None):
         ]
         if agent_name == "claude":
             maestro_source = root / "configs" / "claude" / "agents" / "maestro.md"
-            if maestro_source.is_file():
+            if "maestro" in answers["profiles"] and maestro_source.is_file():
                 items.append((maestro_source, destination_root / "agents" / "maestro.md"))
         else:
             maestro_source = root / "configs" / "antigravity" / "agents" / "maestro" / "agent.md"
-            if maestro_source.is_file():
+            if "maestro" in answers["profiles"] and maestro_source.is_file():
                 items.append((maestro_source, destination_root / "config" / "agents" / "maestro" / "agent.md"))
         items.extend(
             (package, assets_root / "skills" / package.name)

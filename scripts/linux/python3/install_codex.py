@@ -230,9 +230,10 @@ def prompt_codex_profiles(
         profile.name.removesuffix(".config.toml"): profile for profile in profiles
     }
     available_names = ", ".join(profile_by_name)
-    prompt = f"Codex profiles to install ({available_names}; default: research): "
+    default_selection = ", ".join(name for name in ("maestro",) if name in profile_by_name)
+    prompt = f"Codex profiles to install ({available_names}; default: {default_selection}): "
     while True:
-        response = input_function(prompt).strip() or "research"
+        response = input_function(prompt).strip() or default_selection
         selected_names = [name.strip() for name in response.split(",")]
         if not all(selected_names):
             output_function("Codex profile selection cannot contain an empty name.")
@@ -473,6 +474,13 @@ def install_global_codex(
     for profile in selected_profiles:
         if profile.name == "maestro.config.toml":
             items.append((None, codex_root / profile.name, render_maestro_config(root)))
+            items.append(
+                (
+                    root / "configs" / "codex" / "maestro_guard.py",
+                    codex_root / "maestro_guard.py",
+                    None,
+                )
+            )
             maestro_selected = True
         else:
             items.append((profile, codex_root / profile.name, None))
@@ -488,8 +496,8 @@ def install_global_codex(
                 "Maestro is ready for local-LLM coding.\n\n"
                 "  Start a Maestro session:\n"
                 "    codex --profile maestro\n\n"
-                "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
-                "  implementation to your configured local OpenCode and Ollama worker."
+                "  Then describe the coding task. Maestro delegates implementation and\n"
+                "  verification to its local worker MCP server."
             )
     return installed
 

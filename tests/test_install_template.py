@@ -143,7 +143,7 @@ def create_template(template_root: Path, include_profile: bool = True) -> None:
 
     Args:
         template_root: Empty directory that receives the fixture source tree.
-        include_profile: When true, add a `research.config.toml` source profile;
+        include_profile: When true, add a `maestro.config.toml` source profile;
             when false, create no optional Codex profile.
 
     Returns:
@@ -164,13 +164,21 @@ def create_template(template_root: Path, include_profile: bool = True) -> None:
         "# Canonical instructions\n\nUse evidence.\n",
         encoding="utf-8",
     )
+    (template_root / "instructions" / "maestro.md").write_text(
+        "Delegate implementation to the local worker.\n",
+        encoding="utf-8",
+    )
     (template_root / "configs" / "codex" / "config.toml.template").write_text(
         "developer_instructions = '''{{GLOBAL_INSTRUCTIONS}}'''\nmodel = 'test'\n",
         encoding="utf-8",
     )
     if include_profile:
-        (template_root / "configs" / "codex" / "research.config.toml").write_text(
-            "web_search = 'live'\n",
+        (template_root / "configs" / "codex" / "maestro.config.toml").write_text(
+            "developer_instructions = '''{{MAESTRO_INSTRUCTIONS}}'''\n",
+            encoding="utf-8",
+        )
+        (template_root / "configs" / "codex" / "maestro_guard.py").write_text(
+            "#!/usr/bin/env python3\n",
             encoding="utf-8",
         )
     (template_root / "configs" / "claude" / "settings.json").write_text(
@@ -342,7 +350,7 @@ class InstallTemplateTest(unittest.TestCase):
         installed = CODEX_INSTALLER.install_global_codex(
             self.template_root,
             self.home_root,
-            prompt_answers("research"),
+            prompt_answers("maestro"),
             self.output.append,
         )
 
@@ -355,14 +363,14 @@ class InstallTemplateTest(unittest.TestCase):
             CODEX_INSTALLER.tomllib.loads(config_text)["developer_instructions"],
             "# Canonical instructions\n\nUse evidence.\n",
         )
-        self.assertTrue((self.home_root / ".codex" / "research.config.toml").is_file())
+        self.assertTrue((self.home_root / ".codex" / "maestro.config.toml").is_file())
         self.assertEqual(
             sorted(path.name for path in (self.home_root / ".codex" / "skills").iterdir()),
             ["first-skill", "second-skill"],
         )
 
     def test_codex_blank_profile_selection_installs_documented_default(self) -> None:
-        """Install the research profile when the profile answer is blank."""
+        """Install the Maestro profile when the profile answer is blank."""
         prompts = []
 
         def answer(prompt: str) -> str:
@@ -377,13 +385,13 @@ class InstallTemplateTest(unittest.TestCase):
         )
 
         self.assertTrue(installed)
-        self.assertTrue((self.home_root / ".codex" / "research.config.toml").is_file())
-        self.assertIn("default: research", prompts[0])
+        self.assertTrue((self.home_root / ".codex" / "maestro.config.toml").is_file())
+        self.assertIn("default: maestro", prompts[0])
 
     def test_codex_profile_selection_retries_invalid_input(self) -> None:
         """Warn and repeat the profile question until its value is valid."""
         prompts = []
-        answers = iter(("unknown", "research"))
+        answers = iter(("unknown", "maestro"))
 
         def answer(prompt: str) -> str:
             prompts.append(prompt)
@@ -393,7 +401,7 @@ class InstallTemplateTest(unittest.TestCase):
             self.template_root, answer, self.output.append
         )
 
-        self.assertEqual([path.name for path in selected], ["research.config.toml"])
+        self.assertEqual([path.name for path in selected], ["maestro.config.toml"])
         self.assertEqual(len(prompts), 2)
         self.assertIn("Unknown Codex profile", self.output[0])
 
@@ -824,8 +832,8 @@ class InstallTemplateTest(unittest.TestCase):
         environment[HOME_ENVIRONMENT_VARIABLE] = str(smoke_home)
         commands = (
             ("codex", "\n"),
-            ("claude", ""),
-            ("antigravity", ""),
+            ("claude", "\n"),
+            ("antigravity", "\n"),
         )
         for name, input_text in commands:
             with self.subTest(name=name):

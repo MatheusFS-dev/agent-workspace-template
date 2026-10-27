@@ -260,6 +260,18 @@ def install_items(
     return True
 
 
+def select_maestro_profile(input_function: InputFunction, output_function: OutputFunction) -> bool:
+    """Prompt for the optional Maestro controller profile."""
+    prompt = "Antigravity profiles to install (maestro; default: maestro): "
+    while True:
+        selected = input_function(prompt).strip() or "maestro"
+        if selected == "maestro":
+            return True
+        if selected == "none":
+            return False
+        output_function("Choose maestro or none.")
+
+
 def install_global_antigravity(
     template_root: Optional[Path] = None,
     home_root: Optional[Path] = None,
@@ -309,7 +321,7 @@ def install_global_antigravity(
         ),
     ]
     maestro_source = root / "configs" / "antigravity" / "agents" / "maestro" / "agent.md"
-    maestro_installed = maestro_source.is_file()
+    maestro_installed = maestro_source.is_file() and select_maestro_profile(input_function, output_function)
     if maestro_installed:
         items.append((maestro_source, gemini_root / "config" / "agents" / "maestro" / "agent.md"))
     items.extend(
@@ -322,9 +334,9 @@ def install_global_antigravity(
         if maestro_installed:
             output_function(
                 "Maestro is ready for local-LLM coding.\n\n"
-                "  In Antigravity, select the `maestro` agent, then describe the coding task.\n\n"
-                "  Maestro plans and reviews; it delegates implementation to your configured\n"
-                "  local OpenCode and Ollama worker."
+                "  This read-only profile has no native Maestro worker MCP integration.\n"
+                "  Start Codex with `codex --profile maestro` or Claude with\n"
+                "  `claude --agent maestro` for supervised implementation."
             )
     return installed
 

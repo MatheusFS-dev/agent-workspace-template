@@ -128,14 +128,14 @@ class ToolboxAdapterTest(unittest.TestCase):
 
         preparation = self.adapter.prepare(
             "setup-agents-codex",
-            {"profiles": ["research"]},
+            {"profiles": ["maestro"]},
             self.template_root,
             self.home_root,
         )
 
         self.assertEqual(preparation["conflicts"], [str(config_path)])
         self.assertEqual(config_path.read_text(encoding="utf-8"), "existing\n")
-        self.assertFalse((codex_root / "research.config.toml").exists())
+        self.assertFalse((codex_root / "maestro.config.toml").exists())
 
     def test_codex_questions_are_dynamic_and_do_not_repeat(self):
         """Catch a resolved question being returned again or skipped early.
@@ -209,7 +209,7 @@ class ToolboxAdapterTest(unittest.TestCase):
         response = self.adapter.handle_request(
             request(
                 "setup-agents-claude",
-                answers={"replace_conflicts": False},
+                answers={"profiles": ["maestro"], "replace_conflicts": False},
             ),
             self.template_root,
             self.home_root,
@@ -232,7 +232,7 @@ class ToolboxAdapterTest(unittest.TestCase):
             OSError: If installed fixture files cannot be read.
         """
         response = self.adapter.handle_request(
-            request("setup-agents-antigravity", operation="run"),
+            request("setup-agents-antigravity", operation="run", answers={"profiles": ["maestro"]}),
             self.template_root,
             self.home_root,
             output_function=lambda message: None,
@@ -261,7 +261,7 @@ class ToolboxAdapterTest(unittest.TestCase):
             request(
                 "setup-agents-codex",
                 operation="run",
-                answers={"profiles": ["research"]},
+                answers={"profiles": ["maestro"]},
             ),
             self.template_root,
             self.home_root,
@@ -269,7 +269,7 @@ class ToolboxAdapterTest(unittest.TestCase):
         )
         self.assertEqual(codex_response, {"status": "ready"})
         self.assertTrue(
-            (self.home_root / ".codex" / "research.config.toml").is_file()
+            (self.home_root / ".codex" / "maestro.config.toml").is_file()
         )
 
         claude_root = self.home_root / ".claude"
@@ -281,6 +281,7 @@ class ToolboxAdapterTest(unittest.TestCase):
                 "setup-agents-claude",
                 operation="run",
                 answers={
+                    "profiles": ["maestro"],
                     "replace_conflicts": True,
                     "create_backups": True,
                 },
@@ -311,7 +312,7 @@ class ToolboxAdapterTest(unittest.TestCase):
 
         output = []
         self.adapter.handle_request(
-            request("setup-agents-claude", operation="run"),
+            request("setup-agents-claude", operation="run", answers={"profiles": ["maestro"]}),
             REPOSITORY_ROOT,
             self.home_root,
             output_function=output.append,
@@ -320,18 +321,18 @@ class ToolboxAdapterTest(unittest.TestCase):
 
         output = []
         self.adapter.handle_request(
-            request("setup-agents-antigravity", operation="run"),
+            request("setup-agents-antigravity", operation="run", answers={"profiles": ["maestro"]}),
             REPOSITORY_ROOT,
             self.home_root,
             output_function=output.append,
         )
-        self.assertIn("select the `maestro` agent", "\n".join(output))
+        self.assertIn("worker MCP integration", "\n".join(output))
 
     def test_setup_does_not_advertise_maestro_when_template_lacks_the_agent(self):
         """Catch a quick-start guide for a profile the current template did not install."""
         output = []
         self.adapter.handle_request(
-            request("setup-agents-claude", operation="run"),
+            request("setup-agents-claude", operation="run", answers={"profiles": ["maestro"]}),
             self.template_root,
             self.home_root,
             output_function=output.append,
@@ -472,7 +473,7 @@ class ToolboxAdapterTest(unittest.TestCase):
                 request(
                     "setup-agents-claude",
                     operation="run",
-                    answers={"replace_conflicts": False},
+                    answers={"profiles": ["maestro"], "replace_conflicts": False},
                 ),
                 self.template_root,
                 self.home_root,

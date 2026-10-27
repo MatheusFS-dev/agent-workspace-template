@@ -40,8 +40,8 @@ def maestro_guide(command, answers, template_root):
             "Maestro is ready for local-LLM coding.\n\n"
             "  Start a Maestro session:\n"
             "    codex --profile maestro\n\n"
-            "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
-            "  implementation to your configured local OpenCode and Ollama worker."
+            "  Then describe the coding task. Maestro delegates implementation and\n"
+            "  verification to its local worker MCP server."
         )
     if command == "setup-agents-claude" and os.path.isfile(
             os.path.join(template_root, "configs", "claude", "agents", "maestro.md")):
@@ -49,16 +49,15 @@ def maestro_guide(command, answers, template_root):
             "Maestro is ready for local-LLM coding.\n\n"
             "  Start a Maestro session:\n"
             "    claude --agent maestro\n\n"
-            "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
-            "  implementation to your configured local OpenCode and Ollama worker."
+            "  Then describe the coding task. Maestro delegates implementation and\n"
+            "  verification to its local worker MCP server."
         )
     if command == "setup-agents-antigravity" and os.path.isfile(os.path.join(
             template_root, "configs", "antigravity", "agents", "maestro", "agent.md")):
         return (
             "Maestro is ready for local-LLM coding.\n\n"
-            "  In Antigravity, select the `maestro` agent, then describe the coding task.\n\n"
-            "  Maestro plans and reviews; it delegates implementation to your configured\n"
-            "  local OpenCode and Ollama worker."
+            "  Antigravity's installed profile is read-only and has no native Maestro\n"
+            "  worker MCP integration. Start Codex or Claude Maestro instead."
         )
     return ""
 CONFLICT_QUESTION_IDS = ("replace_conflicts", "create_backups")
@@ -272,7 +271,7 @@ def next_base_question(command, answers, template_root):
             "multiple",
             "Codex profiles to install",
             [{"value": name, "label": name} for name in profile_names],
-            ["research"],
+            [name for name in ("maestro",) if name in profile_names],
         )
     if command == "setup-agents-project":
         questions = (

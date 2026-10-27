@@ -241,9 +241,10 @@ def prompt_codex_profiles(template_root, input_function, output_function):
         (os.path.basename(profile)[:-len(suffix)], profile) for profile in profiles
     )
     available_names = ", ".join(sorted(profile_by_name))
-    prompt = "Codex profiles to install ({0}; default: research): ".format(available_names)
+    default_selection = ", ".join(name for name in ("maestro",) if name in profile_by_name)
+    prompt = "Codex profiles to install ({0}; default: {1}): ".format(available_names, default_selection)
     while True:
-        response = input_function(prompt).strip() or "research"
+        response = input_function(prompt).strip() or default_selection
         selected_names = [name.strip() for name in response.split(",")]
         if not all(selected_names):
             output_function("Codex profile selection cannot contain an empty name.")
@@ -491,6 +492,11 @@ def install_global_codex(
         if os.path.basename(profile) == "maestro.config.toml":
             items.append((None, os.path.join(codex_root, os.path.basename(profile)),
                           render_maestro_config(root)))
+            items.append((
+                os.path.join(root, "configs", "codex", "maestro_guard.py"),
+                os.path.join(codex_root, "maestro_guard.py"),
+                None,
+            ))
             maestro_selected = True
         else:
             items.append((profile, os.path.join(codex_root, os.path.basename(profile)), None))
@@ -506,8 +512,8 @@ def install_global_codex(
                 "Maestro is ready for local-LLM coding.\n\n"
                 "  Start a Maestro session:\n"
                 "    codex --profile maestro\n\n"
-                "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
-                "  implementation to your configured local OpenCode and Ollama worker."
+                "  Then describe the coding task. Maestro delegates implementation and\n"
+                "  verification to its local worker MCP server."
             )
     return installed
 

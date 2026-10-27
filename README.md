@@ -30,7 +30,6 @@ configs/
   antigravity/settings.json
   claude/settings.json
   codex/config.toml.template
-  codex/research.config.toml
   opencode/opencode.json
 instructions/
   global.md

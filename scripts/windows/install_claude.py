@@ -316,8 +316,8 @@ def install_global_claude(
                 "Maestro is ready for local-LLM coding.\n\n"
                 "  Start a Maestro session:\n"
                 "    claude --agent maestro\n\n"
-                "  Then describe the coding task. Maestro plans and reviews; it delegates\n"
-                "  implementation to your configured local OpenCode and Ollama worker."
+                "  Then describe the coding task. Maestro delegates implementation and\n"
+                "  verification to its local worker MCP server."
             )
     return installed
 
