@@ -1,6 +1,7 @@
 from pathlib import Path
 import importlib.util
 import tempfile
+import sys
 import unittest
 
 
@@ -37,7 +38,7 @@ class MaestroProfilesTest(unittest.TestCase):
 
     def test_installed_maestro_profiles_stop_after_worker_failure(self):
         """Catch a controller taking over after the local worker exits unsuccessfully."""
-        installer_root = ROOT / "scripts" / "linux" / "python3"
+        installer_root = ROOT / "scripts" / ("windows" if sys.platform == "win32" else "linux/python3")
 
         def load(name):
             spec = importlib.util.spec_from_file_location(name, installer_root / ("install_" + name + ".py"))
@@ -66,7 +67,7 @@ class MaestroProfilesTest(unittest.TestCase):
 
     def test_standalone_installers_install_maestro_and_report_how_to_start_it(self):
         """Catch setup completion that advertises an unavailable Maestro profile."""
-        installer_root = ROOT / "scripts" / "linux" / "python3"
+        installer_root = ROOT / "scripts" / ("windows" if sys.platform == "win32" else "linux/python3")
 
         def load(name):
             spec = importlib.util.spec_from_file_location(name, installer_root / ("install_" + name + ".py"))
@@ -98,7 +99,7 @@ class MaestroProfilesTest(unittest.TestCase):
 
     def test_blank_codex_profile_selection_installs_maestro(self):
         """Catch a default Codex setup that leaves Maestro unavailable."""
-        installer_root = ROOT / "scripts" / "linux" / "python3"
+        installer_root = ROOT / "scripts" / ("windows" if sys.platform == "win32" else "linux/python3")
         spec = importlib.util.spec_from_file_location(
             "install_codex", installer_root / "install_codex.py"
         )
@@ -159,3 +160,29 @@ class MaestroProfilesTest(unittest.TestCase):
                     self.assertEqual(question["question"]["id"], "profiles")
                     self.assertEqual(question["question"]["default"], ["maestro"])
                     self.assertEqual(question["question"]["options"], [{"value": "maestro", "label": "maestro"}])
+
+class WindowsMaestroAdapterTest(unittest.TestCase):
+    def test_profiles_are_selectable_installed_and_described(self):
+        """Exercise Windows setup parity on either host platform."""
+        path = ROOT / "scripts" / "windows" / "toolbox_adapter.py"
+        spec = importlib.util.spec_from_file_location("windows_adapter", path)
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        for installer in adapter.INSTALLERS.values():
+            installer.validate_platform = lambda: None
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            home = Path(temporary_directory)
+            for name, destination, guide in (
+                ("codex", home / ".codex" / "maestro.config.toml", "codex --profile maestro"),
+                ("claude", home / ".claude" / "agents" / "maestro.md", "claude --agent maestro"),
+                ("antigravity", home / ".gemini" / "config" / "agents" / "maestro" / "agent.md", "Antigravity"),
+            ):
+                with self.subTest(name=name):
+                    request = {"operation": "questions", "package": {"name": "agent-workspace-template", "command": "setup-agents-" + name}, "answers": {}, "arguments": []}
+                    question = adapter.handle_request(request, ROOT, home)
+                    self.assertEqual(question["question"]["default"], ["maestro"])
+                    request.update(operation="run", answers={"profiles": ["maestro"]})
+                    messages = []
+                    adapter.handle_request(request, ROOT, home, output_function=messages.append)
+                    self.assertTrue(destination.is_file())
+                    self.assertIn(guide, "\n".join(messages))
