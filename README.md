@@ -1,29 +1,60 @@
+![Agent Workspace Template header](https://capsule-render.vercel.app/api?height=190&type=blur&color=7f5af0&section=header&text=Agent%20Workspace%20Template&fontColor=fffffe&fontSize=42)
+
+<div align="center">
+
 ```text
-    _    ____ _____ _   _ _____
-   / \  / ___| ____| \ | |_   _|
-  / _ \| |  _|  _| |  \| | | |
- / ___ \ |_| | |___| |\  | | |
-/_/   \_\____|_____|_| \_| |_|
-
-__        _____  ____  _  ______ ____   _    ____ _____
-\ \      / / _ \|  _ \| |/ / ___|  _ \ / \  / ___| ____|
- \ \ /\ / / | | | |_) | ' /\___ \| |_) / _ \| |   |  _|
-  \ V  V /| |_| |  _ <| . \ ___) |  __/ ___ \ |___| |___
-   \_/\_/  \___/|_| \_\_|\_\____/|_| /_/   \_\____|_____|
-
- _____ _____ __  __ ____  _        _  _____ _____
-|_   _| ____|  \/  |  _ \| |      / \|_   _| ____|
-  | | |  _| | |\/| | |_) | |     / _ \ | | |  _|
-  | | | |___| |  | |  __/| |___ / ___ \| | | |___
-  |_| |_____|_|  |_|_|   |_____/_/   \_\_| |_____|
+ █████╗  ██████╗ ███████╗███╗   ██╗████████╗    ██╗    ██╗ ██████╗ ██████╗ ██╗  ██╗███████╗██████╗  █████╗  ██████╗███████╗    ████████╗███████╗███╗   ███╗██████╗ ██╗      █████╗ ████████╗███████╗
+██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝    ██║    ██║██╔═══██╗██╔══██╗██║ ██╔╝██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝    ╚══██╔══╝██╔════╝████╗ ████║██╔══██╗██║     ██╔══██╗╚══██╔══╝██╔════╝
+███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║       ██║ █╗ ██║██║   ██║██████╔╝█████╔╝ ███████╗██████╔╝███████║██║     █████╗         ██║   █████╗  ██╔████╔██║██████╔╝██║     ███████║   ██║   █████╗  
+██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║       ██║███╗██║██║   ██║██╔══██╗██╔═██╗ ╚════██║██╔═══╝ ██╔══██║██║     ██╔══╝         ██║   ██╔══╝  ██║╚██╔╝██║██╔═══╝ ██║     ██╔══██║   ██║   ██╔══╝  
+██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║       ╚███╔███╔╝╚██████╔╝██║  ██║██║  ██╗███████║██║     ██║  ██║╚██████╗███████╗       ██║   ███████╗██║ ╚═╝ ██║██║     ███████╗██║  ██║   ██║   ███████╗
+╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝        ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝       ╚═╝   ╚══════╝╚═╝     ╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝
+                                                                                                                                                                                              
 ```
+
+</div>
+
+<p align="center">
+  <a href="https://github.com/DenverCoder1/readme-typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&color=%237F5AF0&size=22&center=true&vCenter=true&width=760&height=32&lines=Reusable%20configurations%20for%20coding%20agents" alt="Reusable configurations for coding agents" /></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/MatheusFS-dev/agent-workspace-template/blob/main/LICENSE"><img src="https://img.shields.io/github/license/MatheusFS-dev/agent-workspace-template?style=flat-square" alt="License" /></a>
+  <a href="https://github.com/MatheusFS-dev/agent-workspace-template/stargazers"><img src="https://img.shields.io/github/stars/MatheusFS-dev/agent-workspace-template?style=flat-square" alt="Stars" /></a>
+  <a href="https://github.com/MatheusFS-dev/agent-workspace-template/network/members"><img src="https://img.shields.io/github/forks/MatheusFS-dev/agent-workspace-template?style=flat-square" alt="Forks" /></a>
+  <a href="https://visitor-badge.laobi.icu/badge?page_id=MatheusFS-dev.agent-workspace-template"><img src="https://visitor-badge.laobi.icu/badge?page_id=MatheusFS-dev.agent-workspace-template" alt="Visitors" /></a>
+</p>
 
 This repository provides user-scoped rules, tool settings, and reusable skill
 packages for Codex, Claude Code, Antigravity CLI, and OpenCode, plus minimal project
 instruction files. It intentionally does not install an agent workspace,
 project memory, user settings, or skills into a project.
 
-## Template layout
+## Table of Contents
+
+- [my-toolbox Integration](#my-toolbox-integration)
+- [Template Layout](#template-layout)
+- [Installation](#installation)
+- [Conflict and Backup Behavior](#conflict-and-backup-behavior)
+- [Add or Update a Skill](#add-or-update-a-skill)
+- [Verification](#verification)
+- [Contributing](#contributing)
+- [License](#license)
+- [Collaborators](#collaborators)
+
+## my-toolbox Integration
+
+This repository is maintained as a Git submodule of [my-toolbox](https://github.com/MatheusFS-dev/my-toolbox) at `assets/payload/packages/agent-workspace-template`. Provides the user-scoped agent configurations, reusable skills, and project instruction templates bundled by my-toolbox.
+
+To initialize the submodules in an existing my-toolbox checkout, run this from its repository root:
+
+```bash
+git submodule update --init --recursive
+```
+
+Changes to this component belong in this repository. The parent repository pins the component to a specific commit through its submodule reference.
+
+## Template Layout
 
 ```text
 configs/
@@ -69,7 +100,7 @@ instruction templates to keep synchronized.
 Every direct `skills/<name>/SKILL.md` folder is a complete global skill package.
 The bundled `scribe` package contains its own `scripts/search_reference.py`.
 
-## Install
+## Installation
 
 The primary installers require Python 3.9 or newer. On Linux, run the installer
 for the workflow you need with `python3`:
@@ -123,7 +154,6 @@ for focused Python tests or embedding.
 | Codex | `~/.codex/config.toml`, selected `~/.codex/*.config.toml` profile files, and `~/.codex/skills/<skill-name>/` |
 | Claude Code | `~/.claude/CLAUDE.md`, `~/.claude/settings.json`, `~/.claude/statusline.py`, and `~/.claude/skills/<skill-name>/` |
 | Antigravity CLI | `~/.gemini/GEMINI.md`, `~/.gemini/antigravity-cli/settings.json`, `~/.gemini/antigravity-cli/statusline.py`, and `~/.gemini/antigravity-cli/skills/<skill-name>/` |
-
 | OpenCode | `~/.config/opencode/AGENTS.md`, `~/.config/opencode/opencode.json`, and `~/.config/opencode/skills/<skill-name>/` |
 
 On Windows, `~` is the current `%USERPROFILE%` directory.
@@ -154,7 +184,7 @@ After selecting project files, the installer can add the installed instruction
 filenames plus `docs/superpowers/specs/` and `docs/superpowers/plans/` to the
 target `.gitignore`. The update is idempotent and defaults to no.
 
-## Conflict and backup behavior
+## Conflict and Backup Behavior
 
 Before any write, the selected installer validates its sources and lists all
 managed destination paths that already exist. If there are conflicts, one
@@ -167,7 +197,7 @@ silently overwrites, prunes unrelated destinations, or restores failed writes.
 It replaces only same-named managed skills and leaves skills that are not in the
 source template untouched.
 
-## Add or update a skill
+## Add or Update a Skill
 
 Drop a complete folder containing `SKILL.md` directly under `skills/`, then rerun
 the relevant global installer. The installer validates every direct skill package
@@ -179,10 +209,38 @@ not copy skills.
 Run the focused installer tests:
 
 ```bash
-python -m unittest tests/test_install_template.py
+python3 -m unittest discover -s tests -v
 ```
 
 The tests cover platform rejection, source-template validation, single-source
 Codex rendering, global destination mappings, complete skill copying, project
 selection, repeated `.gitignore` updates, conflict cancellation, replacement,
 and optional backups.
+
+## Contributing
+
+> [!IMPORTANT]
+> Read the [Code of Conduct](CODE_OF_CONDUCT.md) and run the installer tests in [Verification](#verification) before opening a pull request. Keep `instructions/global.md` as the single global-instructions source.
+
+1. Fork this repository.
+2. Create a focused branch from `main`.
+3. Commit a scoped change with its verification.
+4. Push the branch to your fork.
+5. Open a pull request describing the change and checks performed.
+
+## License
+
+This project is licensed under the [Apache License 2.0](LICENSE), the same license used by my-toolbox. Third-party components retain their own license notices.
+
+## Collaborators
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/MatheusFS-dev" title="Matheus Ferreira Silva">
+        <img src="https://avatars.githubusercontent.com/u/99222557?v=4" width="100px" alt="Matheus Ferreira Silva's GitHub avatar" /><br />
+        <sub><b>Matheus Ferreira Silva</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
