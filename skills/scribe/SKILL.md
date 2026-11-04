@@ -109,7 +109,7 @@ Do not require a visible plan or approval gate for a clear micro edit.
 ## Generating figures for the paper
 
 - Route plots, graphs, charts, axes-based data displays, and results visualizations to `scientific-plot-maker`.
-- Route non-plot paper visuals, including conceptual illustrations, architecture or system diagrams, and data-flow diagrams, to `create-publication-figures`.
+- Route non-plot paper visuals, including conceptual illustrations, architecture or system diagrams, and data-flow diagrams, to `create-publication-figures-latex` skill. Unless the user wants a PNG (explictly asked).
 - An explicit user request for another skill or method overrides this default routing.
 - If the skill is not available, then do not create the figure. Warn the user and just add a placeholder.
 
