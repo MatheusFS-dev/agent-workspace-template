@@ -28,6 +28,7 @@ Follow applicable project instructions and matching skills. Never modify skill f
 - Run the narrowest reliable checks after editing, such as syntax, import, targeted test, smoke test, lint, or type check.
 - Add or preserve regression tests when behavior changes. Remove only temporary diagnostic artifacts.
 - You may create temporary test scripts under `tests/` to validate the implementation. After validation is complete, delete all temporary test scripts, generated artifacts, caches, logs, and other files created solely for testing. Keep a test script or testing artifact only when explicitly requested.
+- Every program must report progress. Never leave a running task silent. Print the stage before it starts, for example "Loading dataset" or "Training model". When the work is measurable, also show a progress bar, ETA, elapsed time, and throughput (use `tqdm` in Python).
 - Avoid semicolons and em dashes in session responses.
 
 ### Scripts subgate
@@ -65,6 +66,7 @@ Follow applicable project instructions and matching skills. Never modify skill f
 
 - Exceptions: the user requests otherwise, there is too much redundancy across scripts, or parameters must be standardized across multiple tests.
 - Use `os.environ` to set up GPU memory growth and the device. Default to GPU `cuda:0`.
+- Print one line per epoch with the epoch index, the metrics (such as loss and validation score), and the epoch duration. Also show a per-batch progress bar with ETA.
 - Follow these rules unless the user requests otherwise.
 
 ## Debugging gate
