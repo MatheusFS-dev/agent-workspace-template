@@ -30,6 +30,43 @@ Follow applicable project instructions and matching skills. Never modify skill f
 - You may create temporary test scripts under `tests/` to validate the implementation. After validation is complete, delete all temporary test scripts, generated artifacts, caches, logs, and other files created solely for testing. Keep a test script or testing artifact only when explicitly requested.
 - Avoid semicolons and em dashes in session responses.
 
+### Scripts subgate
+
+- In scripts (Python, bash, etc.), avoid command-line arguments. Prefer interactive prompts. Explain each prompt question briefly and show the available options when there are any. Keep prompts concise.
+- The only argument added by default is `--dry-run`, and only when it makes sense for the script.
+- Follow these script rules unless the user requests otherwise.
+
+### Python subgate
+
+- Prioritize `uv` for the virtual environment unless the user requests otherwise. Provide `pyproject.toml` and `uv.lock`.
+- Use only `uv sync` to create and update the environment. Do not create sub-venvs, do not use `uv run`, and do not add `uv` arguments to commands or scripts.
+- Default workflow: activate the venv, then run with `python3` normally.
+- Do not implement any other `uv` usage unless the user explicitly requests it.
+- Do not use `argparse` unless explicitly requested.
+- Do not use `from __future__ import annotations`.
+- Do not align assignments with extra spaces.
+- Add complete Google-style docstrings to new public functions and methods.
+- Include an `Examples:` section only when it clarifies non-obvious usage. Use concrete input with observable expected output; omit call-only examples and examples containing undefined placeholders.
+
+#### ML training subgate
+
+- Assume training can crash at any moment. Save checkpoints and make the script resume from the latest checkpoint on the next run.
+- Avoid config files such as `.toml` for training parameters. Keep parameters directly in the Python script, inside a Config section formatted exactly like this:
+
+```python
+# ---------------------------------------------------------------------------- #
+#                                    Config                                    #
+# ---------------------------------------------------------------------------- #
+
+# ADD CONFIGS HERE
+
+# ---------------------------------------------------------------------------- #
+```
+
+- Exceptions: the user requests otherwise, there is too much redundancy across scripts, or parameters must be standardized across multiple tests.
+- Use `os.environ` to set up GPU memory growth and the device. Default to GPU `cuda:0`.
+- Follow these rules unless the user requests otherwise.
+
 ## Debugging gate
 
 - Use the Superpowers plugin and its applicable skills for debugging tasks unless the user explicitly requests otherwise.
@@ -89,10 +126,13 @@ Follow applicable project instructions and matching skills. Never modify skill f
 - Use the `session-handoff` skill to save or restore the portable task handoff.
 - Do not activate this gate for ordinary progress updates or summaries.
 
-## Python
+## Repository docs gate
 
-- Do not use `argparse` unless explicitly requested.
-- Do not use `from __future__ import annotations`.
-- Do not align assignments with extra spaces.
-- Add complete Google-style docstrings to new public functions and methods.
-- Include an `Examples:` section only when it clarifies non-obvious usage. Use concrete input with observable expected output; omit call-only examples and examples containing undefined placeholders.
+- Applies to repository documentation in Markdown (`.md`) other than `README.md` files, which follow the README gate.
+- Put all docs under a `docs/` folder by default. Keep it organized with easy to understand filenames and subdirectories.
+- When the user asks for a report after a task, save it under `docs/reports/`. Keep it concise and easy to understand.
+- Start each report with a title, then the date and timestamp, then the content.
+- Use simple language. A layperson, non-expert, or non-programmer must be able to understand what was done, what was tested, and the results.
+- If the user asks for a detailed or technical report, explain the code step by step and include a worked example that "runs" through each step.
+- Papers, `.tex` files, and PDF reports are not covered by this gate. They follow the scientific writing gate and the `scribe` skill.
+- Follow these rules unless the user requests otherwise.
