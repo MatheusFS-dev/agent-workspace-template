@@ -103,7 +103,7 @@ class RoutingContractTest(unittest.TestCase):
         self.assertIn(
             "route non-plot paper visuals, including conceptual illustrations, "
             "architecture or system diagrams, and data-flow diagrams, to "
-            "`create-publication-figures`",
+            "`create-publication-figures-latex`",
             skill,
         )
         self.assertIn(
