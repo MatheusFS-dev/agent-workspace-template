@@ -54,6 +54,15 @@ E = mc^2.
 
 Do not add `\par\indent` when the prose continues the same sentence or paragraph that introduced the equation; `\indent` alone is insufficient while LaTeX still considers the text part of that paragraph. After editing, compile the document and visually inspect the affected pages to confirm the intended indentation rendered correctly.
 
+### First Paragraph After a Heading
+
+Standard LaTeX classes (`article`, `report`, `book`) do not indent the first paragraph after `\section`, `\subsection`, `\section*`, and similar headings. Documents written or edited with this skill must indent every body paragraph, including the first one after a heading, unless the user or the target template (for example a journal class) sets a different convention.
+
+- When writing a new document or editing the preamble of an existing one, load `\usepackage{indentfirst}` after the language package (for example after `babel`) and do not override it with `\noindent` on body paragraphs.
+- When editing a document whose class or template deliberately suppresses first-paragraph indentation, or when the preamble cannot be changed, begin each such paragraph with `\indent`.
+- Use `\noindent` only for deliberate exceptions such as letter headers, salutations, or text that continues a displayed equation within the same sentence.
+- Before finishing, search the source for headings followed by unindented prose, compile, and visually inspect the first paragraph of every section, including starred sections, to confirm the indent rendered.
+
 ### Focusing Citations on Relevant Aspects
 
 When summarizing references, emphasize the aspects that align with the user’s research focus. The same reference may be described differently depending on whether the user is focusing on methodology, modeling, implementation, evaluation, or limitations.
