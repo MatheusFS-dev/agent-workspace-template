@@ -30,6 +30,7 @@ Follow applicable project instructions and matching skills. Never modify skill f
 - You may create temporary test scripts under `tests/` to validate the implementation. After validation is complete, delete all temporary test scripts, generated artifacts, caches, logs, and other files created solely for testing. Keep a test script or testing artifact only when explicitly requested.
 - Every program must report progress. Never leave a running task silent. Print the stage before it starts, for example "Loading dataset" or "Training model". When the work is measurable, also show a progress bar, ETA, elapsed time, and throughput (use `tqdm` in Python).
 - Avoid semicolons and em dashes in session responses.
+- In Bash, never run `rm` on an unguarded variable path such as `rm -f $S/*.png`. Use a literal path or a guarded expansion such as `rm -f "${S:?}"/*.png`. Do not assign the variable from a directory-printing substitution and then delete under it, use a literal path instead. Prefer one command per step over long `&&` chains that mix `rm` with other work.
 
 ### Scripts subgate
 

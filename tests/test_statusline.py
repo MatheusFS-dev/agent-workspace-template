@@ -41,7 +41,7 @@ class StatuslineFormatterTest(unittest.TestCase):
     """Verify the fields shared by Claude Code and Antigravity CLI."""
 
     def test_formats_claude_model_context_and_rate_limits(self):
-        """Render Claude's model, effort, folder, context, and rate windows."""
+        """Render Claude's model, effort, context, and rate windows."""
         output = render_statusline(
             {
                 "model": {"display_name": "Sonnet"},
@@ -57,7 +57,7 @@ class StatuslineFormatterTest(unittest.TestCase):
 
         self.assertEqual(
             output,
-            "Sonnet (high) · example-project · ctx 24% · 5H 17% · week 42%",
+            "Sonnet (high) · ctx 24% · 5H 17% · week 42%",
         )
 
     def test_formats_agy_model_context_and_quota_buckets(self):
@@ -76,5 +76,5 @@ class StatuslineFormatterTest(unittest.TestCase):
 
         self.assertEqual(
             output,
-            "Gemini 3.5 Flash (High) · example-project · ctx 14% · 5H 25% · week 50%",
+            "Gemini 3.5 Flash (High) · ctx 14% · 5H 25% · week 50%",
         )

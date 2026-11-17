@@ -2,7 +2,6 @@
 """Render shared Claude Code and Antigravity CLI statusline telemetry."""
 
 import json
-import os
 import sys
 
 
@@ -65,7 +64,7 @@ def _agy_quota(payload, period):
 
 
 def format_statusline(payload):
-    """Format model, effort, folder, context, and rate-limit telemetry.
+    """Format model, effort, context, and rate-limit telemetry.
 
     Args:
         payload: Statusline JSON emitted by Claude Code or Antigravity CLI.
@@ -78,8 +77,6 @@ def format_statusline(payload):
     if effort:
         model = "{0} ({1})".format(model, effort)
 
-    directory = _value(payload, "workspace", "current_dir") or _value(payload, "cwd")
-    folder = os.path.basename(directory.rstrip(os.sep)) if directory else "—"
     context = _percentage(_value(payload, "context_window", "used_percentage"))
 
     five_hour = _quota_percentage(_value(payload, "rate_limits", "five_hour"))
@@ -89,8 +86,8 @@ def format_statusline(payload):
     if weekly == "—":
         weekly = _agy_quota(payload, "seven_day")
 
-    return "{0} · {1} · ctx {2} · 5H {3} · week {4}".format(
-        model, folder, context, five_hour, weekly
+    return "{0} · ctx {1} · 5H {2} · week {3}".format(
+        model, context, five_hour, weekly
     )
 
 

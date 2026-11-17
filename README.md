@@ -158,8 +158,8 @@ for focused Python tests or embedding.
 
 On Windows, `~` is the current `%USERPROFILE%` directory.
 
-The default status lines show the active model and reasoning level, current
-folder, context used, and 5-hour and weekly usage. Codex renders these natively;
+The default status lines show the active model and reasoning level,
+context used, and 5-hour and weekly usage. Codex renders these natively;
 Claude Code and Antigravity CLI run their installed `statusline.py` formatter.
 
 Antigravity support is intentionally CLI-only. Its global rules stay in
