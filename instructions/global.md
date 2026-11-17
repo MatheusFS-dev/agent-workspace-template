@@ -12,6 +12,11 @@ Follow applicable project instructions and matching skills. Never modify skill f
 - Use the minimum files, tools, output, and subagents needed. Delegate only independent work whose isolation or parallelism justifies the additional usage.
 - Do not commit, push, create branches, or create tags unless explicitly requested.
 
+## Instruction files gate
+
+- `AGENTS.md` is the only official instruction file. Make every instruction edit in `AGENTS.md`. Never edit `CLAUDE.md`, `GEMINI.md`, or any other agent-specific instruction file, because they only point to `AGENTS.md`.
+- Agent-specific files such as `CLAUDE.md` and `GEMINI.md` must only reference `AGENTS.md` (for example `@AGENTS.md`) or instruct the agent to read and follow it. If one is missing that reference, say so instead of adding other content to it.
+
 ## Repeated misunderstanding gate
 
 - Activate when the user indicates that the assistant still misunderstands the same goal or scope after an earlier correction, including statements such as "that is still not what I mean." A first correction alone does not trigger this gate: incorporate it and correct course normally.

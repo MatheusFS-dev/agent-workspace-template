@@ -7,6 +7,6 @@
   "verbosity": "low",
   "statusLine": {
     "type": "command",
-    "command": "python ~/.gemini/antigravity-cli/statusline.py"
+    "command": "sh -c 'for p in python3 python py; do command -v \"$p\" >/dev/null 2>&1 && \"$p\" -c \"import sys;sys.exit(sys.version_info<(3,))\" >/dev/null 2>&1 && exec \"$p\" \"$HOME/.gemini/antigravity-cli/statusline.py\"; done; echo \"statusline: python3 not found\"'"
   }
 }
