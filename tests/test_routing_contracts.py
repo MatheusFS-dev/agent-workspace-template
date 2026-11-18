@@ -1,10 +1,21 @@
 """Contract tests for routing plots and non-plot scientific figures."""
 
+import json
 from pathlib import Path
+import subprocess
+import sys
+import tomllib
 import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
+PROMPT_REMINDER = (
+    "Follow the global instructions. Classify the request, apply its gate: "
+    "code/debug=Superpowers, even small edits. "
+    "Plots=Superpowers+scientific-plot-maker. Research=no Superpowers. "
+    "Papers=scribe. README=readmaker. Docs=docs/ folder. "
+    "Only if asked: ingest=ingest-context, handoff=session-handoff."
+)
 
 
 def read(relative_path: str) -> str:
@@ -129,6 +140,109 @@ class RoutingContractTest(unittest.TestCase):
             r"\newenvironment{revisionexcerpt}{\begingroup\color{blue}}{\endgroup}",
             response_template,
         )
+
+
+class PromptReminderContractTest(unittest.TestCase):
+    """Keep the per-prompt reminder aligned with the global gates."""
+
+    def test_coding_gate_covers_small_edits(self) -> None:
+        """Require Superpowers for small coding edits as well."""
+        instructions = read("instructions/global.md")
+
+        self.assertIn(
+            "use the superpowers plugin and its applicable skills for coding tasks, "
+            "including small edits, unless the user explicitly requests otherwise.",
+            instructions,
+        )
+
+    def test_claude_settings_install_the_prompt_reminder_hook(self) -> None:
+        """Install the reminder as a Claude UserPromptSubmit command hook."""
+        settings = json.loads(
+            (ROOT / "configs" / "claude" / "settings.json").read_text(encoding="utf-8")
+        )
+
+        entries = settings["hooks"]["UserPromptSubmit"]
+        commands = [
+            handler["command"] for entry in entries for handler in entry["hooks"]
+        ]
+        self.assertEqual(len(commands), 1)
+        self.assertIn(PROMPT_REMINDER, commands[0])
+
+    def test_codex_template_installs_the_prompt_reminder_hook(self) -> None:
+        """Install the same reminder as a Codex UserPromptSubmit command hook."""
+        template = (ROOT / "configs" / "codex" / "config.toml.template").read_text(
+            encoding="utf-8"
+        )
+
+        config = tomllib.loads(template)
+
+        handlers = [
+            handler
+            for entry in config["hooks"]["UserPromptSubmit"]
+            for handler in entry["hooks"]
+        ]
+        self.assertEqual(len(handlers), 1)
+        self.assertEqual(handlers[0]["type"], "command")
+        self.assertIn(PROMPT_REMINDER, handlers[0]["command"])
+        self.assertIn(PROMPT_REMINDER, handlers[0]["command_windows"])
+
+    def test_antigravity_hook_template_runs_the_reminder_script(self) -> None:
+        """Register the reminder script on the PreInvocation event."""
+        hooks = json.loads(
+            (ROOT / "configs" / "antigravity" / "hooks.json").read_text(encoding="utf-8")
+        )
+
+        self.assertEqual(list(hooks), ["global-instructions-reminder"])
+        handlers = hooks["global-instructions-reminder"]["PreInvocation"]
+        self.assertEqual(len(handlers), 1)
+        self.assertEqual(handlers[0]["type"], "command")
+        self.assertIn("prompt_reminder.py", handlers[0]["command"])
+
+    def run_reminder_script(self, stdin_text: str) -> subprocess.CompletedProcess:
+        """Run the Antigravity reminder script with one stdin payload.
+
+        Args:
+            stdin_text: Raw text sent to the hook on standard input.
+
+        Returns:
+            subprocess.CompletedProcess: Captured exit code and output.
+        """
+        return subprocess.run(
+            [sys.executable, "-I", str(ROOT / "configs" / "antigravity" / "prompt_reminder.py")],
+            input=stdin_text,
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+
+    def test_antigravity_script_injects_once_per_user_prompt(self) -> None:
+        """Inject on the first model call of a prompt and stay silent afterwards."""
+        first = self.run_reminder_script(json.dumps({"invocationNum": 0}))
+        later = self.run_reminder_script(json.dumps({"invocationNum": 1}))
+
+        self.assertEqual(first.returncode, 0)
+        self.assertEqual(
+            json.loads(first.stdout),
+            {"injectSteps": [{"ephemeralMessage": PROMPT_REMINDER}]},
+        )
+        self.assertEqual(later.returncode, 0)
+        self.assertEqual(later.stdout, "")
+
+    def test_antigravity_script_ignores_unreadable_input(self) -> None:
+        """Never break an Antigravity turn because of malformed hook input."""
+        for stdin_text in ("", "{not json", "[]", json.dumps({"other": 1})):
+            result = self.run_reminder_script(stdin_text)
+
+            self.assertEqual(result.returncode, 0, stdin_text)
+            self.assertEqual(result.stdout, "", stdin_text)
+
+    def test_reminder_is_agent_neutral(self) -> None:
+        """Avoid naming a specific agent or instruction file in the reminder."""
+        reminder = PROMPT_REMINDER.lower()
+
+        for name in ("claude", "codex", "gemini", "antigravity", "opencode", ".md"):
+            self.assertNotIn(name, reminder)
 
 
 if __name__ == "__main__":

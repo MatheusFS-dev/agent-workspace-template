@@ -189,6 +189,22 @@ def create_template(template_root: Path, include_profile: bool = True) -> None:
         "{\"verbosity\": \"low\"}\n",
         encoding="utf-8",
     )
+    (template_root / "configs" / "antigravity" / "hooks.json").write_text(
+        json.dumps(
+            {
+                "global-instructions-reminder": {
+                    "PreInvocation": [
+                        {"type": "command", "command": "managed-reminder", "timeout": 5}
+                    ]
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    (template_root / "configs" / "antigravity" / "prompt_reminder.py").write_text(
+        "#!/usr/bin/env python3\n",
+        encoding="utf-8",
+    )
     (template_root / "configs" / "statusline" / "statusline.py").write_text(
         "#!/usr/bin/env python3\n",
         encoding="utf-8",
@@ -491,6 +507,67 @@ class InstallTemplateTest(unittest.TestCase):
         self.assertTrue(
             (self.home_root / ".gemini" / "antigravity-cli" / "skills" / "second-skill").is_dir()
         )
+
+    def install_antigravity(self, *answers: str) -> bool:
+        """Run the Antigravity installer against the fixture template.
+
+        Args:
+            *answers: Responses for conflict prompts, empty for the defaults.
+
+        Returns:
+            bool: Installer result for the fixture home directory.
+        """
+        return ANTIGRAVITY_INSTALLER.install_global_antigravity(
+            self.template_root,
+            self.home_root,
+            prompt_answers(*answers),
+            self.output.append,
+        )
+
+    def test_antigravity_merges_reminder_hook_and_keeps_other_hooks(self) -> None:
+        """Add only the managed hook key to the shared global hooks file."""
+        hooks_path = self.home_root / ".gemini" / "config" / "hooks.json"
+        hooks_path.parent.mkdir(parents=True)
+        other_hooks = {"other-tool": {"Stop": [{"type": "command", "command": "keep"}]}}
+        hooks_path.write_text(json.dumps(other_hooks), encoding="utf-8")
+
+        self.assertTrue(self.install_antigravity())
+        # The second run finds managed files and accepts replacement and no backup.
+        self.assertTrue(self.install_antigravity("", ""))
+
+        merged = json.loads(hooks_path.read_text(encoding="utf-8"))
+        self.assertEqual(merged["other-tool"], other_hooks["other-tool"])
+        handlers = merged["global-instructions-reminder"]["PreInvocation"]
+        self.assertEqual(len(handlers), 1)
+        self.assertEqual(handlers[0]["type"], "command")
+        self.assertTrue(
+            (self.home_root / ".gemini" / "antigravity-cli" / "prompt_reminder.py").is_file()
+        )
+        if PLATFORM_NAME == "windows":
+            self.assertIn("prompt_reminder.py", handlers[0]["command"])
+            self.assertTrue(handlers[0]["command"].startswith("python "))
+        else:
+            self.assertEqual(handlers[0]["command"], "managed-reminder")
+
+    def test_antigravity_creates_hooks_file_when_missing(self) -> None:
+        """Create the global hooks file when no other tool has created it."""
+        self.assertTrue(self.install_antigravity())
+
+        hooks_path = self.home_root / ".gemini" / "config" / "hooks.json"
+        merged = json.loads(hooks_path.read_text(encoding="utf-8"))
+        self.assertEqual(list(merged), ["global-instructions-reminder"])
+
+    def test_antigravity_rejects_invalid_hooks_file_before_writing(self) -> None:
+        """Leave every destination untouched when the shared hooks file is invalid."""
+        hooks_path = self.home_root / ".gemini" / "config" / "hooks.json"
+        hooks_path.parent.mkdir(parents=True)
+        hooks_path.write_text("{not json", encoding="utf-8")
+
+        with self.assertRaises(RuntimeError):
+            self.install_antigravity()
+
+        self.assertEqual(hooks_path.read_text(encoding="utf-8"), "{not json")
+        self.assertFalse((self.home_root / ".gemini" / "GEMINI.md").exists())
 
     def test_project_selection_matrix_and_gitignore_idempotence(self) -> None:
         """Install only the selected project files and avoid ignore duplicates.

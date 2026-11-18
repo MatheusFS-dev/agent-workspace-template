@@ -27,7 +27,7 @@ Follow applicable project instructions and matching skills. Never modify skill f
 
 ## Coding gate
 
-- Use the Superpowers plugin and its applicable skills for coding tasks unless the user explicitly requests otherwise.
+- Use the Superpowers plugin and its applicable skills for coding tasks, including small edits, unless the user explicitly requests otherwise.
 - Inspect the target files and direct dependencies. Define expected behavior and a verification method before editing.
 - Make the smallest compatible change and preserve repository conventions.
 - Run the narrowest reliable checks after editing, such as syntax, import, targeted test, smoke test, lint, or type check.

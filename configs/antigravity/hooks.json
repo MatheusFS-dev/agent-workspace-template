@@ -1,0 +1,11 @@
+{
+  "global-instructions-reminder": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "sh -c 'for p in python3 python py; do command -v \"$p\" >/dev/null 2>&1 && exec \"$p\" \"$HOME/.gemini/antigravity-cli/prompt_reminder.py\"; done; exit 0'",
+        "timeout": 5
+      }
+    ]
+  }
+}

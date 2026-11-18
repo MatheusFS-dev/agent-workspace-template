@@ -64,16 +64,26 @@ def validate_sources(template_root: Path) -> list[Path]:
     settings_path = template_root / "configs" / "antigravity" / "settings.json"
     statusline_path = template_root / "configs" / "statusline" / "statusline.py"
     skills_root = template_root / "skills"
-    required_paths = (instructions_path, settings_path, statusline_path, skills_root)
+    hooks_path = template_root / "configs" / "antigravity" / "hooks.json"
+    reminder_path = template_root / "configs" / "antigravity" / "prompt_reminder.py"
+    required_paths = (
+        instructions_path,
+        settings_path,
+        hooks_path,
+        reminder_path,
+        statusline_path,
+        skills_root,
+    )
     missing_paths = [path for path in required_paths if not path.exists()]
     if missing_paths:
         missing_text = ", ".join(str(path) for path in missing_paths)
         raise RuntimeError(f"Antigravity template source is missing: {missing_text}")
 
-    try:
-        json.loads(settings_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as error:
-        raise RuntimeError(f"Invalid JSON source {settings_path}: {error}") from error
+    for json_path in (settings_path, hooks_path):
+        try:
+            json.loads(json_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as error:
+            raise RuntimeError(f"Invalid JSON source {json_path}: {error}") from error
 
     skill_packages = sorted(path for path in skills_root.iterdir() if path.is_dir())
     invalid_packages = [
@@ -272,6 +282,70 @@ def select_maestro_profile(input_function: InputFunction, output_function: Outpu
         output_function("Choose maestro or none.")
 
 
+def render_hooks(
+    template_root: Path,
+    destination_path: Path,
+    reminder_command: Optional[str] = None,
+) -> str:
+    """Merge the managed hook entries into the shared global hooks file.
+
+    The global hooks file is shared with other tools, so only the template's
+    top-level hook names are added or replaced and every other entry is kept.
+
+    Args:
+        template_root: Absolute template repository root.
+        destination_path: Global Antigravity hooks file, which may already hold
+            entries from other tools.
+        reminder_command: Replacement command for the reminder hook, or None to
+            keep the template command.
+
+    Returns:
+        str: Complete hooks JSON text with other tools' entries unchanged.
+
+    Raises:
+        RuntimeError: If the existing hooks file is not a JSON object.
+        OSError: If a source or the existing hooks file cannot be read.
+    """
+    managed_path = template_root / "configs" / "antigravity" / "hooks.json"
+    managed = json.loads(managed_path.read_text(encoding="utf-8"))
+    if reminder_command is not None:
+        for handler in managed["global-instructions-reminder"]["PreInvocation"]:
+            handler["command"] = reminder_command
+    merged = {}
+    if path_exists(destination_path):
+        try:
+            merged = json.loads(destination_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as error:
+            raise RuntimeError(
+                f"Invalid JSON hooks file {destination_path}: {error}"
+            ) from error
+        if not isinstance(merged, dict):
+            raise RuntimeError(f"Hooks file must contain a JSON object: {destination_path}")
+    merged.update(managed)
+    return json.dumps(merged, indent=2) + "\n"
+
+
+def write_hooks(destination_path: Path, hooks_text: str) -> None:
+    """Replace the global hooks file atomically and keep its permissions.
+
+    Args:
+        destination_path: Global Antigravity hooks file to write.
+        hooks_text: Complete JSON text produced by `render_hooks`.
+
+    Returns:
+        None: The destination now holds `hooks_text`.
+
+    Raises:
+        OSError: If the file cannot be written or replaced.
+    """
+    destination_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path = destination_path.with_name(destination_path.name + ".tmp")
+    temporary_path.write_text(hooks_text, encoding="utf-8")
+    if destination_path.exists():
+        shutil.copymode(destination_path, temporary_path)
+    temporary_path.replace(destination_path)
+
+
 def install_global_antigravity(
     template_root: Optional[Path] = None,
     home_root: Optional[Path] = None,
@@ -320,6 +394,15 @@ def install_global_antigravity(
             antigravity_root / "statusline.py",
         ),
     ]
+    hooks_path = gemini_root / "config" / "hooks.json"
+    items.append(
+        (
+            root / "configs" / "antigravity" / "prompt_reminder.py",
+            antigravity_root / "prompt_reminder.py",
+        )
+    )
+    # Render before the first write so an invalid shared hooks file aborts cleanly.
+    hooks_text = render_hooks(root, hooks_path)
     maestro_source = root / "configs" / "antigravity" / "agents" / "maestro" / "agent.md"
     maestro_installed = maestro_source.is_file() and select_maestro_profile(input_function, output_function)
     if maestro_installed:
@@ -330,6 +413,8 @@ def install_global_antigravity(
     )
     installed = install_items(items, input_function, output_function)
     if installed:
+        write_hooks(hooks_path, hooks_text)
+        output_function(f"Merged the global instructions reminder hook into {hooks_path}")
         output_function(f"Installed Antigravity CLI global template into {gemini_root}")
         if maestro_installed:
             output_function(

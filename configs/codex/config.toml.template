@@ -41,6 +41,16 @@ enabled = true
 [plugins."github@openai-curated"]
 enabled = true
 
+# Re-inject a one-line gate summary on every prompt. Codex asks to trust this
+# hook once. Review it with /hooks.
+[[hooks.UserPromptSubmit]]
+
+[[hooks.UserPromptSubmit.hooks]]
+type = "command"
+command = 'echo "Follow the global instructions. Classify the request, apply its gate: code/debug=Superpowers, even small edits. Plots=Superpowers+scientific-plot-maker. Research=no Superpowers. Papers=scribe. README=readmaker. Docs=docs/ folder. Only if asked: ingest=ingest-context, handoff=session-handoff."'
+command_windows = 'Write-Output "Follow the global instructions. Classify the request, apply its gate: code/debug=Superpowers, even small edits. Plots=Superpowers+scientific-plot-maker. Research=no Superpowers. Papers=scribe. README=readmaker. Docs=docs/ folder. Only if asked: ingest=ingest-context, handoff=session-handoff."'
+timeout = 5
+
 [tui]
 pet = "codex"
 status_line = ["model-with-reasoning", "context-used", "five-hour-limit", "weekly-limit"]

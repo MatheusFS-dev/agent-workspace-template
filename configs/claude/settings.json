@@ -6,6 +6,18 @@
   "permissions": {
     "defaultMode": "auto"
   },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Follow the global instructions. Classify the request, apply its gate: code/debug=Superpowers, even small edits. Plots=Superpowers+scientific-plot-maker. Research=no Superpowers. Papers=scribe. README=readmaker. Docs=docs/ folder. Only if asked: ingest=ingest-context, handoff=session-handoff.'"
+          }
+        ]
+      }
+    ]
+  },
   "statusLine": {
     "type": "command",
     "command": "sh -c 'for p in python3 python py; do command -v \"$p\" >/dev/null 2>&1 && \"$p\" -c \"import sys;sys.exit(sys.version_info<(3,))\" >/dev/null 2>&1 && exec \"$p\" \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/statusline.py\"; done; echo \"statusline: python3 not found\"'"
