@@ -34,13 +34,11 @@ def _load_toml_parser():
 
 tomllib = _load_toml_parser()
 PROMPT_REMINDER = (
-    "Follow the global instructions. Classify the request, apply its gate: "
-    "code/debug=Superpowers, even small edits. "
-    "Plots=Superpowers+scientific-plot-maker. Research=no Superpowers. "
-    "Papers=scribe. README=readmaker. Docs=docs/ folder. "
-    "Every test script you write (implementation, debugging, any) goes in "
-    "tests/agents/<area>/, unless the user names another path. "
-    "Only if asked: ingest=ingest-context, handoff=session-handoff."
+    "Apply global gates: code/debug=Superpowers (even small edits). "
+    "plot=Superpowers+scientific-plot-maker. research=no Superpowers. paper=scribe. "
+    "README=readmaker. explain/report=explainer. docs=docs/. "
+    "test scripts=tests/agents/<area>/ unless user path. "
+    "if asked: ingest=ingest-context, handoff=session-handoff."
 )
 
 
@@ -72,6 +70,40 @@ class RoutingContractTest(unittest.TestCase):
         self.assertIn("simple example outputs", instructions)
         self.assertIn("resume when the answers resolve the uncertainty", instructions)
         self.assertIn("do not require an extra confirmation", instructions)
+
+    def test_global_gate_routes_explanations_and_reports_to_explainer(self) -> None:
+        """Route chat explanations and reports to the explainer, never papers."""
+        instructions = read("instructions/global.md")
+
+        self.assertIn("## explanations and reports gate", instructions)
+        self.assertIn("`explainer` skill", instructions)
+        self.assertIn("explanations given to the user in the chat", instructions)
+        self.assertIn("never activate this gate for writing or editing papers", instructions)
+        self.assertIn("explaining a paper", instructions)
+        self.assertIn("`docs/reports/`", instructions)
+        self.assertNotIn("explain the code step by step", instructions)
+
+    def test_explainer_loads_one_case_file_per_request_type(self) -> None:
+        """Keep each report type in its own file so only one loads at a time."""
+        skill = read("skills/explainer/SKILL.md")
+        cases = (
+            "test-results",
+            "analysis",
+            "investigation",
+            "paper-method",
+            "proposal",
+            "explanation",
+            "general",
+        )
+
+        self.assertIn("name: explainer", skill)
+        self.assertIn("read only the one case file", skill)
+        for case in cases:
+            path = f"references/cases/{case}.md"
+            self.assertIn(path, skill)
+            case_text = read(f"skills/explainer/{path}")
+            self.assertIn("open with", case_text)
+            self.assertIn("saved report headings", case_text)
 
     def test_global_gate_routes_explicit_context_handoffs_to_the_skill(self) -> None:
         """Route only explicit session preservation and restoration requests."""

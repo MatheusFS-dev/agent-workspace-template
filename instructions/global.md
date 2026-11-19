@@ -140,9 +140,12 @@ Follow applicable project instructions and matching skills. Never modify skill f
 
 - Applies to repository documentation in Markdown (`.md`) other than `README.md` files, which follow the README gate.
 - Put all docs under a `docs/` folder by default. Keep it organized with easy to understand filenames and subdirectories.
-- When the user asks for a report after a task, save it under `docs/reports/`. Keep it concise and easy to understand.
-- Start each report with a title, then the date and timestamp, then the content.
-- Use simple language. A layperson, non-expert, or non-programmer must be able to understand what was done, what was tested, and the results.
-- If the user asks for a detailed or technical report, explain the code step by step and include a worked example that "runs" through each step.
+- Save reports under `docs/reports/` and write them with the explanations and reports gate.
 - Papers, `.tex` files, and PDF reports are not covered by this gate. They follow the scientific writing gate and the `scribe` skill.
 - Follow these rules unless the user requests otherwise.
+
+## Explanations and reports gate
+
+- Use the `explainer` skill for reports of findings and for explanations given to the user in the chat, such as test or simulation results, analyses, investigations, explaining a paper or method, proposed solutions, and explanations of why something happens.
+- Never activate this gate for writing or editing papers, manuscripts, `.tex` files, or `README.md` files. They follow the scientific writing and README gates.
+- Save a report file under `docs/reports/` only when the user asks for a report or file.

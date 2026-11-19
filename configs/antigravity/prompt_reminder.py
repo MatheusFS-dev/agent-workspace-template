@@ -6,13 +6,11 @@ import sys
 
 
 REMINDER = (
-    "Follow the global instructions. Classify the request, apply its gate: "
-    "code/debug=Superpowers, even small edits. "
-    "Plots=Superpowers+scientific-plot-maker. Research=no Superpowers. "
-    "Papers=scribe. README=readmaker. Docs=docs/ folder. "
-    "Every test script you write (implementation, debugging, any) goes in "
-    "tests/agents/<area>/, unless the user names another path. "
-    "Only if asked: ingest=ingest-context, handoff=session-handoff."
+    "Apply global gates: code/debug=Superpowers (even small edits). "
+    "plot=Superpowers+scientific-plot-maker. research=no Superpowers. paper=scribe. "
+    "README=readmaker. explain/report=explainer. docs=docs/. "
+    "test scripts=tests/agents/<area>/ unless user path. "
+    "if asked: ingest=ingest-context, handoff=session-handoff."
 )
 
 
