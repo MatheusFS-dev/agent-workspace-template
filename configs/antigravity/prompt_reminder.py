@@ -10,6 +10,8 @@ REMINDER = (
     "code/debug=Superpowers, even small edits. "
     "Plots=Superpowers+scientific-plot-maker. Research=no Superpowers. "
     "Papers=scribe. README=readmaker. Docs=docs/ folder. "
+    "Every test script you write (implementation, debugging, any) goes in "
+    "tests/agents/<area>/, unless the user names another path. "
     "Only if asked: ingest=ingest-context, handoff=session-handoff."
 )
 
