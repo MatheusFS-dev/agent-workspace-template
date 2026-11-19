@@ -1,14 +1,38 @@
 """Contract tests for routing plots and non-plot scientific figures."""
 
+import importlib.util
 import json
 from pathlib import Path
 import subprocess
 import sys
-import tomllib
 import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _load_toml_parser():
+    """Return stdlib `tomllib`, or the bundled Tomli package on Python < 3.11.
+
+    Returns:
+        module: Parser module exposing `loads`.
+    """
+    try:
+        import tomllib
+    except ModuleNotFoundError:
+        package_root = ROOT / "scripts" / "linux" / "python3" / "_vendor" / "tomli"
+        spec = importlib.util.spec_from_file_location(
+            "_routing_bundled_tomli",
+            package_root / "__init__.py",
+            submodule_search_locations=[str(package_root)],
+        )
+        tomllib = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = tomllib
+        spec.loader.exec_module(tomllib)
+    return tomllib
+
+
+tomllib = _load_toml_parser()
 PROMPT_REMINDER = (
     "Follow the global instructions. Classify the request, apply its gate: "
     "code/debug=Superpowers, even small edits. "
